@@ -36,7 +36,44 @@ public class Login {
         return new String[]{username, password};
     }
 
+    public void startLoginProcess() {
+        displayLoginMenu();
+        int choice = getLoginType();
+        
+        switch (choice) {
+            case 1:
+                // Handle admin login
+                String[] adminCredentials = getCredentials();
+                boolean adminValid = authController.validateAdmin(adminCredentials[0], adminCredentials[1]);
+                if (adminValid) {
+                    routeToConsoleUI();
+                } else {
+                    System.out.println("Invalid admin credentials.");
+                }
+                break;
+            case 2:
+                // Handle member login
+                String[] memberCredentials = getCredentials();
+                boolean memberValid = authController.validateMember(memberCredentials[0], memberCredentials[1]);
+                if (memberValid) {
+                    routeToConsoleUI();
+                } else {
+                    System.out.println("Invalid member credentials.");
+                }
+                break;
+            case 3:
+                // Handle member account creation
+                String[] newMemberCredentials = getCredentials();
+                authController.createMemberAccount(newMemberCredentials[0], newMemberCredentials[1]);
+                System.out.println("Member account created successfully.");
+                break;
+            default:
+                System.out.println("Invalid choice. Please restart the application.");
+                break;
+        }
+    }
+
     public void routeToConsoleUI() {
-        // ToDo
+        // ToDo: Navigate to the ConsoleUI for further interactions
     }
 }
