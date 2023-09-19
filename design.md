@@ -12,3 +12,7 @@ Please provide at least one class diagram according to the assignment requirment
 
 ### Sequence Diagram
 Please provide at least one sequence diagram according to the assignment requirments.
+
+
+For planning:
+![draft domain model](img/domain.jpg)
