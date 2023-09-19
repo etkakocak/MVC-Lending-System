@@ -6,15 +6,15 @@ public class Item {
     private String itemId;
     private String category;
     private String name;
-    private String description;
+    private Description description;  
     private Date creationDate;
     private int costPerDay;
     private Member owner;
 
-    public Item(String category, String name, String description, int costPerDay, Member owner) {
+    public Item(String category, String name, Description description, int costPerDay, Member owner) {
         this.category = category;
         this.name = name;
-        this.description = description;
+        this.description = description; 
         this.costPerDay = costPerDay;
         this.owner = owner;
         this.creationDate = new Date();
@@ -47,14 +47,6 @@ public class Item {
         this.name = name;
     }
 
-    public String getDescription() {
-        return description;
-    }
-
-    public void setDescription(String description) {
-        this.description = description;
-    }
-
     public Date getCreationDate() {
         return creationDate;
     }
@@ -73,5 +65,13 @@ public class Item {
 
     public void setOwner(Member owner) {
         this.owner = owner;
+    }
+
+    public Description getContent() {
+        return description;
+    }
+
+    public void setContent(Description description) {
+        this.description = description;
     }
 }
