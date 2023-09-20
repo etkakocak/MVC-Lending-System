@@ -14,7 +14,7 @@ public class App {
   public static void main(String[] args) {
     // adapt to start the application in your way
     AuthenticationController aut = new AuthenticationController();
-    aut.initializeMembers();
+    aut.initializeUsers();
     Login login = new Login(aut);
     login.startLoginProcess();
   }
