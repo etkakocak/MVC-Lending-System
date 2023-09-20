@@ -51,8 +51,9 @@ public class AuthenticationController {
         return null;
     }
     
-    public void createMemberAccount(String username, String password) {
-        // ToDo
+    public void createMemberAccount(String name, String email, String mobile, String username, String password) {
+        Member newMember = new Member(name, email, mobile, username, password);
+        members.add(newMember);
     }
 
     public void initializeUsers() {

@@ -65,9 +65,26 @@ public class Login {
                 break;
             case 3:
                 // Handle member account creation
-                String[] newMemberCredentials = getCredentials();
-                authController.createMemberAccount(newMemberCredentials[0], newMemberCredentials[1]);
+                System.out.print("Enter your name: ");
+                String name = scanner.nextLine();
+                
+                System.out.print("Enter your email: ");
+                String email = scanner.nextLine();
+
+                System.out.print("Enter your phone number: ");
+                String mobile = scanner.nextLine();
+
+                System.out.print("Enter your username: ");
+                String username = scanner.nextLine();
+
+                System.out.print("Enter your password: ");
+                String password = scanner.nextLine();
+
+                authController.createMemberAccount(name, email, mobile, username, password);
                 System.out.println("Member account created successfully.");
+
+                Member newMember = authController.validateMember(username, password);
+                routeToMemberConsoleUI(newMember);
                 break;
             default:
                 System.out.println("Invalid choice. Please try again.");
