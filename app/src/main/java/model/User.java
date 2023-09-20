@@ -8,5 +8,4 @@ public interface User {
     String getPassword();
     Void setRoll();
     String getRoll();
-
 }

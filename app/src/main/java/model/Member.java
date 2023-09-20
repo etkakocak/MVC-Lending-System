@@ -85,4 +85,7 @@ public class Member {
     public void removeOwnedItem(Item item) {
         this.ownedItems.remove(item);
     }
+    public void addDailyCredits(int amount) {
+        this.credits += amount;
+}
 }
