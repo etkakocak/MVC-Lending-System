@@ -2,6 +2,8 @@ package model;
 
 public class Time {
     private int day;
+    private int currentDay = 0;
+    
 
     public Time() {
         this.day = 0; 
@@ -15,7 +17,12 @@ public class Time {
         this.day = day;
     }
 
+    
     public void advanceDay() {
-        this.day += 1;
-    }
+        currentDay++;
+
+}
+public int getCurrentDay() {
+    return currentDay;
+}
 }
