@@ -23,6 +23,14 @@ public class Item {
 
     // This is draft, should be implemented
 
+    public Description getDescription() {  
+        return description;
+    }
+
+    public void setDescription(Description description) {  
+        this.description = description;
+    }
+
     private String generateItemId() {
         return "ABC123"; 
     }

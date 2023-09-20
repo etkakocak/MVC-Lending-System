@@ -12,17 +12,35 @@ public class Member {
     private Date creationDate;
     private int credits;
     private List<Item> ownedItems;
+    private String username;  
+    private String password;  
 
-    // This is draft, should be implemented
-
-    public Member(String name, String email, String mobile) {
+    public Member(String name, String email, String mobile, String username, String password) {
         this.name = name;
         this.email = email;
         this.mobile = mobile;
+        this.username = username;  
+        this.password = password;  
         this.creationDate = new Date();
         this.credits = 0; 
         this.ownedItems = new ArrayList<>();
         generateMemberId();
+    }
+
+    public String getUsername() {  
+        return username;
+    }
+
+    public void setUsername(String username) {  
+        this.username = username;
+    }
+
+    public String getPassword() {  
+        return password;
+    }
+
+    public void setPassword(String password) {  
+        this.password = password;
     }
 
     private void generateMemberId() {
@@ -85,7 +103,4 @@ public class Member {
     public void removeOwnedItem(Item item) {
         this.ownedItems.remove(item);
     }
-    public void addDailyCredits(int amount) {
-        this.credits += amount;
-}
 }

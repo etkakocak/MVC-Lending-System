@@ -12,6 +12,7 @@ public class Daycontroller {
         this.time = time;
         this.members = members;
     }
+    /*
 
     public void advanceDayCounter() {
         System.out.println("Advancing the day counter...");
@@ -25,6 +26,7 @@ public class Daycontroller {
             member.addDailyCredits(1);  // Eftersom member redan är av typen Member, behöver du inte göra en typomvandling
         }
     }
+    */
     public int getCurrentDay() {
         return time.getCurrentDay();
     }

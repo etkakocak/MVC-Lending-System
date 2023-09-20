@@ -13,7 +13,9 @@ public class App {
    */
   public static void main(String[] args) {
     // adapt to start the application in your way
-    Login login = new Login();
+    AuthenticationController aut = new AuthenticationController();
+    aut.initializeMembers();
+    Login login = new Login(aut);
     login.startLoginProcess();
   }
-}
+} 

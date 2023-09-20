@@ -2,14 +2,16 @@ package view;
 
 import java.util.Scanner;
 import controller.AuthenticationController;
+import model.Member;
+import model.Admin;
 
 public class Login {
     private Scanner scanner;
     private AuthenticationController authController;
 
-    public Login() {
+    public Login(AuthenticationController authController) {
         scanner = new Scanner(System.in);
-        authController = new AuthenticationController();
+        this.authController = authController;
     }
 
     public void displayLoginMenu() {
@@ -22,7 +24,7 @@ public class Login {
 
     public int getLoginType() {
         int choice = scanner.nextInt();
-        scanner.nextLine();  
+        scanner.nextLine();
         return choice;
     }
 
@@ -33,30 +35,30 @@ public class Login {
         System.out.print("Enter password: ");
         String password = scanner.nextLine();
 
-        return new String[]{username, password};
+        return new String[] { username, password };
     }
 
     public void startLoginProcess() {
         displayLoginMenu();
         int choice = getLoginType();
-        
+
         switch (choice) {
             case 1:
                 // Handle admin login
                 String[] adminCredentials = getCredentials();
-                boolean adminValid = authController.validateAdmin(adminCredentials[0], adminCredentials[1]);
-                if (adminValid) {
-                    routeToAdminConsoleUI();
+                Admin admin = authController.validateAdmin(adminCredentials[0], adminCredentials[1]);
+                if (admin != null) {
+                    routeToAdminConsoleUI(admin);
                 } else {
-                    System.out.println("Invalid admin credentials.");
+                    System.out.println("Invalid member credentials.");
                 }
                 break;
             case 2:
                 // Handle member login
                 String[] memberCredentials = getCredentials();
-                boolean memberValid = authController.validateMember(memberCredentials[0], memberCredentials[1]);
-                if (memberValid) {
-                    routeToMemberConsoleUI();
+                Member loggedInMember = authController.validateMember(memberCredentials[0], memberCredentials[1]);
+                if (loggedInMember != null) {
+                    routeToMemberConsoleUI(loggedInMember);
                 } else {
                     System.out.println("Invalid member credentials.");
                 }
@@ -72,13 +74,13 @@ public class Login {
         }
     }
 
-    public void routeToMemberConsoleUI() {
-        ConsoleUI UI = new ConsoleUI();
+    public void routeToMemberConsoleUI(Member loggedInMember) {
+        ConsoleUI UI = new ConsoleUI(loggedInMember);
         UI.displayMainMenu();
     }
 
-    public void routeToAdminConsoleUI() {
-        ConsoleUI UI = new ConsoleUI();
+    public void routeToAdminConsoleUI(Admin admin) {
+        ConsoleUI UI = new ConsoleUI(admin);
         UI.displayAdminMenu();
     }
 }
