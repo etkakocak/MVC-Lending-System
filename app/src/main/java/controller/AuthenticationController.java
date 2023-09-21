@@ -65,8 +65,5 @@ public class AuthenticationController {
 
         Admin admin1 = new Admin("gadmin", "thegadmin03");
         admins.add(admin1);
-
-        ItemController it = new ItemController();
-        it.initializeItems();
     }
 }
