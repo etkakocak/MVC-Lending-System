@@ -50,17 +50,17 @@ public class AuthenticationController {
         return null;
     }
     
-    public void createMemberAccount(String name, String email, String mobile, String username, String password) {
+    public void createMemberAccount(String name, String email, int mobile, String username, String password) {
         Member newMember = new Member(name, email, mobile, username, password);
         members.add(newMember);
     }
 
     public void initializeUsers() {
-        Member member1 = new Member("Etka", "etka@lending.com", "0031", "etka", "etka123");
+        Member member1 = new Member("Etka", "etka@lending.com", 0031, "etka", "etka123");
         members.add(member1);
-        Member member2 = new Member("Sanaa", "sanaa@lending.com", "0028", "sanaa", "sanaa123");
+        Member member2 = new Member("Sanaa", "sanaa@lending.com", 0022, "sanaa", "sanaa123");
         members.add(member2);
-        Member member3 = new Member("Aiman", "aiman@lending.com", "0062", "aiman", "aiman123");
+        Member member3 = new Member("Aiman", "aiman@lending.com", 0062, "aiman", "aiman123");
         members.add(member3);
 
         Admin admin1 = new Admin("gadmin", "thegadmin03");

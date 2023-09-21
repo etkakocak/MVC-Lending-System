@@ -8,14 +8,14 @@ public class Member {
     private String memberId;
     private String name;
     private String email;
-    private String mobile;
+    private int mobile;
     private Date creationDate;
     private int credits;
     private List<Item> ownedItems;
     private String username;
     private String password;
 
-    public Member(String name, String email, String mobile, String username, String password) {
+    public Member(String name, String email, int mobile, String username, String password) {
         this.name = name;
         this.email = email;
         this.mobile = mobile;
@@ -74,11 +74,11 @@ public class Member {
         this.email = email;
     }
 
-    public String getMobile() {
+    public int getMobile() {
         return mobile;
     }
 
-    public void setMobile(String mobile) {
+    public void setMobile(int mobile) {
         this.mobile = mobile;
     }
 

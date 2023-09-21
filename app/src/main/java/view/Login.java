@@ -72,7 +72,7 @@ public class Login {
                 String email = scanner.nextLine();
 
                 System.out.print("Enter your phone number: ");
-                String mobile = scanner.nextLine();
+                int mobile = scanner.nextInt();
 
                 System.out.print("Enter your username: ");
                 String username = scanner.nextLine();
