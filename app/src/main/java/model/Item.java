@@ -3,7 +3,6 @@ package model;
 import java.util.Date;
 
 public class Item {
-    private String itemId;
     private String category;
     private String name;
     private String description;  
@@ -18,7 +17,6 @@ public class Item {
         this.costPerDay = costPerDay;
         this.owner = owner;
         this.creationDate = new Date();
-        generateItemId();
     }
 
     // This is draft, should be implemented
@@ -29,14 +27,6 @@ public class Item {
 
     public void setDescription(String description) {  
         this.description = description;
-    }
-
-    private String generateItemId() {
-        return "ABC123"; 
-    }
-
-    public String getItemId() {
-        return itemId;
     }
 
     public String getCategory() {
