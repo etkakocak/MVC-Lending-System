@@ -2,7 +2,7 @@ package view;
 
 import java.util.List;
 import java.util.Scanner;
-import controller.ItemController;
+import controller.ObjectController;
 import model.Member;
 import model.Item;
 import model.Admin;
@@ -11,15 +11,18 @@ public class ConsoleUI {
     private Scanner scanner;
     private Member loggedInMember;
     private Admin admin;
+    private ObjectController obj;
 
-    public ConsoleUI(Member loggedInMember) {
+    public ConsoleUI(Member loggedInMember, ObjectController obj) {
         this.scanner = new Scanner(System.in, "UTF-8");
         this.loggedInMember = loggedInMember;
+        this.obj = obj;
     }
 
-    public ConsoleUI(Admin admin) {
+    public ConsoleUI(Admin admin, ObjectController obj) {
         this.scanner = new Scanner(System.in, "UTF-8");
         this.admin = admin;
+        this.obj = obj;
     }
 
     public void displayMainMenu() {
@@ -58,7 +61,6 @@ public class ConsoleUI {
     }
 
     public void postAnItem() {
-        ItemController itemController = new ItemController();
         System.out.println("\nEnter item category (Tool, Vehicle, Game, Toy, Sport, Other): ");
         String category = scanner.nextLine();
         category = scanner.nextLine(); 
@@ -72,17 +74,18 @@ public class ConsoleUI {
         System.out.println("Enter cost per day to lend the item: ");
         int costPerDay = scanner.nextInt();
 
-        itemController.addItem(category, name, descContent, costPerDay, loggedInMember);
+        obj.addItem(category, name, descContent, costPerDay, loggedInMember);
         System.out.println("Item posted successfully!");
     }
 
     public void displayAllItems() {
-        ItemController itemController = new ItemController();
-        List<Item> items = itemController.getAllItems();
+        List<Item> items = obj.getAllItems();
 
         System.out.println("\nItems available for lending:");
         for (int i = 0; i < items.size(); i++) {
-            System.out.println((i + 1) + ". " + items.get(i).getName() + " - " + items.get(i).getDescription());
+            System.out.println((i + 1) + ". " + items.get(i).getCategory() + " / " + items.get(i).getName() 
+                    + " / " + items.get(i).getDescription() + "\nCost per day: " + items.get(i).getCostPerDay() 
+                            + "\nCreated: " + items.get(i).getCreationDate());
         }
 
         System.out.println("\nEnter the number of the item you want to loan or 0 to go back: ");
@@ -115,6 +118,14 @@ public class ConsoleUI {
                     + " / " + items.get(i).getDescription() + "\nCost per day: " + items.get(i).getCostPerDay() 
                             + "\nCreated: " + items.get(i).getCreationDate());
         }
+
+        System.out.println("\nEnter the number of the item if you want to delete it or 0 to go back: ");
+        int choice = scanner.nextInt();
+
+        if (choice > 0 && choice <= items.size()) {
+            // ToDo: Implement deleting logic
+            System.out.println("Item deleted successfully!");
+        }
     }
 
     public void displayAdminMenu() {
@@ -145,24 +156,38 @@ public class ConsoleUI {
     }
 
     public void displayAllMembers() {
-        System.out.println("Displaying all members..."); //ToDo
+        List<Member> members = obj.getAllMembers();
+        System.out.println("\nAll Members: ");
+        for (int i = 0; i < members.size(); i++) {
+            System.out.println((i + 1) + ". " + members.get(i).getMemberId() + " / " + members.get(i).getUsername() 
+                    + "\nName: " + members.get(i).getName() + "\nEmail: " + members.get(i).getEmail() 
+                            + "\nPhone number: " + members.get(i).getMobile() + "\nCredits: " + members.get(i).getCredits()
+                                    + "\nAccount is created: " + members.get(i).getCreationDate());
+        }
+
+        System.out.println("\nEnter the number of the member you want to ban or 0 to go back: ");
+        int choice = scanner.nextInt();
+
+        if (choice > 0 && choice <= members.size()) {
+            // ToDo: Implement ban logic
+            System.out.println("Member banned successfully!");
+        }
     }
 
     public void displayAllItemsAdmin() {
-        ItemController itemController = new ItemController();
-        List<Item> items = itemController.getAllItems();
-
-        System.out.println("\nItems available:");
+        List<Item> items = obj.getAllItems(); 
         for (int i = 0; i < items.size(); i++) {
-            System.out.println((i + 1) + ". " + items.get(i).getName() + " - " + items.get(i).getDescription());
+            System.out.println((i + 1) + ". " + items.get(i).getCategory() + " / " + items.get(i).getName() 
+                    + " / " + items.get(i).getDescription() + "\nOwner: " + items.get(i).getOwner() 
+                            + "\nCost per day: " + items.get(i).getCostPerDay() 
+                                    + "\nCreated: " + items.get(i).getCreationDate());
         }
 
-        System.out.println("\nEnter the number of the item you want to delete or 0 to go back: ");
+        System.out.println("\nEnter the number of the item if you want to delete it or 0 to go back: ");
         int choice = scanner.nextInt();
 
         if (choice > 0 && choice <= items.size()) {
-            String itemName = items.get(choice - 1).getName();
-            itemController.deleteItemByName(itemName);
+            // ToDo: Implement deleting logic
             System.out.println("Item deleted successfully!");
         }
     }

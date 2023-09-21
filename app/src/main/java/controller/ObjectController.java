@@ -5,23 +5,19 @@ import java.util.List;
 
 import model.Member;
 import model.Admin;
+import model.Item;
 
-public class AuthenticationController {
-    private static AuthenticationController instance = null;
+public class ObjectController {
     public List<Member> members;
     public List<Admin> admins;
+    public List<Item> items;
 
-    public AuthenticationController() {
+    public ObjectController() {
         members = new ArrayList<>();
         admins = new ArrayList<>();
+        items = new ArrayList<>();
     }
 
-    public static AuthenticationController getInstance() {
-        if (instance == null) {
-            instance = new AuthenticationController();
-        }
-        return instance;
-    }
 
     public Member getMemberByUsername(String username) {
         for (Member member : members) {
@@ -67,7 +63,7 @@ public class AuthenticationController {
         return members;
     }
 
-    public void initializeUsers() {
+    public void initializeStartObjects() {
         Member member1 = new Member("Etka", "etka@lending.com", 0031, "etka", "etka123");
         members.add(member1);
         Member member2 = new Member("Sanaa", "sanaa@lending.com", 0022, "sanaa", "sanaa123");
@@ -77,5 +73,26 @@ public class AuthenticationController {
 
         Admin admin1 = new Admin("gadmin", "thegadmin03");
         admins.add(admin1);
+
+        Item item1 = new Item("Electronics", "MacBook Pro", "A clean computer for temporary works", 300, member3);
+        items.add(item1);
+        member3.addOwnedItem(item1);
+    }
+
+
+    public void addItem(String category, String name, String description, int costPerDay, Member owner) {
+        Item item = new Item(category, name, description, costPerDay, owner);
+        items.add(item);
+        owner.addOwnedItem(item);
+    }
+
+    // Method to fetch all items
+    public List<Item> getAllItems() {
+        return items;
+    }
+
+    // Method to delete an item by its name
+    public void deleteItemByName(String itemName) {
+        items.removeIf(item -> item.getName().equals(itemName));
     }
 }

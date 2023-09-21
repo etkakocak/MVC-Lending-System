@@ -1,17 +1,17 @@
 package view;
 
 import java.util.Scanner;
-import controller.AuthenticationController;
+import controller.ObjectController;
 import model.Member;
 import model.Admin;
 
 public class Login {
     private Scanner scanner;
-    private AuthenticationController authController;
+    private ObjectController objController;
 
-    public Login(AuthenticationController authController) {
+    public Login(ObjectController objController) {
         scanner = new Scanner(System.in);
-        this.authController = authController;
+        this.objController = objController;
     }
 
     public void displayLoginMenu() {
@@ -46,9 +46,9 @@ public class Login {
             case 1:
                 // Handle admin login
                 String[] adminCredentials = getCredentials();
-                Admin admin = authController.validateAdmin(adminCredentials[0], adminCredentials[1]);
+                Admin admin = objController.validateAdmin(adminCredentials[0], adminCredentials[1]);
                 if (admin != null) {
-                    routeToAdminConsoleUI(admin);
+                    routeToAdminConsoleUI(admin, objController);
                 } else {
                     System.out.println("Invalid member credentials.");
                 }
@@ -56,9 +56,9 @@ public class Login {
             case 2:
                 // Handle member login
                 String[] memberCredentials = getCredentials();
-                Member loggedInMember = authController.validateMember(memberCredentials[0], memberCredentials[1]);
+                Member loggedInMember = objController.validateMember(memberCredentials[0], memberCredentials[1]);
                 if (loggedInMember != null) {
-                    routeToMemberConsoleUI(loggedInMember);
+                    routeToMemberConsoleUI(loggedInMember, objController);
                 } else {
                     System.out.println("Invalid member credentials.");
                 }
@@ -80,24 +80,24 @@ public class Login {
                 System.out.print("Enter your password: ");
                 String password = scanner.nextLine();
 
-                authController.createMemberAccount(name, email, mobile, username, password);
+                objController.createMemberAccount(name, email, mobile, username, password);
                 System.out.println("Member account created successfully.");
 
-                Member newMember = authController.validateMember(username, password);
-                routeToMemberConsoleUI(newMember);
+                Member newMember = objController.validateMember(username, password);
+                routeToMemberConsoleUI(newMember, objController);
                 break;
             default:
                 System.out.println("Invalid choice. Please try again.");
         }
     }
 
-    public void routeToMemberConsoleUI(Member loggedInMember) {
-        ConsoleUI UI = new ConsoleUI(loggedInMember);
+    public void routeToMemberConsoleUI(Member loggedInMember, ObjectController objController) {
+        ConsoleUI UI = new ConsoleUI(loggedInMember, objController);
         UI.displayMainMenu();
     }
 
-    public void routeToAdminConsoleUI(Admin admin) {
-        ConsoleUI UI = new ConsoleUI(admin);
+    public void routeToAdminConsoleUI(Admin admin, ObjectController objController) {
+        ConsoleUI UI = new ConsoleUI(admin, objController);
         UI.displayAdminMenu();
     }
 }

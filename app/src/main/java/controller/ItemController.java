@@ -6,8 +6,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 public class ItemController {
-    private AuthenticationController authController;
-    private List<Item> items;
+    public List<Item> items;
 
     public ItemController() {
         items = new ArrayList<>();
@@ -16,7 +15,7 @@ public class ItemController {
     public void addItem(String category, String name, String description, int costPerDay, Member owner) {
         Item item = new Item(category, name, description, costPerDay, owner);
         items.add(item);
-        owner.addOwnedItem(item); 
+        owner.addOwnedItem(item);
     }
 
     // Method to fetch all items
@@ -30,10 +29,20 @@ public class ItemController {
     }
 
     public void initializeItems() {
-        Member member3 = authController.getMemberByUsername("aiman");
-        if(member3 != null) {
-            Item item1 = new Item("Electronics", "MacBook Pro", "A clean computer for temporary works", 300, member3);
-            member3.addOwnedItem(item1);
+        AuthenticationController authController = AuthenticationController.getInstance();
+        List<Member> allMembers = authController.getAllMembers();
+
+        Member member3 = null;
+        for (Member member : allMembers) {
+            if ("aiman".equals(member.getUsername())) {
+                member3 = member;
+                Item item1 = new Item("Electronics", "MacBook Pro", "A clean computer for temporary works", 300, member3);
+                items.add(item1);
+                member3.addOwnedItem(item1);
+                break;
+            } else {
+                System.out.println("coudnt find the user bree.");
+            }
         }
     }
 }

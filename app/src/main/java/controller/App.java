@@ -13,9 +13,9 @@ public class App {
    */
   public static void main(String[] args) {
     // adapt to start the application in your way
-    AuthenticationController aut = new AuthenticationController();
-    aut.initializeUsers();
-    Login login = new Login(aut);
+    ObjectController obj = new ObjectController();
+    obj.initializeStartObjects();
+    Login login = new Login(obj);
     login.startLoginProcess();
   }
 } 
