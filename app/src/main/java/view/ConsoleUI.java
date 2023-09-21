@@ -2,9 +2,7 @@ package view;
 
 import java.util.List;
 import java.util.Scanner;
-
 import controller.ItemController;
-import model.Description;
 import model.Member;
 import model.Item;
 import model.Admin;
@@ -61,20 +59,20 @@ public class ConsoleUI {
 
     public void postAnItem() {
         ItemController itemController = new ItemController();
-        System.out.println("Enter item category (Tool, Vehicle, Game, Toy, Sport, Other): ");
+        System.out.println("\nEnter item category (Tool, Vehicle, Game, Toy, Sport, Other): ");
         String category = scanner.nextLine();
-        
+        category = scanner.nextLine(); 
+
         System.out.println("Enter item name: ");
         String name = scanner.nextLine();
-        
+
         System.out.println("Enter item description: ");
         String descContent = scanner.nextLine();
-        Description description = new Description(descContent);
-        
+
         System.out.println("Enter cost per day to lend the item: ");
         int costPerDay = scanner.nextInt();
-        
-        itemController.addItem(category, name, description, costPerDay, loggedInMember);
+
+        itemController.addItem(category, name, descContent, costPerDay, loggedInMember);
         System.out.println("Item posted successfully!");
     }
 
@@ -101,7 +99,22 @@ public class ConsoleUI {
     }
 
     public void viewMemberDetails() {
-        System.out.println("Member Details...");
+        System.out.println("\nYour account details: ");
+        System.out.println("Name: " + loggedInMember.getName());
+        System.out.println("Username: " + loggedInMember.getUsername());
+        System.out.println("Member ID: " + loggedInMember.getMemberId());
+        System.out.println("Email: " + loggedInMember.getEmail());
+        System.out.println("Phone number: " + loggedInMember.getMobile());
+        System.out.println("Account is created: " + loggedInMember.getCreationDate());
+        System.out.println("Your credit: " + loggedInMember.getCredits());
+
+        System.out.println("\nPosted Items:");
+        List<Item> items = loggedInMember.getOwnedItems(); 
+        for (int i = 0; i < items.size(); i++) {
+            System.out.println((i + 1) + ". " + items.get(i).getCategory() + " / " + items.get(i).getName() 
+                    + " / " + items.get(i).getDescription() + "\nCost per day: " + items.get(i).getCostPerDay() 
+                            + "\nCreated: " + items.get(i).getCreationDate());
+        }
     }
 
     public void displayAdminMenu() {
@@ -132,21 +145,21 @@ public class ConsoleUI {
     }
 
     public void displayAllMembers() {
-        System.out.println("Displaying all members...");
+        System.out.println("Displaying all members..."); //ToDo
     }
 
     public void displayAllItemsAdmin() {
         ItemController itemController = new ItemController();
         List<Item> items = itemController.getAllItems();
-        
+
         System.out.println("\nItems available:");
         for (int i = 0; i < items.size(); i++) {
             System.out.println((i + 1) + ". " + items.get(i).getName() + " - " + items.get(i).getDescription());
         }
-        
+
         System.out.println("\nEnter the number of the item you want to delete or 0 to go back: ");
         int choice = scanner.nextInt();
-        
+
         if (choice > 0 && choice <= items.size()) {
             String itemName = items.get(choice - 1).getName();
             itemController.deleteItemByName(itemName);

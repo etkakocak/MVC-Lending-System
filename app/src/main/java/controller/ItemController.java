@@ -2,7 +2,6 @@ package controller;
 
 import model.Item;
 import model.Member;
-import model.Description;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -10,10 +9,10 @@ public class ItemController {
     private List<Item> items;
 
     public ItemController() {
-        this.items = new ArrayList<>();
+        items = new ArrayList<>();
     }
 
-    public void addItem(String category, String name, Description description, int costPerDay, Member owner) {
+    public void addItem(String category, String name, String description, int costPerDay, Member owner) {
         Item item = new Item(category, name, description, costPerDay, owner);
         items.add(item);
         owner.addOwnedItem(item); 

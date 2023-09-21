@@ -6,12 +6,12 @@ public class Item {
     private String itemId;
     private String category;
     private String name;
-    private Description description;  
+    private String description;  
     private Date creationDate;
     private int costPerDay;
     private Member owner;
 
-    public Item(String category, String name, Description description, int costPerDay, Member owner) {
+    public Item(String category, String name, String description, int costPerDay, Member owner) {
         this.category = category;
         this.name = name;
         this.description = description; 
@@ -23,11 +23,11 @@ public class Item {
 
     // This is draft, should be implemented
 
-    public Description getDescription() {  
+    public String getDescription() {  
         return description;
     }
 
-    public void setDescription(Description description) {  
+    public void setDescription(String description) {  
         this.description = description;
     }
 
@@ -73,13 +73,5 @@ public class Item {
 
     public void setOwner(Member owner) {
         this.owner = owner;
-    }
-
-    public Description getContent() {
-        return description;
-    }
-
-    public void setContent(Description description) {
-        this.description = description;
     }
 }
