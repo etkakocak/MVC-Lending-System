@@ -123,7 +123,8 @@ public class ConsoleUI {
         int choice = scanner.nextInt();
 
         if (choice > 0 && choice <= items.size()) {
-            // ToDo: Implement deleting logic
+            Item itemToDelete = items.get(choice - 1);
+            items.remove(itemToDelete);
             System.out.println("Item deleted successfully!");
         }
     }
@@ -169,7 +170,8 @@ public class ConsoleUI {
         int choice = scanner.nextInt();
 
         if (choice > 0 && choice <= members.size()) {
-            // ToDo: Implement ban logic
+            Member memberToBan = members.get(choice - 1);
+            members.remove(memberToBan);
             System.out.println("Member banned successfully!");
         }
     }
@@ -187,7 +189,8 @@ public class ConsoleUI {
         int choice = scanner.nextInt();
 
         if (choice > 0 && choice <= items.size()) {
-            // ToDo: Implement deleting logic
+            Item itemToDelete = items.get(choice - 1);
+            items.remove(itemToDelete);
             System.out.println("Item deleted successfully!");
         }
     }
