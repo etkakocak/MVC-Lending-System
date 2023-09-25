@@ -50,10 +50,4 @@ public class Contract {
     public Member getOwner() {
         return owner;
     }
-
-    public int calculateTotalCost() {
-        long difference = endDate.getDay() - startDate.getTime();
-        int days = (int) (difference / (1000*60*60*24));
-        return days * item.getCostPerDay();
-    }
 }

@@ -6,6 +6,8 @@ import controller.ObjectController;
 import model.Member;
 import model.Item;
 import model.Admin;
+import model.Contract;
+import model.Time;
 
 public class ConsoleUI {
     private Scanner scanner;
@@ -63,7 +65,7 @@ public class ConsoleUI {
     public void postAnItem() {
         System.out.println("\nEnter item category (Tool, Vehicle, Game, Toy, Sport, Other): ");
         String category = scanner.nextLine();
-        category = scanner.nextLine(); 
+        category = scanner.nextLine();
 
         System.out.println("Enter item name: ");
         String name = scanner.nextLine();
@@ -83,18 +85,34 @@ public class ConsoleUI {
 
         System.out.println("\nItems available for lending:");
         for (int i = 0; i < items.size(); i++) {
-            System.out.println((i + 1) + ". " + items.get(i).getCategory() + " / " + items.get(i).getName() 
-                    + " / " + items.get(i).getDescription() + "\nCost per day: " + items.get(i).getCostPerDay() 
-                            + "\nCreated: " + items.get(i).getCreationDate());
+            System.out.println((i + 1) + ". " + items.get(i).getCategory() + " / " + items.get(i).getName()
+                    + " / " + items.get(i).getDescription() + "\nCost per day: " + items.get(i).getCostPerDay()
+                    + "\nCreated: " + items.get(i).getCreationDate());
         }
 
         System.out.println("\nEnter the number of the item you want to loan or 0 to go back: ");
         int choice = scanner.nextInt();
 
         if (choice > 0 && choice <= items.size()) {
-            // ToDo: Implement loaning logic using ItemController
-            System.out.println("Item loaned successfully!");
+            Item selectedItem = items.get(choice - 1);
+            System.out.println("How many days do you want to loan the item?");
+            int loanDays = scanner.nextInt();
+
+            int totalCost = loanDays * selectedItem.getCostPerDay();
+
+            if (loggedInMember.getCredits() >= totalCost) {
+                Time startDate = obj.getCurrentDay(); 
+                //Time endDate = new Time(startDate.getDay()); 
+
+                //obj.addContract(startDate, endDate, selectedItem, loggedInMember);
+                loggedInMember.addCredits(-totalCost);
+
+                System.out.println("Item loaned successfully!");
+            } else {
+                System.out.println("You don't have enough credits to loan this item.");
+            }
         }
+
     }
 
     public void advanceDayCounter() {
@@ -112,11 +130,11 @@ public class ConsoleUI {
         System.out.println("Your credit: " + loggedInMember.getCredits());
 
         System.out.println("\nPosted Items:");
-        List<Item> items = loggedInMember.getOwnedItems(); 
+        List<Item> items = loggedInMember.getOwnedItems();
         for (int i = 0; i < items.size(); i++) {
-            System.out.println((i + 1) + ". " + items.get(i).getCategory() + " / " + items.get(i).getName() 
-                    + " / " + items.get(i).getDescription() + "\nCost per day: " + items.get(i).getCostPerDay() 
-                            + "\nCreated: " + items.get(i).getCreationDate());
+            System.out.println((i + 1) + ". " + items.get(i).getCategory() + " / " + items.get(i).getName()
+                    + " / " + items.get(i).getDescription() + "\nCost per day: " + items.get(i).getCostPerDay()
+                    + "\nCreated: " + items.get(i).getCreationDate());
         }
 
         System.out.println("\nEnter the number of the item if you want to delete it or 0 to go back: ");
@@ -160,10 +178,10 @@ public class ConsoleUI {
         List<Member> members = obj.getAllMembers();
         System.out.println("\nAll Members: ");
         for (int i = 0; i < members.size(); i++) {
-            System.out.println((i + 1) + ". " + members.get(i).getMemberId() + " / " + members.get(i).getUsername() 
-                    + "\nName: " + members.get(i).getName() + "\nEmail: " + members.get(i).getEmail() 
-                            + "\nPhone number: " + members.get(i).getMobile() + "\nCredits: " + members.get(i).getCredits()
-                                    + "\nAccount is created: " + members.get(i).getCreationDate());
+            System.out.println((i + 1) + ". " + members.get(i).getMemberId() + " / " + members.get(i).getUsername()
+                    + "\nName: " + members.get(i).getName() + "\nEmail: " + members.get(i).getEmail()
+                    + "\nPhone number: " + members.get(i).getMobile() + "\nCredits: " + members.get(i).getCredits()
+                    + "\nAccount is created: " + members.get(i).getCreationDate());
         }
 
         System.out.println("\nEnter the number of the member you want to ban or 0 to go back: ");
@@ -177,12 +195,12 @@ public class ConsoleUI {
     }
 
     public void displayAllItemsAdmin() {
-        List<Item> items = obj.getAllItems(); 
+        List<Item> items = obj.getAllItems();
         for (int i = 0; i < items.size(); i++) {
-            System.out.println((i + 1) + ". " + items.get(i).getCategory() + " / " + items.get(i).getName() 
-                    + " / " + items.get(i).getDescription() + "\nOwner: " + items.get(i).getOwner() 
-                            + "\nCost per day: " + items.get(i).getCostPerDay() 
-                                    + "\nCreated: " + items.get(i).getCreationDate());
+            System.out.println((i + 1) + ". " + items.get(i).getCategory() + " / " + items.get(i).getName()
+                    + " / " + items.get(i).getDescription() + "\nOwner: " + items.get(i).getOwner()
+                    + "\nCost per day: " + items.get(i).getCostPerDay()
+                    + "\nCreated: " + items.get(i).getCreationDate());
         }
 
         System.out.println("\nEnter the number of the item if you want to delete it or 0 to go back: ");
