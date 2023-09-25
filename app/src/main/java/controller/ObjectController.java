@@ -14,7 +14,6 @@ public class ObjectController {
     public List<Admin> admins;
     public List<Item> items;
     public List<Contract> contracts;
-    public Time currentDay;
 
     public ObjectController() {
         members = new ArrayList<>();
@@ -79,11 +78,13 @@ public class ObjectController {
         Admin admin1 = new Admin("gadmin", "thegadmin03");
         admins.add(admin1);
 
-        Item item1 = new Item("Electronics", "MacBook Pro", "A clean computer for temporary works", 300, member3);
+        Item item1 = new Item("Electronics", "MacBook Pro", "A clean computer for temporary works", 30, member3);
         items.add(item1);
         member3.addOwnedItem(item1);
 
-        currentDay = new Time();
+        Item item2 = new Item("Veichle", "BMW M5 2021", "Max 100 miles per loan period.", 300, member1);
+        items.add(item2);
+        member1.addOwnedItem(item2);
     }
 
 
@@ -107,9 +108,5 @@ public class ObjectController {
     public void addContract(Time stDate, Time enDate, Item theItem, Member theLender) {
         Contract newContract = new Contract(stDate, enDate, theItem, theLender);
         contracts.add(newContract);
-    }
-
-    public Time getCurrentDay() {
-        return currentDay;
     }
 }

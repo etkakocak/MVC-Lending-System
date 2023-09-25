@@ -14,11 +14,14 @@ public class ConsoleUI {
     private Member loggedInMember;
     private Admin admin;
     private ObjectController obj;
+    public Time currentDay;
+
 
     public ConsoleUI(Member loggedInMember, ObjectController obj) {
         this.scanner = new Scanner(System.in, "UTF-8");
         this.loggedInMember = loggedInMember;
         this.obj = obj;
+        currentDay = new Time();
     }
 
     public ConsoleUI(Admin admin, ObjectController obj) {
@@ -101,12 +104,11 @@ public class ConsoleUI {
             int totalCost = loanDays * selectedItem.getCostPerDay();
 
             if (loggedInMember.getCredits() >= totalCost) {
-                Time startDate = obj.getCurrentDay(); 
-                //Time endDate = new Time(startDate.getDay()); 
-
-                //obj.addContract(startDate, endDate, selectedItem, loggedInMember);
+                Time startDate = currentDay; 
+                Time endDate = currentDay; 
+                endDate.Day = currentDay.getDate() + loanDays; 
+                obj.addContract(startDate, endDate, selectedItem, loggedInMember);
                 loggedInMember.addCredits(-totalCost);
-
                 System.out.println("Item loaned successfully!");
             } else {
                 System.out.println("You don't have enough credits to loan this item.");
