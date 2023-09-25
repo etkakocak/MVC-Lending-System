@@ -1,16 +1,13 @@
 package model;
 
-import java.util.Date;
-
 public class Contract {
-    private String contractId;
-    private Date startDate;
-    private Date endDate;
+    private Time startDate;
+    private Time endDate;
     private Item item;
     private Member lender;
     private Member owner;
 
-    public Contract(Date startDate, Date endDate, Item item, Member lender) {
+    public Contract(Time startDate, Time endDate, Item item, Member lender) {
         this.startDate = startDate;
         this.endDate = endDate;
         this.item = item;
@@ -18,23 +15,19 @@ public class Contract {
         this.owner = item.getOwner();
     }
 
-    public String getContractId() {
-        return contractId;
-    }
-
-    public Date getStartDate() {
+    public Time getStartDate() {
         return startDate;
     }
 
-    public void setStartDate(Date startDate) {
+    public void setStartDate(Time startDate) {
         this.startDate = startDate;
     }
 
-    public Date getEndDate() {
+    public Time getEndDate() {
         return endDate;
     }
 
-    public void setEndDate(Date endDate) {
+    public void setEndDate(Time endDate) {
         this.endDate = endDate;
     }
 
@@ -59,7 +52,7 @@ public class Contract {
     }
 
     public int calculateTotalCost() {
-        long difference = endDate.getTime() - startDate.getTime();
+        long difference = endDate.getDay() - startDate.getTime();
         int days = (int) (difference / (1000*60*60*24));
         return days * item.getCostPerDay();
     }

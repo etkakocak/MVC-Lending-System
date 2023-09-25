@@ -1,8 +1,11 @@
 package model;
 
+import java.util.Date;
+
 public class Time {
     private int day;
     private int currentDay = 0;
+    private int time;
     
 
     public Time() {
@@ -11,6 +14,10 @@ public class Time {
 
     public int getDay() {
         return day;
+    }
+
+    public int getTime() {
+        return time;
     }
 
     public void setDay(int day) {

@@ -6,16 +6,20 @@ import java.util.List;
 import model.Member;
 import model.Admin;
 import model.Item;
+import model.Contract;
+import model.Time;
 
 public class ObjectController {
     public List<Member> members;
     public List<Admin> admins;
     public List<Item> items;
+    public List<Contract> contracts;
 
     public ObjectController() {
         members = new ArrayList<>();
         admins = new ArrayList<>();
         items = new ArrayList<>();
+        contracts = new ArrayList<>();
     }
 
 
@@ -94,5 +98,11 @@ public class ObjectController {
     // Method to delete an item by its name
     public void deleteItemByName(String itemName) {
         items.removeIf(item -> item.getName().equals(itemName));
+    }
+
+
+    public void addContract(Time stDate, Time enDate, Item theItem, Member theLender) {
+        Contract newContract = new Contract(stDate, enDate, theItem, theLender);
+        contracts.add(newContract);
     }
 }
