@@ -6,7 +6,6 @@ import controller.ObjectController;
 import model.Member;
 import model.Item;
 import model.Admin;
-import model.Contract;
 import model.Time;
 
 public class ConsoleUI {
@@ -15,7 +14,6 @@ public class ConsoleUI {
     private Admin admin;
     private ObjectController obj;
     public Time currentDay;
-
 
     public ConsoleUI(Member loggedInMember, ObjectController obj) {
         this.scanner = new Scanner(System.in, "UTF-8");
@@ -104,21 +102,34 @@ public class ConsoleUI {
             int totalCost = loanDays * selectedItem.getCostPerDay();
 
             if (loggedInMember.getCredits() >= totalCost) {
-                Time startDate = currentDay; 
-                Time endDate = currentDay; 
+                Time startDate = new Time();
+                startDate.Day = currentDay.getDate(); 
+
+                Time endDate = new Time();
                 endDate.Day = currentDay.getDate() + loanDays; 
+
+                currentDay.setDate(endDate.Day);
+
                 obj.addContract(startDate, endDate, selectedItem, loggedInMember);
                 loggedInMember.addCredits(-totalCost);
+
                 System.out.println("Item loaned successfully!");
+                System.out.println("\n--------- Loan Receipt ---------");
+                System.out.println("Borrower: " + loggedInMember.getName());
+                System.out.println("Item Loaned: " + selectedItem.getName());
+                System.out.println("Start Date: Day " + startDate.getDate());
+                System.out.println("End Date: Day " + endDate.getDate());
+                System.out.println("Total Cost: " + totalCost + " credits");
+                System.out.println("Owner of the Item: " + selectedItem.getOwner().getName());
+                System.out.println("--------------------------------");
             } else {
                 System.out.println("You don't have enough credits to loan this item.");
             }
         }
-
     }
 
     public void advanceDayCounter() {
-        System.out.println("Advancing the day counter...");
+        System.out.println("\nYou are now on day " + currentDay.getDate());
     }
 
     public void viewMemberDetails() {

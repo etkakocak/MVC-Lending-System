@@ -10,4 +10,8 @@ public class Time {
     public int getDate() {
         return Day;
     }
+
+    public void setDate(int Day) {
+        this.Day = Day;
+    }
 }
