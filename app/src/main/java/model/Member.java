@@ -1,7 +1,6 @@
 package model;
 
 import java.util.ArrayList;
-import java.util.Date;
 import java.util.List;
 
 public class Member {
@@ -9,7 +8,7 @@ public class Member {
     private String name;
     private String email;
     private int mobile;
-    private Date creationDate;
+    private Time creationDate;
     private int credits;
     private List<Item> ownedItems;
     private String username;
@@ -21,7 +20,7 @@ public class Member {
         this.mobile = mobile;
         this.username = username;
         this.password = password;
-        this.creationDate = new Date();
+        this.creationDate = new Time();
         this.credits = 0;
         ownedItems = new ArrayList<>();
         generateMemberId(memberId);
@@ -82,7 +81,7 @@ public class Member {
         this.mobile = mobile;
     }
 
-    public Date getCreationDate() {
+    public Time getCreationDate() {
         return creationDate;
     }
 

@@ -129,7 +129,10 @@ public class ConsoleUI {
     }
 
     public void advanceDayCounter() {
-        System.out.println("\nYou are now on day " + currentDay.getDate());
+        System.out.println("\nAdvancing the day...");
+        int nextDay = currentDay.getDate() + 1;
+        currentDay.setDate(nextDay);
+        System.out.println("You are now on day " + currentDay.getDate());
     }
 
     public void viewMemberDetails() {

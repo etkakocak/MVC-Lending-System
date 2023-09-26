@@ -1,12 +1,10 @@
 package model;
 
-import java.util.Date;
-
 public class Item {
     private String category;
     private String name;
     private String description;  
-    private Date creationDate;
+    private Time creationDate;
     private int costPerDay;
     private Member owner;
 
@@ -16,10 +14,8 @@ public class Item {
         this.description = description; 
         this.costPerDay = costPerDay;
         this.owner = owner;
-        this.creationDate = new Date();
+        this.creationDate = new Time();
     }
-
-    // This is draft, should be implemented
 
     public String getDescription() {  
         return description;
@@ -45,7 +41,7 @@ public class Item {
         this.name = name;
     }
 
-    public Date getCreationDate() {
+    public Time getCreationDate() {
         return creationDate;
     }
 
