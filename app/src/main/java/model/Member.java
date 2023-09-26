@@ -8,7 +8,7 @@ public class Member {
     private String name;
     private String email;
     private int mobile;
-    private Time creationDate;
+    public Time creationDate;
     private int credits;
     private List<Item> ownedItems;
     private String username;

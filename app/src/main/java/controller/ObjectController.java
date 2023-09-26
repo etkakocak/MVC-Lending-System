@@ -14,12 +14,14 @@ public class ObjectController {
     public List<Admin> admins;
     public List<Item> items;
     public List<Contract> contracts;
+    public Time currentDay;
 
     public ObjectController() {
         members = new ArrayList<>();
         admins = new ArrayList<>();
         items = new ArrayList<>();
         contracts = new ArrayList<>();
+        currentDay = new Time();
     }
 
 
@@ -108,5 +110,10 @@ public class ObjectController {
     public void addContract(Time stDate, Time enDate, Item theItem, Member theLender) {
         Contract newContract = new Contract(stDate, enDate, theItem, theLender);
         contracts.add(newContract);
+    }
+
+    public void dayCounter() {
+        int nextDay = currentDay.getDate() + 1;
+        currentDay.setDate(nextDay);   
     }
 }
