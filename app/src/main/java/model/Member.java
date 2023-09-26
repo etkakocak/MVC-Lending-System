@@ -105,4 +105,9 @@ public class Member {
     public void removeOwnedItem(Item item) {
         this.ownedItems.remove(item);
     }
+
+    @Override
+    public String toString() {
+        return "" + name;
+    }
 }

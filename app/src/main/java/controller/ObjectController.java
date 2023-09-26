@@ -78,6 +78,13 @@ public class ObjectController {
         return members;
     }
 
+    public void deleteMember(int choice) {
+        Member memberToBan = members.get(choice - 1);
+        List<Item> itemsToDelete = memberToBan.getOwnedItems();
+        items.removeAll(itemsToDelete);
+        members.remove(memberToBan);
+    }
+
     public void initializeStartObjects() {
         Member member1 = new Member("Etka", "etka@lending.com", 0031, "etka", "etka123");
         members.add(member1);
@@ -89,18 +96,18 @@ public class ObjectController {
         Admin admin1 = new Admin("gadmin", "thegadmin03");
         admins.add(admin1);
 
-        Item item1 = new Item("Electronics", "MacBook Pro", "A clean computer for temporary works", 30, member3);
+        Item item1 = new Item("Electronics", "MacBook Pro", "A clean computer for temporary works", 30, member3, currentDay);
         items.add(item1);
         member3.addOwnedItem(item1);
 
-        Item item2 = new Item("Veichle", "BMW M5 2021", "Max 100 miles per loan period.", 300, member1);
+        Item item2 = new Item("Veichle", "BMW M5 2021", "Max 100 miles per loan period.", 300, member1, currentDay);
         items.add(item2);
         member1.addOwnedItem(item2);
     }
 
 
-    public void addItem(String category, String name, String description, int costPerDay, Member owner) {
-        Item item = new Item(category, name, description, costPerDay, owner);
+    public void addItem(String category, String name, String description, int costPerDay, Member owner, Time creationDate) {
+        Item item = new Item(category, name, description, costPerDay, owner, creationDate);
         items.add(item);
         owner.addOwnedItem(item);
     }
@@ -111,8 +118,10 @@ public class ObjectController {
     }
 
     // Method to delete an item by its name
-    public void deleteItemByName(String itemName) {
-        items.removeIf(item -> item.getName().equals(itemName));
+    public void deleteItem(int choice) {
+        Item itemToDelete = items.get(choice - 1);
+        itemToDelete.getOwner().addCredits(-100);
+        items.remove(itemToDelete);
     }
 
 

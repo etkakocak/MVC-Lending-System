@@ -14,4 +14,9 @@ public class Time {
     public void setDate(int Day) {
         this.Day = Day;
     }
+
+    @Override
+    public String toString() {
+        return "Day: " + Day;
+    }
 }

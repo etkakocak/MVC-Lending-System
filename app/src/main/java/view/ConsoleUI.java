@@ -75,7 +75,8 @@ public class ConsoleUI {
         System.out.println("Enter cost per day to lend the item: ");
         int costPerDay = scanner.nextInt();
 
-        obj.addItem(category, name, descContent, costPerDay, loggedInMember);
+        Time itemTime = obj.currentDay; 
+        obj.addItem(category, name, descContent, costPerDay, loggedInMember, itemTime);
         System.out.println("Item posted successfully!");
     }
 
@@ -86,7 +87,7 @@ public class ConsoleUI {
         for (int i = 0; i < items.size(); i++) {
             System.out.println((i + 1) + ". " + items.get(i).getCategory() + " / " + items.get(i).getName()
                     + " / " + items.get(i).getDescription() + "\nCost per day: " + items.get(i).getCostPerDay()
-                    + "\nCreated: " + items.get(i).getCreationDate()); // Bug to fix
+                    + "\nCreated: " + items.get(i).getCreationDate()); 
         }
 
         System.out.println("\nEnter the number of the item you want to loan or 0 to go back: ");
@@ -118,7 +119,7 @@ public class ConsoleUI {
                 System.out.println("Start Date: Day " + startDate.getDate());
                 System.out.println("End Date: Day " + endDate.getDate());
                 System.out.println("Total Cost: " + totalCost + " credits");
-                System.out.println("Owner of the Item: " + selectedItem.getOwner().getName()); // Bug to fix
+                System.out.println("Owner of the Item: " + selectedItem.getOwner().getName()); 
                 System.out.println("--------------------------------");
             } else {
                 System.out.println("You don't have enough credits to loan this item.");
@@ -139,7 +140,7 @@ public class ConsoleUI {
         System.out.println("Member ID: " + loggedInMember.getMemberId());
         System.out.println("Email: " + loggedInMember.getEmail());
         System.out.println("Phone number: " + loggedInMember.getMobile());
-        System.out.println("Account is created: " + loggedInMember.getCreationDate()); // Bug to fix
+        System.out.println("Account is created: " + loggedInMember.getCreationDate()); 
         System.out.println("Your credit: " + loggedInMember.getCredits());
 
         System.out.println("\nPosted Items:");
@@ -196,16 +197,15 @@ public class ConsoleUI {
             System.out.println((i + 1) + ". " + members.get(i).getMemberId() + " / " + members.get(i).getUsername()
                     + "\nName: " + members.get(i).getName() + "\nEmail: " + members.get(i).getEmail()
                     + "\nPhone number: " + members.get(i).getMobile() + "\nCredits: " + members.get(i).getCredits()
-                    + "\nAccount is created: " + members.get(i).getCreationDate()); // Bug to fix
+                    + "\nAccount is created: " + members.get(i).getCreationDate()); 
         }
 
         System.out.println("\nEnter the number of the member you want to ban or 0 to go back: ");
         int choice = scanner.nextInt();
 
         if (choice > 0 && choice <= members.size()) {
-            Member memberToBan = members.get(choice - 1);
-            members.remove(memberToBan);
-            System.out.println("Member banned successfully!");
+            obj.deleteMember(choice);
+            System.out.println("Member is banned and all owned items is deleted!");
         }
     }
 
@@ -215,15 +215,14 @@ public class ConsoleUI {
             System.out.println((i + 1) + ". " + items.get(i).getCategory() + " / " + items.get(i).getName()
                     + " / " + items.get(i).getDescription() + "\nOwner: " + items.get(i).getOwner()
                     + "\nCost per day: " + items.get(i).getCostPerDay()
-                    + "\nCreated: " + items.get(i).getCreationDate()); // Bug to fix
+                    + "\nCreated: " + items.get(i).getCreationDate()); 
         }
 
         System.out.println("\nEnter the number of the item if you want to delete it or 0 to go back: ");
         int choice = scanner.nextInt();
-
+        
         if (choice > 0 && choice <= items.size()) {
-            Item itemToDelete = items.get(choice - 1);
-            items.remove(itemToDelete);
+            obj.deleteItem(choice);
             System.out.println("Item deleted successfully!");
         }
     }
