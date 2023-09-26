@@ -65,6 +65,15 @@ public class ObjectController {
         members.add(newMember);
     }
 
+    public boolean canAddMember(String email, int mobile) {
+        for (Member member : members) {
+            if (member.getEmail().equals(email) || member.getMobile() == mobile) {
+                return false;
+            }
+        }
+        return true;
+    }
+
     public List<Member> getAllMembers() {
         return members;
     }

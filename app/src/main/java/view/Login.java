@@ -80,11 +80,15 @@ public class Login {
                 System.out.print("Enter your password: ");
                 String password = scanner.nextLine();
 
-                objController.createMemberAccount(name, email, mobile, username, password);
-                System.out.println("Member account created successfully.");
+                if (objController.canAddMember(email, mobile)) {
+                    objController.createMemberAccount(name, email, mobile, username, password);
+                    System.out.println("Member account created successfully.");
 
-                Member newMember = objController.validateMember(username, password);
-                routeToMemberConsoleUI(newMember, objController);
+                    Member newMember = objController.validateMember(username, password);
+                    routeToMemberConsoleUI(newMember, objController);
+                } else {
+                    System.out.println("E-post eller mobilnummer används redan!");
+                }
                 break;
             default:
                 System.out.println("Invalid choice. Please try again.");
