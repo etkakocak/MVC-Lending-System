@@ -94,6 +94,13 @@ public class ConsoleUI {
 
         if (choice > 0 && choice <= items.size()) {
             Item selectedItem = items.get(choice - 1);
+
+            // Check if the member is trying to borrow their own item
+            if (loggedInMember.equals(selectedItem.getOwner())) {
+                System.out.println("You cannot borrow your own item.");
+                return;
+            }
+            
             System.out.println("How many days do you want to loan the item?");
             int loanDays = scanner.nextInt();
 
