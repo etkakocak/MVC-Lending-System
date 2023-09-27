@@ -20,6 +20,9 @@ public class Login {
         System.out.println("2. Login as Member");
         System.out.println("3. Create Member Account");
         System.out.print("Enter your choice: ");
+        int choice = scanner.nextInt();
+        scanner.nextLine();
+        startLoginProcess(choice);
     }
 
     public int getLoginType() {
@@ -38,10 +41,7 @@ public class Login {
         return new String[] { username, password };
     }
 
-    public void startLoginProcess() {
-        displayLoginMenu();
-        int choice = getLoginType();
-
+    public void startLoginProcess(int choice) {
         switch (choice) {
             case 1:
                 // Handle admin login
@@ -89,6 +89,7 @@ public class Login {
 
                 System.out.print("Enter your phone number: ");
                 int mobile = scanner.nextInt();
+                scanner.nextLine();
 
                 System.out.print("Enter your username: ");
                 String username = scanner.nextLine();
@@ -103,11 +104,24 @@ public class Login {
                     Member newMember = objController.validateMember(username, password);
                     routeToMemberConsoleUI(newMember, objController);
                 } else {
-                    System.out.println("E-post eller mobilnummer används redan!");
+                    System.out.println(
+                            "E-post eller mobilnummer används redan! Please try again or type 'exit' to quit..");
+                    String exitChoice = scanner.nextLine();
+                    if ("exit".equalsIgnoreCase(exitChoice)) {
+                        break;
+                    } else {
+                        displayLoginMenu();
+                    }
                 }
                 break;
             default:
-                System.out.println("Invalid choice. Please try again.");
+                System.out.println("Invalid choice. Please try again or type 'exit' to quit..");
+                String exitChoice = scanner.nextLine();
+                if ("exit".equalsIgnoreCase(exitChoice)) {
+                    break;
+                } else {
+                    displayLoginMenu();
+                }
         }
     }
 

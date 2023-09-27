@@ -115,17 +115,24 @@ public class ObjectController {
         return items;
     }
 
-    // Method to delete an item by its name
     public void deleteItem(int choice) {
         Item itemToDelete = items.get(choice - 1);
+        itemToDelete.getOwner().getOwnedItems().remove(itemToDelete);
         itemToDelete.getOwner().addCredits(-100);
         items.remove(itemToDelete);
+    }
+
+    public void deleteMemberItem(Item item) {
+        item.getOwner().getOwnedItems().remove(item);
+        item.getOwner().addCredits(-100);
+        items.remove(item);
     }
 
 
     public void addContract(int stDate, int enDate, Item theItem, Member theLender) {
         Contract newContract = new Contract(stDate, enDate, theItem, theLender);
         contracts.add(newContract);
+        theLender.addOwnedContract(newContract);
     }
 
     public void dayCounter() {

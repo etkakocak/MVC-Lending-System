@@ -16,6 +16,6 @@ public class App {
     ObjectController obj = new ObjectController();
     obj.initializeStartObjects();
     Login login = new Login(obj);
-    login.startLoginProcess();
+    login.displayLoginMenu();
   }
 } 

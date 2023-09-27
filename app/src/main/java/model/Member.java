@@ -11,6 +11,7 @@ public class Member {
     public int creationDate;
     private int credits;
     private List<Item> ownedItems;
+    private List<Contract> ownedContracts;
     private String username;
     private String password;
 
@@ -23,6 +24,7 @@ public class Member {
         this.creationDate = Time.getDate();
         this.credits = 0;
         ownedItems = new ArrayList<>();
+        ownedContracts = new ArrayList<>();
         generateMemberId(memberId);
     }
 
@@ -83,6 +85,14 @@ public class Member {
 
     public int getCreationDate() {
         return creationDate;
+    }
+
+    public List<Contract> getContracts() {
+        return ownedContracts;
+    }
+
+    public void addOwnedContract(Contract contract) {
+        this.ownedContracts.add(contract);
     }
 
     public int getCredits() {
