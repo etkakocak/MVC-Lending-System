@@ -45,29 +45,45 @@ public class Login {
         switch (choice) {
             case 1:
                 // Handle admin login
-                String[] adminCredentials = getCredentials();
-                Admin admin = objController.validateAdmin(adminCredentials[0], adminCredentials[1]);
-                if (admin != null) {
-                    routeToAdminConsoleUI(admin, objController);
-                } else {
-                    System.out.println("Invalid member credentials.");
+                boolean adminValidated = false;
+                while (!adminValidated) {
+                    String[] adminCredentials = getCredentials();
+                    Admin admin = objController.validateAdmin(adminCredentials[0], adminCredentials[1]);
+                    if (admin != null) {
+                        routeToAdminConsoleUI(admin, objController);
+                        adminValidated = true;
+                    } else {
+                        System.out.println("Invalid admin credentials. Try again or type 'exit' to quit.");
+                        String exitChoice = scanner.nextLine();
+                        if ("exit".equalsIgnoreCase(exitChoice)) {
+                            break;
+                        }
+                    }
                 }
                 break;
             case 2:
                 // Handle member login
-                String[] memberCredentials = getCredentials();
-                Member loggedInMember = objController.validateMember(memberCredentials[0], memberCredentials[1]);
-                if (loggedInMember != null) {
-                    routeToMemberConsoleUI(loggedInMember, objController);
-                } else {
-                    System.out.println("Invalid member credentials.");
+                boolean memberValidated = false;
+                while (!memberValidated) {
+                    String[] memberCredentials = getCredentials();
+                    Member loggedInMember = objController.validateMember(memberCredentials[0], memberCredentials[1]);
+                    if (loggedInMember != null) {
+                        routeToMemberConsoleUI(loggedInMember, objController);
+                        memberValidated = true;
+                    } else {
+                        System.out.println("Invalid member credentials. Try again or type 'exit' to quit.");
+                        String exitChoice = scanner.nextLine();
+                        if ("exit".equalsIgnoreCase(exitChoice)) {
+                            break;
+                        }
+                    }
                 }
                 break;
             case 3:
                 // Handle member account creation
                 System.out.print("Enter your name: ");
                 String name = scanner.nextLine();
-                
+
                 System.out.print("Enter your email: ");
                 String email = scanner.nextLine();
 
