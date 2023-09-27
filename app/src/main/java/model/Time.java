@@ -1,22 +1,17 @@
 package model;
 
 public class Time {
-    public int Day;
+    private static int Day;
 
     public Time() {
-        this.Day = 0;
+        Day = 0;
     }
 
-    public int getDate() {
+    public static int getDate() {
         return Day;
     }
 
-    public void setDate(int Day) {
-        this.Day = Day;
-    }
-
-    @Override
-    public String toString() {
-        return "Day: " + Day;
+    public static void setDate(int newDay) {
+        Day = newDay;
     }
 }

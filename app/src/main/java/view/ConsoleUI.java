@@ -74,9 +74,8 @@ public class ConsoleUI {
 
         System.out.println("Enter cost per day to lend the item: ");
         int costPerDay = scanner.nextInt();
-
-        Time itemTime = obj.currentDay; 
-        obj.addItem(category, name, descContent, costPerDay, loggedInMember, itemTime);
+ 
+        obj.addItem(category, name, descContent, costPerDay, loggedInMember);
         System.out.println("Item posted successfully!");
     }
 
@@ -87,7 +86,7 @@ public class ConsoleUI {
         for (int i = 0; i < items.size(); i++) {
             System.out.println((i + 1) + ". " + items.get(i).getCategory() + " / " + items.get(i).getName()
                     + " / " + items.get(i).getDescription() + "\nCost per day: " + items.get(i).getCostPerDay()
-                    + "\nCreated: " + items.get(i).getCreationDate()); 
+                    + "\nCreated: Day " + items.get(i).getCreationDate()); 
         }
 
         System.out.println("\nEnter the number of the item you want to loan or 0 to go back: ");
@@ -101,13 +100,11 @@ public class ConsoleUI {
             int totalCost = loanDays * selectedItem.getCostPerDay();
 
             if (loggedInMember.getCredits() >= totalCost) {
-                Time startDate = new Time();
-                startDate.Day = obj.currentDay.getDate(); 
+                int startDate = Time.getDate(); 
 
-                Time endDate = new Time();
-                endDate.Day = obj.currentDay.getDate() + loanDays; 
+                int endDate = startDate + loanDays; 
 
-                obj.currentDay.setDate(endDate.Day);
+                Time.setDate(endDate);
 
                 obj.addContract(startDate, endDate, selectedItem, loggedInMember);
                 loggedInMember.addCredits(-totalCost);
@@ -116,8 +113,8 @@ public class ConsoleUI {
                 System.out.println("\n--------- Loan Receipt ---------");
                 System.out.println("Borrower: " + loggedInMember.getName());
                 System.out.println("Item Loaned: " + selectedItem.getName());
-                System.out.println("Start Date: Day " + startDate.getDate());
-                System.out.println("End Date: Day " + endDate.getDate());
+                System.out.println("Start Date: Day " + startDate);
+                System.out.println("End Date: Day " + endDate);
                 System.out.println("Total Cost: " + totalCost + " credits");
                 System.out.println("Owner of the Item: " + selectedItem.getOwner().getName()); 
                 System.out.println("--------------------------------");
@@ -130,7 +127,7 @@ public class ConsoleUI {
     public void advanceDayCounter() {
         System.out.println("\nAdvancing the day...");
         obj.dayCounter();
-        System.out.println("You are now on day " + obj.currentDay.getDate());
+        System.out.println("You are now on day " + Time.getDate());
     }
 
     public void viewMemberDetails() {
@@ -140,7 +137,7 @@ public class ConsoleUI {
         System.out.println("Member ID: " + loggedInMember.getMemberId());
         System.out.println("Email: " + loggedInMember.getEmail());
         System.out.println("Phone number: " + loggedInMember.getMobile());
-        System.out.println("Account is created: " + loggedInMember.getCreationDate()); 
+        System.out.println("Account is created: Day " + loggedInMember.getCreationDate()); 
         System.out.println("Your credit: " + loggedInMember.getCredits());
 
         System.out.println("\nPosted Items:");
@@ -148,7 +145,7 @@ public class ConsoleUI {
         for (int i = 0; i < items.size(); i++) {
             System.out.println((i + 1) + ". " + items.get(i).getCategory() + " / " + items.get(i).getName()
                     + " / " + items.get(i).getDescription() + "\nCost per day: " + items.get(i).getCostPerDay()
-                    + "\nCreated: " + items.get(i).getCreationDate());
+                    + "\nCreated: Day " + items.get(i).getCreationDate());
         }
 
         System.out.println("\nEnter the number of the item if you want to delete it or 0 to go back: ");
@@ -197,7 +194,7 @@ public class ConsoleUI {
             System.out.println((i + 1) + ". " + members.get(i).getMemberId() + " / " + members.get(i).getUsername()
                     + "\nName: " + members.get(i).getName() + "\nEmail: " + members.get(i).getEmail()
                     + "\nPhone number: " + members.get(i).getMobile() + "\nCredits: " + members.get(i).getCredits()
-                    + "\nAccount is created: " + members.get(i).getCreationDate()); 
+                    + "\nAccount is created: Day " + members.get(i).getCreationDate()); 
         }
 
         System.out.println("\nEnter the number of the member you want to ban or 0 to go back: ");
@@ -215,7 +212,7 @@ public class ConsoleUI {
             System.out.println((i + 1) + ". " + items.get(i).getCategory() + " / " + items.get(i).getName()
                     + " / " + items.get(i).getDescription() + "\nOwner: " + items.get(i).getOwner()
                     + "\nCost per day: " + items.get(i).getCostPerDay()
-                    + "\nCreated: " + items.get(i).getCreationDate()); 
+                    + "\nCreated: Day " + items.get(i).getCreationDate()); 
         }
 
         System.out.println("\nEnter the number of the item if you want to delete it or 0 to go back: ");

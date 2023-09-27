@@ -1,13 +1,13 @@
 package model;
 
 public class Contract {
-    private Time startDate;
-    private Time endDate;
+    private int startDate;
+    private int endDate;
     private Item item;
     private Member lender;
     private Member owner;
 
-    public Contract(Time startDate, Time endDate, Item item, Member lender) {
+    public Contract(int startDate, int endDate, Item item, Member lender) {
         this.startDate = startDate;
         this.endDate = endDate;
         this.item = item;
@@ -15,19 +15,19 @@ public class Contract {
         this.owner = item.getOwner();
     }
 
-    public Time getStartDate() {
+    public int getStartDate() {
         return startDate;
     }
 
-    public void setStartDate(Time startDate) {
+    public void setStartDate(int startDate) {
         this.startDate = startDate;
     }
 
-    public Time getEndDate() {
+    public int getEndDate() {
         return endDate;
     }
 
-    public void setEndDate(Time endDate) {
+    public void setEndDate(int endDate) {
         this.endDate = endDate;
     }
 

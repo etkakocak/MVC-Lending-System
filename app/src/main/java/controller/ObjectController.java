@@ -14,14 +14,12 @@ public class ObjectController {
     public List<Admin> admins;
     public List<Item> items;
     public List<Contract> contracts;
-    public Time currentDay;
 
     public ObjectController() {
         members = new ArrayList<>();
         admins = new ArrayList<>();
         items = new ArrayList<>();
         contracts = new ArrayList<>();
-        currentDay = new Time();
     }
 
 
@@ -96,18 +94,18 @@ public class ObjectController {
         Admin admin1 = new Admin("gadmin", "thegadmin03");
         admins.add(admin1);
 
-        Item item1 = new Item("Electronics", "MacBook Pro", "A clean computer for temporary works", 30, member3, currentDay);
+        Item item1 = new Item("Electronics", "MacBook Pro", "A clean computer for temporary works", 30, member3);
         items.add(item1);
         member3.addOwnedItem(item1);
 
-        Item item2 = new Item("Veichle", "BMW M5 2021", "Max 100 miles per loan period.", 300, member1, currentDay);
+        Item item2 = new Item("Veichle", "BMW M5 2021", "Max 100 miles per loan period.", 300, member1);
         items.add(item2);
         member1.addOwnedItem(item2);
     }
 
 
-    public void addItem(String category, String name, String description, int costPerDay, Member owner, Time creationDate) {
-        Item item = new Item(category, name, description, costPerDay, owner, creationDate);
+    public void addItem(String category, String name, String description, int costPerDay, Member owner) {
+        Item item = new Item(category, name, description, costPerDay, owner);
         items.add(item);
         owner.addOwnedItem(item);
     }
@@ -125,13 +123,13 @@ public class ObjectController {
     }
 
 
-    public void addContract(Time stDate, Time enDate, Item theItem, Member theLender) {
+    public void addContract(int stDate, int enDate, Item theItem, Member theLender) {
         Contract newContract = new Contract(stDate, enDate, theItem, theLender);
         contracts.add(newContract);
     }
 
     public void dayCounter() {
-        int nextDay = currentDay.getDate() + 1;
-        currentDay.setDate(nextDay);   
+        int nextDay = Time.getDate() + 1;
+        Time.setDate(nextDay);   
     }
 }

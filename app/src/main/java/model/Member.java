@@ -8,7 +8,7 @@ public class Member {
     private String name;
     private String email;
     private int mobile;
-    public Time creationDate;
+    public int creationDate;
     private int credits;
     private List<Item> ownedItems;
     private String username;
@@ -20,7 +20,7 @@ public class Member {
         this.mobile = mobile;
         this.username = username;
         this.password = password;
-        this.creationDate = new Time();
+        this.creationDate = Time.getDate();
         this.credits = 0;
         ownedItems = new ArrayList<>();
         generateMemberId(memberId);
@@ -81,7 +81,7 @@ public class Member {
         this.mobile = mobile;
     }
 
-    public Time getCreationDate() {
+    public int getCreationDate() {
         return creationDate;
     }
 
