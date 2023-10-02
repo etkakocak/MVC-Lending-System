@@ -1,6 +1,8 @@
 package controller;
 
-import view.Login;
+import model.Service;
+import view.ViewInterface;
+import view.ConsoleUI;
 
 /**
  * Responsible for staring the application.
@@ -13,9 +15,9 @@ public class App {
    */
   public static void main(String[] args) {
     // adapt to start the application in your way
-    ObjectController obj = new ObjectController();
-    obj.initializeStartObjects();
-    Login login = new Login(obj);
-    login.displayLoginMenu();
+    Service m = new Service();
+    ViewInterface v = new ConsoleUI();
+    ObjectController ctrl = new ObjectController();
+    ctrl.start(m, v);
   }
 } 

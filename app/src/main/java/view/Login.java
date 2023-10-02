@@ -1,17 +1,19 @@
 package view;
 
+/* 
 import java.util.Scanner;
-import controller.ObjectController;
+
 import model.Member;
+import model.Service;
 import model.Admin;
 
 public class Login {
     private Scanner scanner;
-    private ObjectController objController;
+    private Service service;
 
-    public Login(ObjectController objController) {
+    public Login(Service service) {
         scanner = new Scanner(System.in);
-        this.objController = objController;
+        this.service = service;
     }
 
     public void displayLoginMenu() {
@@ -23,12 +25,6 @@ public class Login {
         int choice = scanner.nextInt();
         scanner.nextLine();
         startLoginProcess(choice);
-    }
-
-    public int getLoginType() {
-        int choice = scanner.nextInt();
-        scanner.nextLine();
-        return choice;
     }
 
     public String[] getCredentials() {
@@ -48,9 +44,9 @@ public class Login {
                 boolean adminValidated = false;
                 while (!adminValidated) {
                     String[] adminCredentials = getCredentials();
-                    Admin admin = objController.validateAdmin(adminCredentials[0], adminCredentials[1]);
+                    Admin admin = service.validateAdmin(adminCredentials[0], adminCredentials[1]);
                     if (admin != null) {
-                        routeToAdminConsoleUI(admin, objController);
+                        routeToAdminConsoleUI(admin, service);
                         adminValidated = true;
                     } else {
                         System.out.println("Invalid admin credentials. Try again or type 'exit' to quit.");
@@ -66,9 +62,9 @@ public class Login {
                 boolean memberValidated = false;
                 while (!memberValidated) {
                     String[] memberCredentials = getCredentials();
-                    Member loggedInMember = objController.validateMember(memberCredentials[0], memberCredentials[1]);
+                    Member loggedInMember = service.validateMember(memberCredentials[0], memberCredentials[1]);
                     if (loggedInMember != null) {
-                        routeToMemberConsoleUI(loggedInMember, objController);
+                        routeToMemberConsoleUI(loggedInMember, service);
                         memberValidated = true;
                     } else {
                         System.out.println("Invalid member credentials. Try again or type 'exit' to quit.");
@@ -97,12 +93,12 @@ public class Login {
                 System.out.print("Enter your password: ");
                 String password = scanner.nextLine();
 
-                if (objController.canAddMember(email, mobile)) {
-                    objController.createMemberAccount(name, email, mobile, username, password);
+                if (service.canAddMember(email, mobile)) {
+                    service.createMemberAccount(name, email, mobile, username, password);
                     System.out.println("Member account created successfully.");
 
-                    Member newMember = objController.validateMember(username, password);
-                    routeToMemberConsoleUI(newMember, objController);
+                    Member newMember = service.validateMember(username, password);
+                    routeToMemberConsoleUI(newMember, service);
                 } else {
                     System.out.println(
                             "E-post eller mobilnummer används redan! Please try again or type 'exit' to quit..");
@@ -125,13 +121,14 @@ public class Login {
         }
     }
 
-    public void routeToMemberConsoleUI(Member loggedInMember, ObjectController objController) {
-        ConsoleUI UI = new ConsoleUI(loggedInMember, objController);
+    public void routeToMemberConsoleUI(Member loggedInMember, Service service) {
+        ConsoleUI UI = new ConsoleUI(loggedInMember, service);
         UI.displayMainMenu();
     }
 
-    public void routeToAdminConsoleUI(Admin admin, ObjectController objController) {
-        ConsoleUI UI = new ConsoleUI(admin, objController);
+    public void routeToAdminConsoleUI(Admin admin, Service service) {
+        ConsoleUI UI = new ConsoleUI(admin, service);
         UI.displayAdminMenu();
     }
 }
+*/

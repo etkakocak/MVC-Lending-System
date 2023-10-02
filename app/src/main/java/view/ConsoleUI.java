@@ -2,32 +2,129 @@ package view;
 
 import java.util.List;
 import java.util.Scanner;
-import controller.ObjectController;
 import model.Member;
 import model.Item;
 import model.Admin;
+import model.Service;
 import model.Time;
 import model.Contract;
 
-public class ConsoleUI {
+public class ConsoleUI implements ViewInterface {
     private Scanner scanner;
-    private Member loggedInMember;
-    private Admin admin;
-    private ObjectController obj;
 
-    public ConsoleUI(Member loggedInMember, ObjectController obj) {
+    public ConsoleUI() {
         this.scanner = new Scanner(System.in, "UTF-8");
-        this.loggedInMember = loggedInMember;
-        this.obj = obj;
     }
 
-    public ConsoleUI(Admin admin, ObjectController obj) {
-        this.scanner = new Scanner(System.in, "UTF-8");
-        this.admin = admin;
-        this.obj = obj;
+    public String[] getCredentials() {
+        System.out.print("Enter username: ");
+        String username = scanner.nextLine();
+
+        System.out.print("Enter password: ");
+        String password = scanner.nextLine();
+
+        return new String[] { username, password };
     }
 
-    public void displayMainMenu() {
+    public int getLoginType() {
+        int choice = scanner.nextInt();
+        scanner.nextLine();
+        return choice;
+    }
+
+    public void displayLoginMenu(Service service) {
+        System.out.println("Welcome to the Stuff Lending System Login!");
+        System.out.println("1. Login as Admin");
+        System.out.println("2. Login as Member");
+        System.out.println("3. Create Member Account");
+        System.out.print("Enter your choice: ");
+        int choice = scanner.nextInt();
+        scanner.nextLine();
+
+        switch (choice) {
+            case 1:
+                // Handle admin login
+                boolean adminValidated = false;
+                while (!adminValidated) {
+                    String[] adminCredentials = getCredentials();
+                    Admin admin = service.validateAdmin(adminCredentials[0], adminCredentials[1]);
+                    if (admin != null) {
+                        displayAdminMenu(service, admin);
+                        adminValidated = true;
+                    } else {
+                        System.out.println("Invalid admin credentials. Try again or type 'exit' to quit.");
+                        String exitChoice = scanner.nextLine();
+                        if ("exit".equalsIgnoreCase(exitChoice)) {
+                            break;
+                        }
+                    }
+                }
+                break;
+            case 2:
+                // Handle member login
+                boolean memberValidated = false;
+                while (!memberValidated) {
+                    String[] memberCredentials = getCredentials();
+                    Member loggedInMember = service.validateMember(memberCredentials[0], memberCredentials[1]);
+                    if (loggedInMember != null) {
+                        displayMainMenu(service, loggedInMember);
+                        memberValidated = true;
+                    } else {
+                        System.out.println("Invalid member credentials. Try again or type 'exit' to quit.");
+                        String exitChoice = scanner.nextLine();
+                        if ("exit".equalsIgnoreCase(exitChoice)) {
+                            break;
+                        }
+                    }
+                }
+                break;
+            case 3:
+                // Handle member account creation
+                System.out.print("Enter your name: ");
+                String name = scanner.nextLine();
+
+                System.out.print("Enter your email: ");
+                String email = scanner.nextLine();
+
+                System.out.print("Enter your phone number: ");
+                int mobile = scanner.nextInt();
+                scanner.nextLine();
+
+                System.out.print("Enter your username: ");
+                String username = scanner.nextLine();
+
+                System.out.print("Enter your password: ");
+                String password = scanner.nextLine();
+
+                if (service.canAddMember(email, mobile)) {
+                    service.createMemberAccount(name, email, mobile, username, password);
+                    System.out.println("Member account created successfully.");
+
+                    Member newMember = service.validateMember(username, password);
+                    displayMainMenu(service, newMember);
+                } else {
+                    System.out.println(
+                            "E-post eller mobilnummer används redan! Please try again or type 'exit' to quit..");
+                    String exitChoice = scanner.nextLine();
+                    if ("exit".equalsIgnoreCase(exitChoice)) {
+                        break;
+                    } else {
+                        displayLoginMenu(service);
+                    }
+                }
+                break;
+            default:
+                System.out.println("Invalid choice. Please try again or type 'exit' to quit..");
+                String exitChoice = scanner.nextLine();
+                if ("exit".equalsIgnoreCase(exitChoice)) {
+                    break;
+                } else {
+                    displayLoginMenu(service);
+                }
+        }
+    }
+
+    public void displayMainMenu(Service service, Member loggedInMember) {
         int choice = 0;
 
         while (choice != 5) {
@@ -43,16 +140,16 @@ public class ConsoleUI {
 
             switch (choice) {
                 case 1:
-                    postAnItem();
+                    postAnItem(loggedInMember, service);
                     break;
                 case 2:
-                    displayAllItems();
+                    displayAllItems(loggedInMember, service);
                     break;
                 case 3:
-                    viewMemberDetails();
+                    viewMemberDetails(loggedInMember, service);
                     break;
                 case 4:
-                    advanceDayCounter();
+                    advanceDayCounter(service);
                     break;
                 case 5:
                     break;
@@ -62,7 +159,7 @@ public class ConsoleUI {
         }
     }
 
-    public void postAnItem() {
+    public void postAnItem(Member loggedInMember, Service service) {
         System.out.println("\nEnter item category (Tool, Vehicle, Game, Toy, Sport, Other): ");
         String category = scanner.nextLine();
         category = scanner.nextLine();
@@ -76,12 +173,12 @@ public class ConsoleUI {
         System.out.println("Enter cost per day to lend the item: ");
         int costPerDay = scanner.nextInt();
 
-        obj.addItem(category, name, descContent, costPerDay, loggedInMember);
+        service.addItem(category, name, descContent, costPerDay, loggedInMember);
         System.out.println("Item posted successfully!");
     }
 
-    public void displayAllItems() {
-        List<Item> items = obj.getAllItems();
+    public void displayAllItems(Member loggedInMember, Service service) {
+        List<Item> items = service.getAllItems();
 
         System.out.println("\nItems available for lending:");
         for (int i = 0; i < items.size(); i++) {
@@ -114,7 +211,7 @@ public class ConsoleUI {
 
                 Time.setDate(endDate);
 
-                obj.addContract(startDate, endDate, selectedItem, loggedInMember);
+                service.addContract(startDate, endDate, selectedItem, loggedInMember);
                 loggedInMember.addCredits(-totalCost);
                 selectedItem.getOwner().addCredits(totalCost);
 
@@ -133,13 +230,13 @@ public class ConsoleUI {
         }
     }
 
-    public void advanceDayCounter() {
+    public void advanceDayCounter(Service service) {
         System.out.println("\nAdvancing the day...");
-        obj.dayCounter();
+        service.dayCounter();
         System.out.println("You are now on day " + Time.getDate());
     }
 
-    public void viewMemberDetails() {
+    public void viewMemberDetails(Member loggedInMember, Service service) {
         System.out.println("\nYour account details: ");
         System.out.println("Name: " + loggedInMember.getName());
         System.out.println("Username: " + loggedInMember.getUsername());
@@ -153,7 +250,7 @@ public class ConsoleUI {
         List<Contract> contracts = loggedInMember.getContracts();
         for (int i = 0; i < contracts.size(); i++) {
             System.out.println((i + 1) + ". " + contracts.get(i).getItem().getName()
-                    + "\nOwner: " + contracts.get(i).getItem().getOwner().getName() 
+                    + "\nOwner: " + contracts.get(i).getItem().getOwner().getName()
                     + "\nStart Date: Day " + contracts.get(i).getStartDate()
                     + "\nEnd Date: Day " + contracts.get(i).getEndDate());
         }
@@ -261,7 +358,7 @@ public class ConsoleUI {
 
                     if (choice > 0 && choice <= items.size()) {
                         Item itemToDelete = items.get(choice - 1);
-                        obj.deleteMemberItem(itemToDelete);
+                        service.deleteMemberItem(itemToDelete);
                         System.out.println("Item deleted successfully!");
                     }
                     break;
@@ -273,7 +370,7 @@ public class ConsoleUI {
         }
     }
 
-    public void displayAdminMenu() {
+    public void displayAdminMenu(Service service, Admin admin) {
         if (admin != null) {
             int choice = 0;
 
@@ -288,10 +385,10 @@ public class ConsoleUI {
 
                 switch (choice) {
                     case 1:
-                        displayAllMembers();
+                        displayAllMembers(service);
                         break;
                     case 2:
-                        displayAllItemsAdmin();
+                        displayAllItemsAdmin(service);
                         break;
                     case 3:
                         break;
@@ -302,8 +399,8 @@ public class ConsoleUI {
         }
     }
 
-    public void displayAllMembers() {
-        List<Member> members = obj.getAllMembers();
+    public void displayAllMembers(Service service) {
+        List<Member> members = service.getAllMembers();
         System.out.println("\nAll Members: ");
         for (int i = 0; i < members.size(); i++) {
             System.out.println((i + 1) + ". " + members.get(i).getMemberId() + " / " + members.get(i).getUsername()
@@ -316,13 +413,13 @@ public class ConsoleUI {
         int choice = scanner.nextInt();
 
         if (choice > 0 && choice <= members.size()) {
-            obj.deleteMember(choice);
+            service.deleteMember(choice);
             System.out.println("Member is banned and all owned items is deleted!");
         }
     }
 
-    public void displayAllItemsAdmin() {
-        List<Item> items = obj.getAllItems();
+    public void displayAllItemsAdmin(Service service) {
+        List<Item> items = service.getAllItems();
         for (int i = 0; i < items.size(); i++) {
             System.out.println((i + 1) + ". " + items.get(i).getCategory() + " / " + items.get(i).getName()
                     + " / " + items.get(i).getDescription() + "\nOwner: " + items.get(i).getOwner()
@@ -334,7 +431,7 @@ public class ConsoleUI {
         int choice = scanner.nextInt();
 
         if (choice > 0 && choice <= items.size()) {
-            obj.deleteItem(choice);
+            service.deleteItem(choice);
             System.out.println("Item deleted successfully!");
         }
     }
