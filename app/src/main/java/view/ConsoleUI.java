@@ -16,6 +16,26 @@ public class ConsoleUI implements ViewInterface {
         this.scanner = new Scanner(System.in, "UTF-8");
     }
 
+    public void initializeStartObjects(Service service) {
+        Member member1 = new Member("Etka", "etka@lending.com", 0031, "etka", "etka123");
+        service.members.add(member1);
+        Member member2 = new Member("Sanaa", "sanaa@lending.com", 0022, "sanaa", "sanaa123");
+        service.members.add(member2);
+        Member member3 = new Member("Aiman", "aiman@lending.com", 0062, "aiman", "aiman123");
+        service.members.add(member3);
+
+        Admin admin1 = new Admin("gadmin", "thegadmin03");
+        service.admins.add(admin1);
+
+        Item item1 = new Item("Electronics", "MacBook Pro", "A clean computer for temporary works", 30, member3);
+        service.items.add(item1);
+        member3.addOwnedItem(item1);
+
+        Item item2 = new Item("Veichle", "BMW M5 2021", "Max 100 miles per loan period.", 300, member1);
+        service.items.add(item2);
+        member1.addOwnedItem(item2);
+    }
+
     public String[] getCredentials() {
         System.out.print("Enter username: ");
         String username = scanner.nextLine();
@@ -32,95 +52,88 @@ public class ConsoleUI implements ViewInterface {
         return choice;
     }
 
-    public void displayLoginMenu(Service service) {
+    public void displayError() {
+        System.out.println("\nError: Bad login choice!");
+    }
+
+    public void displayLoginMenu() {
         System.out.println("Welcome to the Stuff Lending System Login!");
         System.out.println("1. Login as Admin");
         System.out.println("2. Login as Member");
         System.out.println("3. Create Member Account");
         System.out.print("Enter your choice: ");
-        int choice = scanner.nextInt();
-        scanner.nextLine();
+    }
 
-        switch (choice) {
-            case 1:
-                // Handle admin login
-                boolean adminValidated = false;
-                while (!adminValidated) {
-                    String[] adminCredentials = getCredentials();
-                    Admin admin = service.validateAdmin(adminCredentials[0], adminCredentials[1]);
-                    if (admin != null) {
-                        displayAdminMenu(service, admin);
-                        adminValidated = true;
-                    } else {
-                        System.out.println("Invalid admin credentials. Try again or type 'exit' to quit.");
-                        String exitChoice = scanner.nextLine();
-                        if ("exit".equalsIgnoreCase(exitChoice)) {
-                            break;
-                        }
-                    }
-                }
-                break;
-            case 2:
-                // Handle member login
-                boolean memberValidated = false;
-                while (!memberValidated) {
-                    String[] memberCredentials = getCredentials();
-                    Member loggedInMember = service.validateMember(memberCredentials[0], memberCredentials[1]);
-                    if (loggedInMember != null) {
-                        displayMainMenu(service, loggedInMember);
-                        memberValidated = true;
-                    } else {
-                        System.out.println("Invalid member credentials. Try again or type 'exit' to quit.");
-                        String exitChoice = scanner.nextLine();
-                        if ("exit".equalsIgnoreCase(exitChoice)) {
-                            break;
-                        }
-                    }
-                }
-                break;
-            case 3:
-                // Handle member account creation
-                System.out.print("Enter your name: ");
-                String name = scanner.nextLine();
-
-                System.out.print("Enter your email: ");
-                String email = scanner.nextLine();
-
-                System.out.print("Enter your phone number: ");
-                int mobile = scanner.nextInt();
-                scanner.nextLine();
-
-                System.out.print("Enter your username: ");
-                String username = scanner.nextLine();
-
-                System.out.print("Enter your password: ");
-                String password = scanner.nextLine();
-
-                if (service.canAddMember(email, mobile)) {
-                    service.createMemberAccount(name, email, mobile, username, password);
-                    System.out.println("Member account created successfully.");
-
-                    Member newMember = service.validateMember(username, password);
-                    displayMainMenu(service, newMember);
-                } else {
-                    System.out.println(
-                            "E-post eller mobilnummer används redan! Please try again or type 'exit' to quit..");
-                    String exitChoice = scanner.nextLine();
-                    if ("exit".equalsIgnoreCase(exitChoice)) {
-                        break;
-                    } else {
-                        displayLoginMenu(service);
-                    }
-                }
-                break;
-            default:
-                System.out.println("Invalid choice. Please try again or type 'exit' to quit..");
+    public void adminLoginProcess(Service service) {
+        boolean adminValidated = false;
+        while (!adminValidated) {
+            String[] adminCredentials = getCredentials();
+            Admin admin = service.validateAdmin(adminCredentials[0], adminCredentials[1]);
+            if (admin != null) {
+                displayAdminMenu(service, admin);
+                adminValidated = true;
+            } else {
+                System.out.println("Invalid admin credentials. Try again or type 'exit' to quit.");
                 String exitChoice = scanner.nextLine();
                 if ("exit".equalsIgnoreCase(exitChoice)) {
                     break;
-                } else {
-                    displayLoginMenu(service);
                 }
+            }
+        }
+    }
+
+    public void memberLoginProcess(Service service) {
+        boolean memberValidated = false;
+        while (!memberValidated) {
+            String[] memberCredentials = getCredentials();
+            Member loggedInMember = service.validateMember(memberCredentials[0], memberCredentials[1]);
+            if (loggedInMember != null) {
+                displayMainMenu(service, loggedInMember);
+                memberValidated = true;
+            } else {
+                System.out.println("Invalid member credentials. Try again or type 'exit' to quit.");
+                String exitChoice = scanner.nextLine();
+                if ("exit".equalsIgnoreCase(exitChoice)) {
+                    break;
+                }
+            }
+        }
+    }
+
+    public void memberCreateProcess(Service service) {
+        boolean memberValidated = false;
+        while (!memberValidated) {
+            System.out.print("Enter your name: ");
+            String name = scanner.nextLine();
+
+            System.out.print("Enter your email: ");
+            String email = scanner.nextLine();
+
+            System.out.print("Enter your phone number: ");
+            int mobile = scanner.nextInt();
+            scanner.nextLine();
+
+            System.out.print("Enter your username: ");
+            String username = scanner.nextLine();
+
+            System.out.print("Enter your password: ");
+            String password = scanner.nextLine();
+
+            if (service.canAddMember(email, mobile)) {
+                service.createMemberAccount(name, email, mobile, username, password);
+                System.out.println("Member account created successfully.");
+
+                Member newMember = service.validateMember(username, password);
+                displayMainMenu(service, newMember);
+                memberValidated = true;
+            } else {
+                System.out.println(
+                        "E-post eller mobilnummer används redan! Please try again or type 'exit' to quit..");
+                String exitChoice = scanner.nextLine();
+                if ("exit".equalsIgnoreCase(exitChoice)) {
+                    break;
+                }
+            }
         }
     }
 

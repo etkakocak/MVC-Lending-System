@@ -14,7 +14,6 @@ public class Service {
         admins = new ArrayList<>();
         items = new ArrayList<>();
         contracts = new ArrayList<>();
-        initializeStartObjects();
     }
     
     // login methods
@@ -112,27 +111,6 @@ public class Service {
     public void dayCounter() {
         int nextDay = Time.getDate() + 1;
         Time.setDate(nextDay);   
-    }
-
-    // ????
-    public void initializeStartObjects() {
-        Member member1 = new Member("Etka", "etka@lending.com", 0031, "etka", "etka123");
-        members.add(member1);
-        Member member2 = new Member("Sanaa", "sanaa@lending.com", 0022, "sanaa", "sanaa123");
-        members.add(member2);
-        Member member3 = new Member("Aiman", "aiman@lending.com", 0062, "aiman", "aiman123");
-        members.add(member3);
-
-        Admin admin1 = new Admin("gadmin", "thegadmin03");
-        admins.add(admin1);
-
-        Item item1 = new Item("Electronics", "MacBook Pro", "A clean computer for temporary works", 30, member3);
-        items.add(item1);
-        member3.addOwnedItem(item1);
-
-        Item item2 = new Item("Veichle", "BMW M5 2021", "Max 100 miles per loan period.", 300, member1);
-        items.add(item2);
-        member1.addOwnedItem(item2);
     }
 }
 
