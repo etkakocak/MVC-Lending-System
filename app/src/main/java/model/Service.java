@@ -8,12 +8,14 @@ public class Service {
     public List<Admin> admins;
     public List<Item> items;
     public List<Contract> contracts;
+    private Time time;
 
     public Service() {
         members = new ArrayList<>();
         admins = new ArrayList<>();
         items = new ArrayList<>();
         contracts = new ArrayList<>();
+        time = new Time();
     }
     
     // login methods
@@ -53,7 +55,7 @@ public class Service {
     }
 
     public void createMemberAccount(String name, String email, int mobile, String username, String password) {
-        Member newMember = new Member(name, email, mobile, username, password);
+        Member newMember = new Member(name, email, mobile, username, password, time);
         members.add(newMember);
     }
 
@@ -73,6 +75,10 @@ public class Service {
 
     public List<Item> getAllItems() {
         return items;
+    }
+
+    public Time getTime() {
+        return time;
     }
 
     // delete or add methods
@@ -97,7 +103,7 @@ public class Service {
     }
 
     public void addItem(String category, String name, String description, int costPerDay, Member owner) {
-        Item item = new Item(category, name, description, costPerDay, owner);
+        Item item = new Item(category, name, description, costPerDay, owner, time);
         items.add(item);
         owner.addOwnedItem(item);
     }
@@ -109,8 +115,7 @@ public class Service {
     }
 
     public void dayCounter() {
-        int nextDay = Time.getDate() + 1;
-        Time.setDate(nextDay);   
+        int nextDay = time.getDate() + 1;
+        time.setDate(nextDay);   
     }
 }
-

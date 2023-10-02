@@ -8,17 +8,13 @@ public class Item {
     private int costPerDay;
     private Member owner;
 
-    public Item(String category, String name, String description, int costPerDay, Member owner) {
+    public Item(String category, String name, String description, int costPerDay, Member owner, Time creationDate) {
         this.category = category;
         this.name = name;
         this.description = description; 
         this.costPerDay = costPerDay;
         this.owner = owner;
-        setCreationDate();
-    }
-
-    public void setCreationDate() {  
-        this.creationDate = Time.getDate(); 
+        this.creationDate = creationDate.getDate();
     }
 
     public String getDescription() {  

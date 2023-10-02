@@ -8,20 +8,20 @@ public class Member {
     private String name;
     private String email;
     private int mobile;
-    public int creationDate;
+    private int creationDate;
     private int credits;
     private List<Item> ownedItems;
     private List<Contract> ownedContracts;
     private String username;
     private String password;
 
-    public Member(String name, String email, int mobile, String username, String password) {
+    public Member(String name, String email, int mobile, String username, String password, Time creationDate) {
         this.name = name;
         this.email = email;
         this.mobile = mobile;
         this.username = username;
         this.password = password;
-        this.creationDate = Time.getDate();
+        this.creationDate = creationDate.getDate();
         this.credits = 0;
         ownedItems = new ArrayList<>();
         ownedContracts = new ArrayList<>();

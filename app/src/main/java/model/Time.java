@@ -1,17 +1,21 @@
 package model;
 
 public class Time {
-    private static int Day;
+    private int day;
 
-    public Time() {
-        Day = 0;
+    Time() {
+        day = 0;
     }
 
-    public static int getDate() {
-        return Day;
+    public int getDate() {
+        return day;
     }
 
-    public static void setDate(int newDay) {
-        Day = newDay;
+    public void setDate(int newDay) {
+        day = newDay;
+    }
+
+    public String toString() {
+        return "" + day;
     }
 }

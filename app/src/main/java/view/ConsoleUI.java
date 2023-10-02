@@ -6,7 +6,6 @@ import model.Member;
 import model.Item;
 import model.Admin;
 import model.Service;
-import model.Time;
 import model.Contract;
 
 public class ConsoleUI implements ViewInterface {
@@ -17,21 +16,21 @@ public class ConsoleUI implements ViewInterface {
     }
 
     public void initializeStartObjects(Service service) {
-        Member member1 = new Member("Etka", "etka@lending.com", 0031, "etka", "etka123");
+        Member member1 = new Member("Etka", "etka@lending.com", 0031, "etka", "etka123", service.getTime());
         service.members.add(member1);
-        Member member2 = new Member("Sanaa", "sanaa@lending.com", 0022, "sanaa", "sanaa123");
+        Member member2 = new Member("Sanaa", "sanaa@lending.com", 0022, "sanaa", "sanaa123", service.getTime());
         service.members.add(member2);
-        Member member3 = new Member("Aiman", "aiman@lending.com", 0062, "aiman", "aiman123");
+        Member member3 = new Member("Aiman", "aiman@lending.com", 0062, "aiman", "aiman123", service.getTime());
         service.members.add(member3);
 
         Admin admin1 = new Admin("gadmin", "thegadmin03");
         service.admins.add(admin1);
 
-        Item item1 = new Item("Electronics", "MacBook Pro", "A clean computer for temporary works", 30, member3);
+        Item item1 = new Item("Electronics", "MacBook Pro", "A clean computer for temporary works", 30, member3, service.getTime());
         service.items.add(item1);
         member3.addOwnedItem(item1);
 
-        Item item2 = new Item("Veichle", "BMW M5 2021", "Max 100 miles per loan period.", 300, member1);
+        Item item2 = new Item("Veichle", "BMW M5 2021", "Max 100 miles per loan period.", 300, member1, service.getTime());
         service.items.add(item2);
         member1.addOwnedItem(item2);
     }
@@ -218,11 +217,11 @@ public class ConsoleUI implements ViewInterface {
             int totalCost = loanDays * selectedItem.getCostPerDay();
 
             if (loggedInMember.getCredits() >= totalCost) {
-                int startDate = Time.getDate();
+                int startDate = service.getTime().getDate();
 
                 int endDate = startDate + loanDays;
 
-                Time.setDate(endDate);
+                service.getTime().setDate(endDate);
 
                 service.addContract(startDate, endDate, selectedItem, loggedInMember);
                 loggedInMember.addCredits(-totalCost);
@@ -246,7 +245,7 @@ public class ConsoleUI implements ViewInterface {
     public void advanceDayCounter(Service service) {
         System.out.println("\nAdvancing the day...");
         service.dayCounter();
-        System.out.println("You are now on day " + Time.getDate());
+        System.out.println("You are now on day " + service.getTime());
     }
 
     public void viewMemberDetails(Member loggedInMember, Service service) {
