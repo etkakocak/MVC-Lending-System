@@ -15,24 +15,28 @@ public class ConsoleUI implements ViewInterface {
         this.scanner = new Scanner(System.in, "UTF-8");
     }
 
-    public void initializeStartObjects(Service service) {
+    public Member[] initializeStartMembers(Service service) {
         Member member1 = new Member("Etka", "etka@lending.com", 0031, "etka", "etka123", service.getTime());
-        service.members.add(member1);
+        
         Member member2 = new Member("Sanaa", "sanaa@lending.com", 0022, "sanaa", "sanaa123", service.getTime());
-        service.members.add(member2);
+        
         Member member3 = new Member("Aiman", "aiman@lending.com", 0062, "aiman", "aiman123", service.getTime());
-        service.members.add(member3);
+        
+        return new Member[]{member1, member2, member3};
+    }
 
+    public Admin initializeStartAdmin(Service service) {
         Admin admin1 = new Admin("gadmin", "thegadmin03");
-        service.admins.add(admin1);
+        return admin1;
+    }
 
+    public Item[] initializeStartItems(Service service) {
+        Member member1 = service.getMember(0); 
+        Member member3 = service.getMember(2); 
         Item item1 = new Item("Electronics", "MacBook Pro", "A clean computer for temporary works", 30, member3, service.getTime());
-        service.items.add(item1);
-        member3.addOwnedItem(item1);
-
         Item item2 = new Item("Veichle", "BMW M5 2021", "Max 100 miles per loan period.", 300, member1, service.getTime());
-        service.items.add(item2);
-        member1.addOwnedItem(item2);
+        
+        return new Item[]{item1, item2};
     }
 
     public String[] getCredentials() {
@@ -171,7 +175,7 @@ public class ConsoleUI implements ViewInterface {
         }
     }
 
-    public void postAnItem(Member loggedInMember, Service service) {
+    public Item postAnItem(Member loggedInMember, Service service) {
         System.out.println("\nEnter item category (Tool, Vehicle, Game, Toy, Sport, Other): ");
         String category = scanner.nextLine();
         category = scanner.nextLine();
@@ -185,7 +189,11 @@ public class ConsoleUI implements ViewInterface {
         System.out.println("Enter cost per day to lend the item: ");
         int costPerDay = scanner.nextInt();
 
-        service.addItem(category, name, descContent, costPerDay, loggedInMember);
+        Item newItem = new Item(category, name, descContent, costPerDay, loggedInMember, service.getTime());
+        return newItem;
+    }
+
+    public void displayGood() {
         System.out.println("Item posted successfully!");
     }
 

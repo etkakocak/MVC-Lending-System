@@ -81,6 +81,14 @@ public class Service {
         return time;
     }
 
+    public Member getMember(int index) {
+        if (index >= 0 && index < members.size()) {
+            return members.get(index);
+        } else {
+            return null; 
+        }
+    }
+
     // delete or add methods
     public void deleteItem(int choice) {
         Item itemToDelete = items.get(choice - 1);
@@ -106,6 +114,11 @@ public class Service {
         Item item = new Item(category, name, description, costPerDay, owner, time);
         items.add(item);
         owner.addOwnedItem(item);
+    }
+
+    public void addMember(String name, String email, int mobile, String username, String password) {
+        Member member = new Member(name, name, mobile, username, password, time);
+        members.add(member);
     }
 
     public void addContract(int stDate, int enDate, Item theItem, Member theLender) {
