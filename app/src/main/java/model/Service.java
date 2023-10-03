@@ -90,8 +90,7 @@ public class Service {
     }
 
     // delete or add methods
-    public void deleteItem(int choice) {
-        Item itemToDelete = items.get(choice - 1);
+    public void deleteItem(Item itemToDelete) {
         itemToDelete.getOwner().getOwnedItems().remove(itemToDelete);
         itemToDelete.getOwner().addCredits(-100);
         items.remove(itemToDelete);
@@ -103,11 +102,10 @@ public class Service {
         items.remove(item);
     }
 
-    public void deleteMember(int choice) {
-        Member memberToBan = members.get(choice - 1);
-        List<Item> itemsToDelete = memberToBan.getOwnedItems();
+    public void deleteMember(Member member) {
+        List<Item> itemsToDelete = member.getOwnedItems();
         items.removeAll(itemsToDelete);
-        members.remove(memberToBan);
+        members.remove(member);
     }
 
     public void addItem(String category, String name, String description, int costPerDay, Member owner) {
@@ -121,8 +119,8 @@ public class Service {
         members.add(member);
     }
 
-    public void addContract(int stDate, int enDate, Item theItem, Member theLender) {
-        Contract newContract = new Contract(stDate, enDate, theItem, theLender);
+    public void addContract(int stDate, int enDate, Item theItem, Member theLender, int cost) {
+        Contract newContract = new Contract(stDate, enDate, theItem, theLender, cost);
         contracts.add(newContract);
         theLender.addOwnedContract(newContract);
     }

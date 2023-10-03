@@ -6,13 +6,23 @@ public class Contract {
     private Item item;
     private Member lender;
     private Member owner;
+    private int cost;
 
-    public Contract(int startDate, int endDate, Item item, Member lender) {
+    public Contract(int startDate, int endDate, Item item, Member lender, int cost) {
         this.startDate = startDate;
         this.endDate = endDate;
         this.item = item;
         this.lender = lender;
         this.owner = item.getOwner();
+        this.cost = cost;
+    }
+
+    public int getCost() {
+        return cost;
+    }
+
+    public void setCost(int cost) {
+        this.cost = cost;
     }
 
     public int getStartDate() {

@@ -17,12 +17,12 @@ public class ConsoleUI implements ViewInterface {
 
     public Member[] initializeStartMembers(Service service) {
         Member member1 = new Member("Etka", "etka@lending.com", 0031, "etka", "etka123", service.getTime());
-        
+
         Member member2 = new Member("Sanaa", "sanaa@lending.com", 0022, "sanaa", "sanaa123", service.getTime());
-        
+
         Member member3 = new Member("Aiman", "aiman@lending.com", 0062, "aiman", "aiman123", service.getTime());
-        
-        return new Member[]{member1, member2, member3};
+
+        return new Member[] { member1, member2, member3 };
     }
 
     public Admin initializeStartAdmin(Service service) {
@@ -31,12 +31,14 @@ public class ConsoleUI implements ViewInterface {
     }
 
     public Item[] initializeStartItems(Service service) {
-        Member member1 = service.getMember(0); 
-        Member member3 = service.getMember(2); 
-        Item item1 = new Item("Electronics", "MacBook Pro", "A clean computer for temporary works", 30, member3, service.getTime());
-        Item item2 = new Item("Veichle", "BMW M5 2021", "Max 100 miles per loan period.", 300, member1, service.getTime());
-        
-        return new Item[]{item1, item2};
+        Member member1 = service.getMember(0);
+        Member member3 = service.getMember(2);
+        Item item1 = new Item("Electronics", "MacBook Pro", "A clean computer for temporary works", 30, member3,
+                service.getTime());
+        Item item2 = new Item("Veichle", "BMW M5 2021", "Max 100 miles per loan period.", 300, member1,
+                service.getTime());
+
+        return new Item[] { item1, item2 };
     }
 
     public String[] getCredentials() {
@@ -67,14 +69,14 @@ public class ConsoleUI implements ViewInterface {
         System.out.print("Enter your choice: ");
     }
 
-    public void adminLoginProcess(Service service) {
+    public Admin adminLoginProcess(Service service) {
         boolean adminValidated = false;
         while (!adminValidated) {
             String[] adminCredentials = getCredentials();
             Admin admin = service.validateAdmin(adminCredentials[0], adminCredentials[1]);
             if (admin != null) {
-                displayAdminMenu(service, admin);
                 adminValidated = true;
+                return admin;
             } else {
                 System.out.println("Invalid admin credentials. Try again or type 'exit' to quit.");
                 String exitChoice = scanner.nextLine();
@@ -83,16 +85,17 @@ public class ConsoleUI implements ViewInterface {
                 }
             }
         }
+        return null;
     }
 
-    public void memberLoginProcess(Service service) {
+    public Member memberLoginProcess(Service service) {
         boolean memberValidated = false;
         while (!memberValidated) {
             String[] memberCredentials = getCredentials();
             Member loggedInMember = service.validateMember(memberCredentials[0], memberCredentials[1]);
             if (loggedInMember != null) {
-                displayMainMenu(service, loggedInMember);
                 memberValidated = true;
+                return loggedInMember;
             } else {
                 System.out.println("Invalid member credentials. Try again or type 'exit' to quit.");
                 String exitChoice = scanner.nextLine();
@@ -101,9 +104,10 @@ public class ConsoleUI implements ViewInterface {
                 }
             }
         }
+        return null;
     }
 
-    public void memberCreateProcess(Service service) {
+    public Member memberCreateProcess(Service service) {
         boolean memberValidated = false;
         while (!memberValidated) {
             System.out.print("Enter your name: ");
@@ -127,8 +131,8 @@ public class ConsoleUI implements ViewInterface {
                 System.out.println("Member account created successfully.");
 
                 Member newMember = service.validateMember(username, password);
-                displayMainMenu(service, newMember);
                 memberValidated = true;
+                return newMember;
             } else {
                 System.out.println(
                         "E-post eller mobilnummer används redan! Please try again or type 'exit' to quit..");
@@ -138,11 +142,11 @@ public class ConsoleUI implements ViewInterface {
                 }
             }
         }
+        return null;
     }
 
-    public void displayMainMenu(Service service, Member loggedInMember) {
+    public int displayMainMenu() {
         int choice = 0;
-
         while (choice != 5) {
             System.out.println("\n---- Main Menu ----");
             System.out.println("1. Post an item");
@@ -151,28 +155,14 @@ public class ConsoleUI implements ViewInterface {
             System.out.println("4. Advance the day counter");
             System.out.println("5. Exit");
             System.out.print("Enter your choice: ");
-
             choice = scanner.nextInt();
-
-            switch (choice) {
-                case 1:
-                    postAnItem(loggedInMember, service);
-                    break;
-                case 2:
-                    displayAllItems(loggedInMember, service);
-                    break;
-                case 3:
-                    viewMemberDetails(loggedInMember, service);
-                    break;
-                case 4:
-                    advanceDayCounter(service);
-                    break;
-                case 5:
-                    break;
-                default:
-                    System.out.println("Invalid choice. Please try again.");
-            }
+            return choice;
         }
+        return 5;
+    }
+
+    public void displayBadChoice() {
+        System.out.println("Invalid choice. Please try again.");
     }
 
     public Item postAnItem(Member loggedInMember, Service service) {
@@ -190,14 +180,11 @@ public class ConsoleUI implements ViewInterface {
         int costPerDay = scanner.nextInt();
 
         Item newItem = new Item(category, name, descContent, costPerDay, loggedInMember, service.getTime());
+        System.out.println("Item posted successfully!");
         return newItem;
     }
 
-    public void displayGood() {
-        System.out.println("Item posted successfully!");
-    }
-
-    public void displayAllItems(Member loggedInMember, Service service) {
+    public Contract displayAllItems(Member loggedInMember, Service service) {
         List<Item> items = service.getAllItems();
 
         System.out.println("\nItems available for lending:");
@@ -216,7 +203,7 @@ public class ConsoleUI implements ViewInterface {
             // Check if the member is trying to borrow their own item
             if (loggedInMember.equals(selectedItem.getOwner())) {
                 System.out.println("You cannot borrow your own item.");
-                return;
+                return null;
             }
 
             System.out.println("How many days do you want to loan the item?");
@@ -226,14 +213,8 @@ public class ConsoleUI implements ViewInterface {
 
             if (loggedInMember.getCredits() >= totalCost) {
                 int startDate = service.getTime().getDate();
-
                 int endDate = startDate + loanDays;
-
                 service.getTime().setDate(endDate);
-
-                service.addContract(startDate, endDate, selectedItem, loggedInMember);
-                loggedInMember.addCredits(-totalCost);
-                selectedItem.getOwner().addCredits(totalCost);
 
                 System.out.println("Item loaned successfully!");
                 System.out.println("\n--------- Loan Receipt ---------");
@@ -244,10 +225,14 @@ public class ConsoleUI implements ViewInterface {
                 System.out.println("Total Cost: " + totalCost + " credits");
                 System.out.println("Owner of the Item: " + selectedItem.getOwner().getName());
                 System.out.println("--------------------------------");
+                Contract contract = new Contract(startDate, endDate, selectedItem, loggedInMember, totalCost);
+                return contract;
             } else {
                 System.out.println("You don't have enough credits to loan this item.");
+                return null;
             }
         }
+        return null;
     }
 
     public void advanceDayCounter(Service service) {
@@ -256,7 +241,7 @@ public class ConsoleUI implements ViewInterface {
         System.out.println("You are now on day " + service.getTime());
     }
 
-    public void viewMemberDetails(Member loggedInMember, Service service) {
+    public int viewMemberDetails(Member loggedInMember, Service service) {
         System.out.println("\nYour account details: ");
         System.out.println("Name: " + loggedInMember.getName());
         System.out.println("Username: " + loggedInMember.getUsername());
@@ -293,133 +278,114 @@ public class ConsoleUI implements ViewInterface {
             System.out.print("Enter your choice: ");
 
             setChoice = scanner.nextInt();
-
-            switch (setChoice) {
-                case 1:
-                    int memberChoice = 0;
-                    while (memberChoice != 3) {
-                        System.out.println("\n---- Member Settings Menu ----");
-                        System.out.println("1. Change your name");
-                        System.out.println("2. Change your password");
-                        System.out.println("3. Exit");
-                        System.out.print("Enter your choice: ");
-                        memberChoice = scanner.nextInt();
-                        scanner.nextLine();
-                        switch (memberChoice) {
-                            case 1:
-                                System.out.print("Enter your new name: ");
-                                String name = scanner.nextLine();
-                                loggedInMember.setName(name);
-                                System.out.println("Updated successfully!");
-                                break;
-                            case 2:
-                                System.out.print("Enter your new password: ");
-                                String password = scanner.nextLine();
-                                loggedInMember.setPassword(password);
-                                System.out.println("Updated successfully!");
-                                break;
-                            case 3:
-                                break;
-                            default:
-                                System.out.println("Invalid choice. Please try again.");
-                        }
-                    }
-                    break;
-                case 2:
-                    System.out.println("\nEnter the number of the item if you want to update the informations: ");
-                    int getItemChoice = scanner.nextInt();
-                    Item itemToUpdate = items.get(getItemChoice - 1);
-                    int itemChoice = 0;
-                    while (itemChoice != 5) {
-                        System.out.println("\n---- Item Settings Menu ----");
-                        System.out.println("1. Change items category");
-                        System.out.println("2. Change items name");
-                        System.out.println("3. Change items description");
-                        System.out.println("4. Change items cost per day");
-                        System.out.println("5. Exit");
-                        System.out.print("Enter your choice: ");
-                        itemChoice = scanner.nextInt();
-                        scanner.nextLine();
-                        switch (itemChoice) {
-                            case 1:
-                                System.out.print("Enter new category: ");
-                                String category = scanner.nextLine();
-                                itemToUpdate.setCategory(category);
-                                System.out.println("Updated successfully!");
-                                break;
-                            case 2:
-                                System.out.print("Enter new name: ");
-                                String name = scanner.nextLine();
-                                itemToUpdate.setName(name);
-                                System.out.println("Updated successfully!");
-                                break;
-                            case 3:
-                                System.out.print("Enter new description: ");
-                                String description = scanner.nextLine();
-                                itemToUpdate.setDescription(description);
-                                System.out.println("Updated successfully!");
-                                break;
-                            case 4:
-                                System.out.print("Enter new cost per day: ");
-                                int cost = scanner.nextInt();
-                                itemToUpdate.setCostPerDay(cost);
-                                System.out.println("Updated successfully!");
-                                break;
-                            case 5:
-                                break;
-                            default:
-                                System.out.println("Invalid choice. Please try again.");
-                        }
-                    }
-                    break;
-                case 3:
-                    System.out.println("\nEnter the number of the item if you want to delete it or 0 to go back: ");
-                    int choice = scanner.nextInt();
-
-                    if (choice > 0 && choice <= items.size()) {
-                        Item itemToDelete = items.get(choice - 1);
-                        service.deleteMemberItem(itemToDelete);
-                        System.out.println("Item deleted successfully!");
-                    }
-                    break;
-                case 4:
-                    break;
-                default:
-                    System.out.println("Invalid choice. Please try again.");
-            }
+            return setChoice;
         }
+        return 4;
     }
 
-    public void displayAdminMenu(Service service, Admin admin) {
-        if (admin != null) {
-            int choice = 0;
-
-            while (choice != 3) {
-                System.out.println("\n---- Admin Panel ----");
-                System.out.println("1. Display all members");
-                System.out.println("2. Display all items");
-                System.out.println("3. Exit");
-                System.out.print("Enter your choice: ");
-
-                choice = scanner.nextInt();
-
-                switch (choice) {
-                    case 1:
-                        displayAllMembers(service);
-                        break;
-                    case 2:
-                        displayAllItemsAdmin(service);
-                        break;
-                    case 3:
-                        break;
-                    default:
-                        System.out.println("Invalid choice. Please try again.");
-                }
-            }
+    public int memberSettingMenu() {
+        int memberChoice = 0;
+        while (memberChoice != 3) {
+            System.out.println("\n---- Member Settings Menu ----");
+            System.out.println("1. Change your name");
+            System.out.println("2. Change your password");
+            System.out.println("3. Exit");
+            System.out.print("Enter your choice: ");
+            memberChoice = scanner.nextInt();
+            scanner.nextLine();
+            return memberChoice;
         }
+        return 3;
     }
 
-    public void displayAllMembers(Service service) {
+    public String newName() {
+        System.out.print("Enter your new name: ");
+        String name = scanner.nextLine();
+        return name;
+    }
+
+    public String newPassword() {
+        System.out.print("Enter your new password: ");
+        String password = scanner.nextLine();
+        return password;
+    }
+
+    public Item setItem(Service service) {
+        System.out.println("\nEnter the number of the item if you want to update the informations: ");
+        int getItemChoice = scanner.nextInt();
+        Item itemToUpdate = service.items.get(getItemChoice - 1);
+        return itemToUpdate;
+    }
+
+    public int itemSettingMenu() {
+        int itemChoice = 0;
+        System.out.println("\n---- Item Settings Menu ----");
+        System.out.println("1. Change items category");
+        System.out.println("2. Change items name");
+        System.out.println("3. Change items description");
+        System.out.println("4. Change items cost per day");
+        System.out.println("5. Exit");
+        System.out.print("Enter your choice: ");
+        itemChoice = scanner.nextInt();
+        scanner.nextLine();
+        return itemChoice;
+    }
+
+    public String setCategory() {
+        System.out.print("Enter new category: ");
+        String category = scanner.nextLine();
+        return category;
+    }
+
+    public String setItemName() {
+        System.out.print("Enter new name: ");
+        String itemName = scanner.nextLine();
+        return itemName;
+    }
+
+    public String setDescription() {
+        System.out.print("Enter new description: ");
+        String description = scanner.nextLine();
+        return description;
+    }
+
+    public int setItemCost() {
+        System.out.print("Enter new cost: ");
+        int itemCost = scanner.nextInt();
+        return itemCost;
+    }
+
+    public Item setItemToDelete(Member loggedInMember) {
+        System.out.println("\nEnter the number of the item if you want to delete it or 0 to go back: ");
+        int choice = scanner.nextInt();
+
+        if (choice > 0 && choice <= loggedInMember.getOwnedItems().size()) {
+            Item itemToDelete = loggedInMember.getOwnedItems().get(choice - 1);
+            System.out.println("Item deleted successfully!");
+            return itemToDelete;
+        }
+        return null;
+    }
+
+    public void displayGood() {
+        System.out.println("Updated successfully!");
+    }
+
+    public int displayAdminMenu() {
+        int choice = 0;
+        while (choice != 3) {
+            System.out.println("\n---- Admin Panel ----");
+            System.out.println("1. Display all members");
+            System.out.println("2. Display all items");
+            System.out.println("3. Exit");
+            System.out.print("Enter your choice: ");
+            choice = scanner.nextInt();
+            return choice;
+        }
+        return 3;
+    }
+
+    public Member displayAllMembers(Service service) {
         List<Member> members = service.getAllMembers();
         System.out.println("\nAll Members: ");
         for (int i = 0; i < members.size(); i++) {
@@ -433,12 +399,14 @@ public class ConsoleUI implements ViewInterface {
         int choice = scanner.nextInt();
 
         if (choice > 0 && choice <= members.size()) {
-            service.deleteMember(choice);
+            Member memberToDelete = service.members.get(choice - 1);
             System.out.println("Member is banned and all owned items is deleted!");
+            return memberToDelete; 
         }
+        return null;
     }
 
-    public void displayAllItemsAdmin(Service service) {
+    public Item displayAllItemsAdmin(Service service) {
         List<Item> items = service.getAllItems();
         for (int i = 0; i < items.size(); i++) {
             System.out.println((i + 1) + ". " + items.get(i).getCategory() + " / " + items.get(i).getName()
@@ -451,9 +419,10 @@ public class ConsoleUI implements ViewInterface {
         int choice = scanner.nextInt();
 
         if (choice > 0 && choice <= items.size()) {
-            service.deleteItem(choice);
+            Item itemToDelete = items.get(choice - 1);
             System.out.println("Item deleted successfully!");
+            return itemToDelete;
         }
+        return null;
     }
-
 }
