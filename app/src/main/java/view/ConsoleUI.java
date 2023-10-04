@@ -10,7 +10,7 @@ import model.Service;
 
 /**
  * This is the main view class.
- * This is for user Console.
+ * This is for user the user console.
  */
 public class ConsoleUi implements ViewInterface {
   private Scanner scanner;
