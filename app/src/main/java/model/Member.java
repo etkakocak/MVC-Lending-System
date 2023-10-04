@@ -2,122 +2,130 @@ package model;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Random;
 
+/**
+ * This is encaptulation class for members.
+ */
 public class Member {
-    private String memberId;
-    private String name;
-    private String email;
-    private int mobile;
-    private int creationDate;
-    private int credits;
-    private List<Item> ownedItems;
-    private List<Contract> ownedContracts;
-    private String username;
-    private String password;
+  private String memberId;
+  private String name;
+  private String email;
+  private int mobile;
+  public int creationDate;
+  private int credits;
+  public List<Item> ownedItems;
+  public List<Contract> ownedContracts;
+  private String username;
+  private String password;
 
-    public Member(String name, String email, int mobile, String username, String password, Time creationDate) {
-        this.name = name;
-        this.email = email;
-        this.mobile = mobile;
-        this.username = username;
-        this.password = password;
-        this.creationDate = creationDate.getDate();
-        this.credits = 0;
-        ownedItems = new ArrayList<>();
-        ownedContracts = new ArrayList<>();
-        generateMemberId(memberId);
+  /**
+   * The Member class.
+   */
+  public Member(String name, String email, int mobile, String username,
+      String password, Time creationDate) {
+    this.name = name;
+    this.email = email;
+    this.mobile = mobile;
+    this.username = username;
+    this.password = password;
+    this.creationDate = creationDate.getDate();
+    this.credits = 0;
+    ownedItems = new ArrayList<>();
+    ownedContracts = new ArrayList<>();
+    this.memberId = generateMemberId(new Random());
+  }
+
+  public String getUsername() {
+    return username;
+  }
+
+  public void setUsername(String username) {
+    this.username = username;
+  }
+
+  public String getPassword() {
+    return password;
+  }
+
+  public void setPassword(String password) {
+    this.password = password;
+  }
+
+  private String generateMemberId(Random random) {
+    String alphaNumericString = "ABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789";
+    StringBuilder sb = new StringBuilder(6);
+
+    for (int i = 0; i < 6; i++) {
+      int index = random.nextInt(alphaNumericString.length());
+      sb.append(alphaNumericString.charAt(index));
     }
+    return sb.toString();
+  }
 
-    public String getUsername() {
-        return username;
-    }
+  public String getMemberId() {
+    return memberId;
+  }
 
-    public void setUsername(String username) {
-        this.username = username;
-    }
+  public String getName() {
+    return name;
+  }
 
-    public String getPassword() {
-        return password;
-    }
+  public void setName(String name) {
+    this.name = name;
+  }
 
-    public void setPassword(String password) {
-        this.password = password;
-    }
+  public String getEmail() {
+    return email;
+  }
 
-    private void generateMemberId(String memberId) {
-        String alphaNumericString = "ABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789";
-        StringBuilder sb = new StringBuilder(6);
+  public void setEmail(String email) {
+    this.email = email;
+  }
 
-        for (int i = 0; i < 6; i++) {
-            int index = (int) (alphaNumericString.length() * Math.random());
-            sb.append(alphaNumericString.charAt(index));
-        }
-        this.memberId = sb.toString();
-    }
+  public int getMobile() {
+    return mobile;
+  }
 
-    public String getMemberId() {
-        return memberId;
-    }
+  public void setMobile(int mobile) {
+    this.mobile = mobile;
+  }
 
-    public String getName() {
-        return name;
-    }
+  public int getCreationDate() {
+    return creationDate;
+  }
 
-    public void setName(String name) {
-        this.name = name;
-    }
+  public List<Contract> getContracts() {
+    return ownedContracts;
+  }
 
-    public String getEmail() {
-        return email;
-    }
+  public void addOwnedContract(Contract contract) {
+    this.ownedContracts.add(contract);
+  }
 
-    public void setEmail(String email) {
-        this.email = email;
-    }
+  public int getCredits() {
+    return credits;
+  }
 
-    public int getMobile() {
-        return mobile;
-    }
+  public void addCredits(int credits) {
+    this.credits += credits;
+  }
 
-    public void setMobile(int mobile) {
-        this.mobile = mobile;
-    }
+  public List<Item> getOwnedItems() {
+    return ownedItems;
+  }
 
-    public int getCreationDate() {
-        return creationDate;
-    }
+  public void addOwnedItem(Item item) {
+    this.ownedItems.add(item);
+    addCredits(100);
+  }
 
-    public List<Contract> getContracts() {
-        return ownedContracts;
-    }
+  public void removeOwnedItem(Item item) {
+    this.ownedItems.remove(item);
+  }
 
-    public void addOwnedContract(Contract contract) {
-        this.ownedContracts.add(contract);
-    }
-
-    public int getCredits() {
-        return credits;
-    }
-
-    public void addCredits(int credits) {
-        this.credits += credits;
-    }
-
-    public List<Item> getOwnedItems() {
-        return ownedItems;
-    }
-
-    public void addOwnedItem(Item item) {
-        this.ownedItems.add(item);
-        addCredits(100);
-    }
-
-    public void removeOwnedItem(Item item) {
-        this.ownedItems.remove(item);
-    }
-
-    @Override
-    public String toString() {
-        return "" + name;
-    }
+  @Override
+  public String toString() {
+    return "" + name;
+  }
 }

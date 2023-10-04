@@ -1,8 +1,8 @@
 package controller;
 
 import model.Service;
+import view.ConsoleUi;
 import view.ViewInterface;
-import view.ConsoleUI;
 
 /**
  * Responsible for staring the application.
@@ -16,7 +16,7 @@ public class App {
   public static void main(String[] args) {
     // adapt to start the application in your way
     Service m = new Service();
-    ViewInterface v = new ConsoleUI();
+    ViewInterface v = new ConsoleUi();
     ObjectController ctrl = new ObjectController();
     ctrl.start(m, v);
   }

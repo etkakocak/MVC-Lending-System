@@ -1,21 +1,24 @@
 package model;
 
+/**
+ * This is encaptulation class for the registration times in the app.
+ */
 public class Time {
-    private int day;
+  private int day;
 
-    Time() {
-        day = 0;
-    }
+  Time() {
+    day = 0;
+  }
 
-    public int getDate() {
-        return day;
-    }
+  public int getDate() {
+    return day;
+  }
 
-    public void setDate(int newDay) {
-        day = newDay;
-    }
+  public void setDate(int newDay) {
+    day = newDay;
+  }
 
-    public String toString() {
-        return "" + day;
-    }
+  public String toString() {
+    return "" + day;
+  }
 }
