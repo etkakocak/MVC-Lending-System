@@ -86,6 +86,7 @@ public class ObjectController {
         break;
       case 4:
         v.advanceDayCounter(m);
+        memberMenu(m, v, loggedInMember);
         break;
       case 5:
         break;
