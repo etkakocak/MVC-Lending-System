@@ -3,16 +3,9 @@
 # Edit at https://www.toptal.com/developers/gitignore?templates=intellij,macos,windows,linux,eclipse,visualstudiocode
 
 # No build directory
+build/*
 app/bin/*
-app/build/classes
-app/build/distributions
-app/build/generated
-app/build/libs
-app/build/reports
-app/build/scripts
-app/build/spotbugs/*
-app/build/tmp/*
-app/build/spotbugsMain-analyse-class-file.txt
+app/build/*
 
 # No gradle hidden stuff
 .gradle/*
