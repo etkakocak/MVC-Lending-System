@@ -12,6 +12,11 @@ Aiman Daeef (ad223jd)
 
 ## Usage of the application
 
+### Login
+There is a login system in our application. You can log in as admin or member or create a new member account.  
+
+What you should pay attention to when creating a new member account is that you should not enter the same email account or phone number as another member. The application does not accept this. You can change the information you entered when creating a new account at any time you want from the settings menu in the application.  
+
 ### What can an admin do? 
 
 You can not create a new admin account.  
