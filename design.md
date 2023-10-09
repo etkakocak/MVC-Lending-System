@@ -8,4 +8,5 @@ The application uses the model-view-controller (MVC) architectural pattern. The 
 ![Class diagram](/img/class_diagram.png)
 
 ### Sequence Diagram
-![Sequence diagram](/img/sequence_diagram.png)
+![Sequence diagram](/img/sequence_diagram.png) 
+This sequence diagram corresponds to a scenario where a new third member is added to the system where there two other members already exist. It also shows the whole flow of messages and methods. 
