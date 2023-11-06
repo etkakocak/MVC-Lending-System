@@ -12,10 +12,11 @@ public class Member {
   private String name;
   private String email;
   private int mobile;
-  public int creationDate;
+  private int creationDate;
   private int credits;
-  public List<Item> ownedItems;
-  public List<Contract> ownedContracts;
+  private List<Item> ownedItems;
+  private List<Contract> ownedContracts;
+  private List<String> existingMemberIds;
   private String username;
   private String password;
 
@@ -33,6 +34,7 @@ public class Member {
     this.credits = 0;
     ownedItems = new ArrayList<>();
     ownedContracts = new ArrayList<>();
+    existingMemberIds = new ArrayList<>();
     this.memberId = generateMemberId(new Random());
   }
 
@@ -54,13 +56,19 @@ public class Member {
 
   private String generateMemberId(Random random) {
     String alphaNumericString = "ABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789";
-    StringBuilder sb = new StringBuilder(6);
+    StringBuilder sb;
+    String generatedId;
+    do {
+      sb = new StringBuilder(6);
+      for (int i = 0; i < 6; i++) {
+        int index = random.nextInt(alphaNumericString.length());
+        sb.append(alphaNumericString.charAt(index));
+      }
+      generatedId = sb.toString();
+    } while (existingMemberIds.contains(generatedId));
 
-    for (int i = 0; i < 6; i++) {
-      int index = random.nextInt(alphaNumericString.length());
-      sb.append(alphaNumericString.charAt(index));
-    }
-    return sb.toString();
+    existingMemberIds.add(generatedId);
+    return generatedId;
   }
 
   public String getMemberId() {

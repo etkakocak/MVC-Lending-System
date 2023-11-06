@@ -4,15 +4,16 @@ import java.util.ArrayList;
 import java.util.List;
 
 /**
- * This class holds the all data from model classes to send them to the Controller.
+ * This class holds the all data from model classes to send them to the
+ * Controller.
  * This is information expert och greater class.
  */
 public class Service {
-  public List<Member> members;
-  public List<Admin> admins;
-  public List<Item> items;
-  public List<Contract> contracts;
-  public Time time;
+  private List<Member> members;
+  private List<Admin> admins;
+  private List<Item> items;
+  private List<Contract> contracts;
+  private Time time;
 
   /**
    * The Service class.
@@ -23,6 +24,35 @@ public class Service {
     items = new ArrayList<>();
     contracts = new ArrayList<>();
     time = new Time();
+    initializeStartObjects();
+  }
+
+  public void initializeStartObjects() {
+    Member member1 = new Member("Etka", "etka@lending.com", 0031,
+        "etka", "etka123", getTime());
+
+    Member member2 = new Member("Sanaa", "sanaa@lending.com", 0022,
+        "sanaa", "sanaa123", getTime());
+
+    Member member3 = new Member("Aiman", "aiman@lending.com", 0062,
+        "aiman", "aiman123", getTime());
+
+    members.add(member1);
+    members.add(member2);
+    members.add(member3);
+
+    Admin admin1 = new Admin("gadmin", "thegadmin03");
+    admins.add(admin1);
+
+    Item item1 = new Item("Electronics", "MacBook Pro",
+        "A clean computer for temporary works", 30, member3, getTime());
+    Item item2 = new Item("Veichle", "BMW M5 2021", "Max 100 miles per loan period.", 300, 
+        member1, getTime());
+
+    items.add(item1);
+    member3.addOwnedItem(item1);
+    items.add(item2);
+    member1.addOwnedItem(item2);
   }
 
   /**
@@ -73,8 +103,8 @@ public class Service {
     return null;
   }
 
-  public void createMemberAccount(String name, String email, int mobile, 
-        String username, String password) {
+  public void createMemberAccount(String name, String email, int mobile,
+      String username, String password) {
     Member newMember = new Member(name, email, mobile, username, password, time);
     members.add(newMember);
   }
@@ -147,8 +177,8 @@ public class Service {
   /**
    * To add new item.
    */
-  public void addItem(String category, String name, String description, 
-            int costPerDay, Member owner) {
+  public void addItem(String category, String name, String description,
+      int costPerDay, Member owner) {
     Item item = new Item(category, name, description, costPerDay, owner, time);
     items.add(item);
     owner.addOwnedItem(item);

@@ -20,41 +20,6 @@ public class ConsoleUi implements ViewInterface {
   }
 
   /**
-   * This method creates start members.
-   */
-  public Member[] initializeStartMembers(Service service) {
-    Member member1 = new Member("Etka", "etka@lending.com", 0031, 
-          "etka", "etka123", service.getTime());
-
-    Member member2 = new Member("Sanaa", "sanaa@lending.com", 0022, 
-          "sanaa", "sanaa123", service.getTime());
-
-    Member member3 = new Member("Aiman", "aiman@lending.com", 0062, 
-          "aiman", "aiman123", service.getTime());
-
-    return new Member[] { member1, member2, member3 };
-  }
-
-  public Admin initializeStartAdmin(Service service) {
-    Admin admin1 = new Admin("gadmin", "thegadmin03");
-    return admin1;
-  }
-
-  /**
-   * This method creates start items.
-   */
-  public Item[] initializeStartItems(Service service) {
-    Member member1 = service.getMember(0);
-    Member member3 = service.getMember(2);
-    Item item1 = new Item("Electronics", "MacBook Pro", 
-        "A clean computer for temporary works", 30, member3, service.getTime());
-    Item item2 = new Item("Veichle", "BMW M5 2021", "Max 100 miles per loan period.", 300, member1,
-        service.getTime());
-
-    return new Item[] { item1, item2 };
-  }
-
-  /**
    * To get username and password from user as input.
    */
   public String[] getCredentials() {
@@ -375,7 +340,7 @@ public class ConsoleUi implements ViewInterface {
   public Item setItem(Service service) {
     System.out.println("\nEnter the number of the item if you want to update the informations: ");
     int getItemChoice = scanner.nextInt();
-    Item itemToUpdate = service.items.get(getItemChoice - 1);
+    Item itemToUpdate = service.getAllItems().get(getItemChoice - 1);
     return itemToUpdate;
   }
 
@@ -485,7 +450,7 @@ public class ConsoleUi implements ViewInterface {
     int choice = scanner.nextInt();
 
     if (choice > 0 && choice <= members.size()) {
-      Member memberToDelete = service.members.get(choice - 1);
+      Member memberToDelete = service.getAllMembers().get(choice - 1);
       System.out.println("Member is banned and all owned items is deleted!");
       return memberToDelete;
     }

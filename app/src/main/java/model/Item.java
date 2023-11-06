@@ -9,7 +9,7 @@ public class Item {
   private String description;
   private int creationDate;
   private int costPerDay;
-  public Member owner;
+  private Member owner;
 
   /**
    * The Item class.

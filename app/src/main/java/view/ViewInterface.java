@@ -14,12 +14,6 @@ public interface ViewInterface {
   // for login
   void displayError();
 
-  Member[] initializeStartMembers(Service service);
-
-  Admin initializeStartAdmin(Service service);
-
-  Item[] initializeStartItems(Service service);
-
   Admin adminLoginProcess(Service service);
 
   int getLoginType();

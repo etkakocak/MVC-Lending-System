@@ -16,20 +16,6 @@ public class ObjectController {
    * This method gets data from model and view to start the app.
    */
   public void start(Service m, ViewInterface v) {
-    Member[] startMembers = v.initializeStartMembers(m);
-    for (Member member : startMembers) {
-      m.addMember(member.getName(), member.getEmail(), member.getMobile(), member.getUsername(),
-          member.getPassword());
-    }
-
-    Admin systemAdmin = v.initializeStartAdmin(m);
-    m.admins.add(systemAdmin);
-
-    Item[] startItems = v.initializeStartItems(m);
-    for (Item item : startItems) {
-      m.addItem(item.getCategory(), item.getName(), item.getDescription(), 
-          item.getCostPerDay(), item.getOwner());
-    }
 
     v.displayLoginMenu();
 

@@ -6,9 +6,9 @@ package model;
 public class Contract {
   private int startDate;
   private int endDate;
-  public Item item;
-  public Member lender;
-  public Member owner;
+  private Item item;
+  private Member lender;
+  private Member owner;
   private int cost;
 
   /**
