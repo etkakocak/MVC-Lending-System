@@ -8,7 +8,6 @@ public class Contract {
   private int endDate;
   private Item item;
   private Member lender;
-  private Member owner;
   private int cost;
 
   /**
@@ -19,7 +18,6 @@ public class Contract {
     this.endDate = endDate;
     this.item = item;
     this.lender = lender;
-    this.owner = item.getOwner();
     this.cost = cost;
   }
 
@@ -61,9 +59,5 @@ public class Contract {
 
   public void setLender(Member lender) {
     this.lender = lender;
-  }
-
-  public Member getOwner() {
-    return owner;
   }
 }

@@ -1,9 +1,7 @@
 package view;
 
-import model.Admin;
-import model.Contract;
+import java.util.List;
 import model.Item;
-import model.Member;
 import model.Service;
 
 /**
@@ -11,29 +9,19 @@ import model.Service;
  * This gets  data from Controller to send it to the Console.
  */
 public interface ViewInterface {
-  // for login
-  void displayError();
+  void welcome();
 
-  Admin adminLoginProcess(Service service);
+  void getUserChoice();
 
-  int getLoginType();
-
-  Member memberLoginProcess(Service service);
-
-  Member memberCreateProcess(Service service);
-
-  void displayLoginMenu();
-
-  // for member
-  int displayMainMenu();
+  void displayMainMenu();
 
   void displayBadChoice();
 
   void advanceDayCounter(Service service);
 
-  int viewMemberDetails(Member member, Service service);
+  void viewMemberDetails(Service service);
 
-  int memberSettingMenu();
+  void memberSettingMenu();
 
   String newName();
 
@@ -41,14 +29,13 @@ public interface ViewInterface {
 
   void displayGood();
 
-  // for Item
-  Contract displayAllItems(Member member, Service service);
+  String[] displayAllItems(List<Item> items, Service service);
 
-  Item postAnItem(Member member, Service service);
+  String[] postAnItem(Service service);
 
-  Item setItem(Service service);
+  int setItem();
 
-  int itemSettingMenu();
+  void itemSettingMenu();
 
   String setCategory();
 
@@ -58,12 +45,23 @@ public interface ViewInterface {
 
   int setItemCost();
 
-  Item setItemToDelete(Member member);
+  String[] setItemToDelete(Service service);
 
-  // for admin
-  int displayAdminMenu();
+  int displayAllMembers(Service service);
 
-  Member displayAllMembers(Service service);
+  int displayAllItemsAdmin(List<Item> items, Service service);
 
-  Item displayAllItemsAdmin(Service service);
+  boolean first();
+
+  boolean second();
+
+  boolean third();
+
+  boolean fourth();
+
+  boolean fifth();
+
+  boolean sixth();
+
+  boolean seventh();
 }

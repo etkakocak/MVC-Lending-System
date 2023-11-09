@@ -17,7 +17,7 @@ public class App {
     // adapt to start the application in your way
     Service m = new Service();
     ViewInterface v = new ConsoleUi();
-    ObjectController ctrl = new ObjectController();
-    ctrl.start(m, v);
+    ObjectController ctrl = new ObjectController(m, v);
+    ctrl.start();
   }
 } 

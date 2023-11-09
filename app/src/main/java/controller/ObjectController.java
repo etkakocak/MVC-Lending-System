@@ -1,199 +1,160 @@
 package controller;
 
-import model.Admin;
-import model.Contract;
+import java.util.List;
 import model.Item;
-import model.Member;
 import model.Service;
 import view.ViewInterface;
 
 /**
- * This class controls the objects in this app. 
+ * This class controls the objects in this app.
  */
 public class ObjectController {
-  
+  private Service model;
+  private ViewInterface view;
+
+  /**
+   * ObjectController class.
+   */
+  public ObjectController(Service model, ViewInterface view) {
+    this.model = model;
+    this.view = view;
+  }
+
   /**
    * This method gets data from model and view to start the app.
    */
-  public void start(Service m, ViewInterface v) {
-
-    v.displayLoginMenu();
-
-    int choice = v.getLoginType();
-
-    if (choice == 1) {
-      Admin thisAdmin = v.adminLoginProcess(m);
-      if (thisAdmin != null) {
-        adminMenu(m, v, thisAdmin);
-      }
-    } else if (choice == 2) {
-      Member loggedInMember = v.memberLoginProcess(m);
-      if (loggedInMember != null) {
-        memberMenu(m, v, loggedInMember);
-      }
-    } else if (choice == 3) {
-      Member createdMember = v.memberCreateProcess(m);
-      if (createdMember != null) {
-        memberMenu(m, v, createdMember);
-      }
-    } else {
-      v.displayError();
-      start(m, v);
+  public void start() {
+    model.setLoggedInMember();
+    if (model.getLoggedInMember() != null) {
+      memberMenu();
     }
+
+    view.welcome();
   }
 
   /**
    * This is for handling of the member menu in ConsoleUI.
    */
-  public void memberMenu(Service m, ViewInterface v, Member loggedInMember) {
-    int choice = v.displayMainMenu();
-    switch (choice) {
-      case 1:
-        Item item = v.postAnItem(loggedInMember, m);
-        m.addItem(item.getCategory(), item.getName(), item.getDescription(), item.getCostPerDay(),
-            item.getOwner());
-        memberMenu(m, v, loggedInMember);
-        break;
-      case 2:
-        Contract contract = v.displayAllItems(loggedInMember, m);
-        if (contract != null) {
-          int cost = contract.getCost();
-          m.addContract(contract.getStartDate(), contract.getEndDate(), contract.getItem(),
-              contract.getLender(), cost);
-          loggedInMember.addCredits(-cost);
-          contract.getOwner().addCredits(cost);
-          memberMenu(m, v, loggedInMember);
-        } else {
-          memberMenu(m, v, loggedInMember);
-        }
-        break;
-      case 3:
-        settingMenu(v, m, loggedInMember);
-        break;
-      case 4:
-        v.advanceDayCounter(m);
-        memberMenu(m, v, loggedInMember);
-        break;
-      case 5:
-        break;
-      default:
-        v.displayBadChoice();
-        memberMenu(m, v, loggedInMember);
+  public boolean memberMenu() {
+    view.displayMainMenu();
+    view.getUserChoice();
+
+    if (view.first()) {
+      String[] itemDetails = view.postAnItem(model);
+      model.addItem(itemDetails[0], itemDetails[1], itemDetails[2], itemDetails[3], itemDetails[4]);
+      memberMenu();
+    } else if (view.second()) {
+      List<Item> items = model.getAllItems();
+      String[] contractDetails = view.displayAllItems(items, model);
+      if (contractDetails != null) {
+        model.addContract(contractDetails[0], contractDetails[1], contractDetails[2], 
+            contractDetails[3], contractDetails[4]);
+        memberMenu();
+      } else {
+        memberMenu();
+      }
+    } else if (view.third()) {
+      settingMenu();
+    } else if (view.fourth()) {
+      model.dayCounter();
+      view.advanceDayCounter(model);
+      memberMenu();
+    } else if (view.fifth()) {
+      int memberToDelete = view.displayAllMembers(model);
+      if (memberToDelete != 0) {
+        model.deleteMember(memberToDelete);
+        memberMenu();
+      } else {
+        memberMenu();
+      }
+    } else if (view.sixth()) {
+      List<Item> items = model.getAllItems();
+      int itemToDelete = view.displayAllItemsAdmin(items, model);
+      if (itemToDelete != 0) {
+        model.deleteItem(itemToDelete);
+        memberMenu();
+      } else {
+        memberMenu();
+      }
+    }
+    return !(view.seventh());
+  }
+
+  /**
+   * This is for handling of the setting menu for member data.
+   */
+  public void memberSettingMenu() {
+    view.memberSettingMenu();
+    view.getUserChoice();
+
+    if (view.first()) {
+      model.getLoggedInMember().setName(view.newName());
+      view.displayGood();
+      memberSettingMenu();
+    } else if (view.second()) {
+      model.getLoggedInMember().setPassword(view.newPassword());
+      view.displayGood();
+      memberSettingMenu();
+    } else if (view.third()) {
+      settingMenu();
+    } else {
+      memberSettingMenu();
     }
   }
 
   /**
-   * This is for handling of the admin menu in ConsoleUI.
+   * This is for handling of the setting menu for item data.
    */
-  public void adminMenu(Service m, ViewInterface v, Admin admin) {
-    int choice = v.displayAdminMenu();
-    switch (choice) {
-      case 1:
-        Member memberToDelete = v.displayAllMembers(m);
-        if (memberToDelete != null) {
-          m.deleteMember(memberToDelete);
-          adminMenu(m, v, admin);
-        } else {
-          adminMenu(m, v, admin);
-        }
-        break;
-      case 2:
-        Item itemToDelete = v.displayAllItemsAdmin(m);
-        if (itemToDelete != null) {
-          m.deleteItem(itemToDelete);
-          adminMenu(m, v, admin);
-        } else {
-          adminMenu(m, v, admin);
-        }
-        break;
-      case 3:
-        break;
-      default:
-        v.displayBadChoice();
+  public void itemSettingMenu() {
+    view.itemSettingMenu();
+    view.getUserChoice();
+    Item itemToUpdate = model.setItem(view.setItem());
+
+    if (view.first()) {
+      String category = view.setCategory();
+      itemToUpdate.setCategory(category);
+      view.displayGood();
+      itemSettingMenu();
+    } else if (view.second()) {
+      String itemName = view.setItemName();
+      itemToUpdate.setName(itemName);
+      view.displayGood();
+      itemSettingMenu();
+    } else if (view.third()) {
+      String description = view.setDescription();
+      itemToUpdate.setDescription(description);
+      view.displayGood();
+      itemSettingMenu();
+    } else if (view.fourth()) {
+      int cost = view.setItemCost();
+      itemToUpdate.setCostPerDay(cost);
+      view.displayGood();
+      itemSettingMenu();
+    } else if (view.fifth()) {
+      settingMenu();
+    } else {
+      itemSettingMenu();
     }
   }
 
   /**
    * This is for handling of the setting menu in ConsoleUI.
    */
-  public void settingMenu(ViewInterface v, Service m, Member loggedInMember) {
-    int setChoice = v.viewMemberDetails(loggedInMember, m);
-    switch (setChoice) {
-      case 1:
-        int memberChoice = v.memberSettingMenu();
-        switch (memberChoice) {
-          case 1:
-            String name = v.newName();
-            loggedInMember.setName(name);
-            v.displayGood();
-            settingMenu(v, m, loggedInMember);
-            break;
-          case 2:
-            String password = v.newPassword();
-            loggedInMember.setPassword(password);
-            v.displayGood();
-            settingMenu(v, m, loggedInMember);
-            break;
-          case 3:
-            settingMenu(v, m, loggedInMember);
-            break;
-          default:
-            v.displayBadChoice();
-            settingMenu(v, m, loggedInMember);
-        }
-        break;
-      case 2:
-        Item itemToUpdate = v.setItem(m);
-        int itemChoice = v.itemSettingMenu();
-        switch (itemChoice) {
-          case 1:
-            String category = v.setCategory();
-            itemToUpdate.setCategory(category);
-            v.displayGood();
-            settingMenu(v, m, loggedInMember);
-            break;
-          case 2:
-            String itemName = v.setItemName();
-            itemToUpdate.setName(itemName);
-            settingMenu(v, m, loggedInMember);
-            v.displayGood();
-            break;
-          case 3:
-            String description = v.setDescription();
-            itemToUpdate.setDescription(description);
-            settingMenu(v, m, loggedInMember);
-            v.displayGood();
-            break;
-          case 4:
-            int cost = v.setItemCost();
-            itemToUpdate.setCostPerDay(cost);
-            settingMenu(v, m, loggedInMember);
-            v.displayGood();
-            break;
-          case 5:
-            settingMenu(v, m, loggedInMember);
-            break;
-          default:
-            v.displayBadChoice();
-            settingMenu(v, m, loggedInMember);
-        }
-        break;
-      case 3:
-        Item itemToDelete = v.setItemToDelete(loggedInMember);
-        if (itemToDelete != null) {
-          m.deleteMemberItem(itemToDelete);
-          settingMenu(v, m, loggedInMember);
-        } else {
-          settingMenu(v, m, loggedInMember);
-        }
-        break;
-      case 4:
-        memberMenu(m, v, loggedInMember);
-        break;
-      default:
-        v.displayBadChoice();
-        settingMenu(v, m, loggedInMember);
-        break;
+  public void settingMenu() {
+    view.viewMemberDetails(model);
+    view.getUserChoice();
+
+    if (view.first()) {
+      memberSettingMenu();
+    } else if (view.second()) {
+      itemSettingMenu();
+    } else if (view.third()) {
+      String[] itemDetails = view.setItemToDelete(model);
+      model.deleteOwnedItem(itemDetails[0], itemDetails[1]);
+    } else if (view.fourth()) {
+      memberMenu();
+    } else {
+      settingMenu();
     }
   }
 }

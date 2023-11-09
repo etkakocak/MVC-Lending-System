@@ -14,6 +14,7 @@ public class Service {
   private List<Item> items;
   private List<Contract> contracts;
   private Time time;
+  private Member loggedInMember;
 
   /**
    * The Service class.
@@ -27,6 +28,9 @@ public class Service {
     initializeStartObjects();
   }
 
+  /**
+   * Create start objects for application.
+   */
   public void initializeStartObjects() {
     Member member1 = new Member("Etka", "etka@lending.com", 0031,
         "etka", "etka123", getTime());
@@ -46,13 +50,47 @@ public class Service {
 
     Item item1 = new Item("Electronics", "MacBook Pro",
         "A clean computer for temporary works", 30, member3, getTime());
-    Item item2 = new Item("Veichle", "BMW M5 2021", "Max 100 miles per loan period.", 300, 
+    Item item2 = new Item("Veichle", "BMW M5 2021", "Max 100 miles per loan period.", 300,
         member1, getTime());
 
     items.add(item1);
     member3.addOwnedItem(item1);
     items.add(item2);
     member1.addOwnedItem(item2);
+  }
+
+  /**
+   * To get username and password from user as input.
+   */
+  public String[] setCredentials() {
+    String username = "etka";
+    String password = "etka123";
+
+    return new String[] { username, password };
+  }
+
+  /**
+   * To login as member.
+   */
+  public Member memberLoginProcess() {
+    boolean memberValidated = false;
+    while (!memberValidated) {
+      String[] memberCredentials = setCredentials();
+      Member loggedInMember = validateMember(memberCredentials[0], memberCredentials[1]);
+      if (loggedInMember != null) {
+        memberValidated = true;
+        return loggedInMember;
+      } 
+    }
+    return null;
+  }
+
+  public void setLoggedInMember() {
+    loggedInMember = memberLoginProcess();
+  }
+
+  public Member getLoggedInMember() {
+    return loggedInMember;
   }
 
   /**
@@ -63,6 +101,18 @@ public class Service {
     for (Member member : members) {
       if (member.getUsername().equals(username)) {
         return member;
+      }
+    }
+    return null;
+  }
+
+  /**
+   * To find an item by its name.
+   */
+  public Item getItemByName(String itemname) {
+    for (Item item : items) {
+      if (item.getName().equals(itemname)) {
+        return item;
       }
     }
     return null;
@@ -150,7 +200,8 @@ public class Service {
    * Delete or add methods starts here.
    * To delete an item.
    */
-  public void deleteItem(Item itemToDelete) {
+  public void deleteItem(int choice) {
+    Item itemToDelete = items.get(choice - 1);
     itemToDelete.getOwner().getOwnedItems().remove(itemToDelete);
     itemToDelete.getOwner().addCredits(-100);
     items.remove(itemToDelete);
@@ -166,19 +217,34 @@ public class Service {
   }
 
   /**
+   * To delete a member owned item.
+   */
+  public void deleteOwnedItem(String owner, String choice) {
+    Member itemOwner = getMemberByUsername(owner);
+    int itemChoice = Integer.parseInt(choice);
+    Item itemToDelete = itemOwner.getOwnedItems().get(itemChoice - 1);
+    itemToDelete.getOwner().getOwnedItems().remove(itemToDelete);
+    itemToDelete.getOwner().addCredits(-100);
+    items.remove(itemToDelete);
+  }
+
+  /**
    * To delete a member.
    */
-  public void deleteMember(Member member) {
-    List<Item> itemsToDelete = member.getOwnedItems();
+  public void deleteMember(int choice) {
+    Member memberToDelete = members.get(choice - 1);
+    List<Item> itemsToDelete = memberToDelete.getOwnedItems();
     items.removeAll(itemsToDelete);
-    members.remove(member);
+    members.remove(memberToDelete);
   }
 
   /**
    * To add new item.
    */
   public void addItem(String category, String name, String description,
-      int costPerDay, Member owner) {
+      String stringCostPerDay, String stringOwner) {
+    int costPerDay = Integer.parseInt(stringCostPerDay);
+    Member owner = getMemberByUsername(stringOwner);
     Item item = new Item(category, name, description, costPerDay, owner, time);
     items.add(item);
     owner.addOwnedItem(item);
@@ -192,7 +258,13 @@ public class Service {
   /**
    * To create a new contract.
    */
-  public void addContract(int stDate, int enDate, Item theItem, Member theLender, int cost) {
+  public void addContract(String stringStDate, String stringEnDate, String stringTheItem, 
+      String stringTheLender, String stringCost) {
+    int stDate = Integer.parseInt(stringStDate);
+    int enDate = Integer.parseInt(stringEnDate);
+    Member theLender = getMemberByUsername(stringTheLender);
+    Item theItem = getItemByName(stringTheItem);
+    int cost = Integer.parseInt(stringCost);
     Contract newContract = new Contract(stDate, enDate, theItem, theLender, cost);
     contracts.add(newContract);
     theLender.addOwnedContract(newContract);
@@ -201,5 +273,10 @@ public class Service {
   public void dayCounter() {
     int nextDay = time.getDate() + 1;
     time.setDate(nextDay);
+  }
+
+  public Item setItem(int getItemChoice) {
+    Item itemToUpdate = items.get(getItemChoice - 1);
+    return itemToUpdate;
   }
 }

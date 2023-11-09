@@ -2,7 +2,6 @@ package view;
 
 import java.util.List;
 import java.util.Scanner;
-import model.Admin;
 import model.Contract;
 import model.Item;
 import model.Member;
@@ -14,150 +13,34 @@ import model.Service;
  */
 public class ConsoleUi implements ViewInterface {
   private Scanner scanner;
+  private int choice;
 
   public ConsoleUi() {
     this.scanner = new Scanner(System.in, "UTF-8");
   }
 
-  /**
-   * To get username and password from user as input.
-   */
-  public String[] getCredentials() {
-    System.out.print("Enter username: ");
-    String username = scanner.nextLine();
-
-    System.out.print("Enter password: ");
-    String password = scanner.nextLine();
-
-    return new String[] { username, password };
+  @Override
+  public void getUserChoice() {
+    choice = getInput();
   }
 
-  /**
-   * To get the type of login.
-   */
-  public int getLoginType() {
-    int choice = scanner.nextInt();
-    scanner.nextLine();
-    return choice;
-  }
-
-  public void displayError() {
-    System.out.println("\nError: Bad login choice!");
-  }
-
-  /**
-   * To print login menu.
-   */
-  public void displayLoginMenu() {
-    System.out.println("Welcome to the Stuff Lending System Login!");
-    System.out.println("1. Login as Admin");
-    System.out.println("2. Login as Member");
-    System.out.println("3. Create Member Account");
-    System.out.print("Enter your choice: ");
-  }
-
-  /**
-   * To login as admin.
-   */
-  public Admin adminLoginProcess(Service service) {
-    boolean adminValidated = false;
-    while (!adminValidated) {
-      String[] adminCredentials = getCredentials();
-      Admin admin = service.validateAdmin(adminCredentials[0], adminCredentials[1]);
-      if (admin != null) {
-        adminValidated = true;
-        return admin;
-      } else {
-        System.out.println("Invalid admin credentials. Try again or type 'exit' to quit.");
-        String exitChoice = scanner.nextLine();
-        if ("exit".equalsIgnoreCase(exitChoice)) {
-          break;
-        }
-      }
-    }
-    return null;
-  }
-
-  /**
-   * To login as member.
-   */
-  public Member memberLoginProcess(Service service) {
-    boolean memberValidated = false;
-    while (!memberValidated) {
-      String[] memberCredentials = getCredentials();
-      Member loggedInMember = service.validateMember(memberCredentials[0], memberCredentials[1]);
-      if (loggedInMember != null) {
-        memberValidated = true;
-        return loggedInMember;
-      } else {
-        System.out.println("Invalid member credentials. Try again or type 'exit' to quit.");
-        String exitChoice = scanner.nextLine();
-        if ("exit".equalsIgnoreCase(exitChoice)) {
-          break;
-        }
-      }
-    }
-    return null;
-  }
-
-  /**
-   * To create a new account.
-   */
-  public Member memberCreateProcess(Service service) {
-    boolean memberValidated = false;
-    while (!memberValidated) {
-      System.out.print("Enter your name: ");
-      String name = scanner.nextLine();
-
-      System.out.print("Enter your username: ");
-      String username = scanner.nextLine();
-
-      System.out.print("Enter your password: ");
-      String password = scanner.nextLine();
-
-      System.out.print("Enter your email: ");
-      String email = scanner.nextLine();
-      
-      System.out.print("Enter your phone number: ");
-      int mobile = scanner.nextInt();
-      scanner.nextLine();
-
-      if (service.canAddMember(email, mobile)) {
-        service.createMemberAccount(name, email, mobile, username, password);
-        System.out.println("Member account created successfully.");
-
-        Member newMember = service.validateMember(username, password);
-        memberValidated = true;
-        return newMember;
-      } else {
-        System.out.println(
-            "E-post eller mobilnummer används redan! Please try again or type 'exit' to quit..");
-        String exitChoice = scanner.nextLine();
-        if ("exit".equalsIgnoreCase(exitChoice)) {
-          break;
-        }
-      }
-    }
-    return null;
+  public void welcome() {
+    System.out.println("Welcome to the stuff lending system...");
   }
 
   /**
    * To print main menu for member.
    */
-  public int displayMainMenu() {
-    int choice = 0;
-    while (choice != 5) {
-      System.out.println("\n---- Main Menu ----");
-      System.out.println("1. Post an item");
-      System.out.println("2. Display all items");
-      System.out.println("3. View member details");
-      System.out.println("4. Advance the day counter");
-      System.out.println("5. Exit");
-      System.out.print("Enter your choice: ");
-      choice = scanner.nextInt();
-      return choice;
-    }
-    return 5;
+  public void displayMainMenu() {
+    System.out.println("\n---- Main Menu ----");
+    System.out.println("1. Post an item");
+    System.out.println("2. Display all items (to loan)");
+    System.out.println("3. View member details");
+    System.out.println("4. Advance the day counter");
+    System.out.println("5. Display all members");
+    System.out.println("6. Display all items (to delete)");
+    System.out.println("7. Exit");
+    System.out.print("Enter your choice: ");
   }
 
   public void displayBadChoice() {
@@ -165,38 +48,91 @@ public class ConsoleUi implements ViewInterface {
   }
 
   /**
+   * To get user inputs in view and delete hidden
+   * dependency between view and controller.
+   */
+  public int getInput() {
+    try {
+      int c = System.in.read();
+      while (c == '\r' || c == '\n') {
+        c = System.in.read();
+      }
+      return c;
+    } catch (java.io.IOException e) {
+      System.out.println("" + e);
+      return 0;
+    }
+  }
+
+  @Override
+  public boolean first() {
+    return choice == '1';
+  }
+
+  @Override
+  public boolean second() {
+    return choice == '2';
+  }
+
+  @Override
+  public boolean third() {
+    return choice == '3';
+  }
+
+  @Override
+  public boolean fourth() {
+    return choice == '4';
+  }
+
+  @Override
+  public boolean fifth() {
+    return choice == '5';
+  }
+
+  @Override
+  public boolean sixth() {
+    return choice == '6';
+  }
+
+  @Override
+  public boolean seventh() {
+    return choice == '7';
+  }
+
+  /**
    * Member can post an item.
    */
-  public Item postAnItem(Member loggedInMember, Service service) {
+  public String[] postAnItem(Service service) {
     System.out.println("\nEnter item category (Tool, Vehicle, Game, Toy, Sport, Other): ");
-    String category = scanner.nextLine();
+    scanner.nextLine();
+    String category = null;
     category = scanner.nextLine();
 
     System.out.println("Enter item name: ");
-    String name = scanner.nextLine();
+    String name = null;
+    name = scanner.nextLine();
 
     System.out.println("Enter item description: ");
-    String descContent = scanner.nextLine();
+    String descContent = null;
+    descContent = scanner.nextLine();
 
     System.out.println("Enter cost per day to lend the item: ");
     int costPerDay = scanner.nextInt();
+    scanner.nextLine();
 
-    Item newItem = new Item(category, name, descContent, costPerDay, 
-          loggedInMember, service.getTime());
     System.out.println("Item posted successfully!");
-    return newItem;
+    return new String[] { category, name, descContent, String.valueOf(costPerDay), 
+      service.getLoggedInMember().getUsername()};
   }
 
   /**
    * Member can display all availible items.
    */
-  public Contract displayAllItems(Member loggedInMember, Service service) {
-    List<Item> items = service.getAllItems();
-
+  public String[] displayAllItems(List<Item> items, Service service) {
     System.out.println("\nItems available for lending:");
     for (int i = 0; i < items.size(); i++) {
-      System.out.println((i + 1) + ". " + items.get(i).getCategory() + " / " 
-          + items.get(i).getName() + " / " + items.get(i).getDescription() 
+      System.out.println((i + 1) + ". " + items.get(i).getCategory() + " / "
+          + items.get(i).getName() + " / " + items.get(i).getDescription()
           + "\nCost per day: " + items.get(i).getCostPerDay()
           + "\nCreated: Day " + items.get(i).getCreationDate());
     }
@@ -208,7 +144,7 @@ public class ConsoleUi implements ViewInterface {
       Item selectedItem = items.get(choice - 1);
 
       // Check if the member is trying to borrow their own item
-      if (loggedInMember.equals(selectedItem.getOwner())) {
+      if (service.getLoggedInMember().equals(selectedItem.getOwner())) {
         System.out.println("You cannot borrow your own item.");
         return null;
       }
@@ -218,23 +154,23 @@ public class ConsoleUi implements ViewInterface {
 
       int totalCost = loanDays * selectedItem.getCostPerDay();
 
-      if (loggedInMember.getCredits() >= totalCost) {
+      if (service.getLoggedInMember().getCredits() >= totalCost) {
         int startDate = service.getTime().getDate();
         int endDate = startDate + loanDays;
         service.getTime().setDate(endDate);
 
         System.out.println("Item loaned successfully!");
         System.out.println("\n--------- Loan Receipt ---------");
-        System.out.println("Borrower: " + loggedInMember.getName());
+        System.out.println("Borrower: " + service.getLoggedInMember().getName());
         System.out.println("Item Loaned: " + selectedItem.getName());
         System.out.println("Start Date: Day " + startDate);
         System.out.println("End Date: Day " + endDate);
         System.out.println("Total Cost: " + totalCost + " credits");
         System.out.println("Owner of the Item: " + selectedItem.getOwner().getName());
         System.out.println("--------------------------------");
-        Contract contract = new Contract(startDate, endDate, selectedItem, 
-            loggedInMember, totalCost);
-        return contract;
+        return new String[] {String.valueOf(startDate), String.valueOf(endDate), 
+            selectedItem.getName(), service.getLoggedInMember().getUsername(), 
+              String.valueOf(totalCost)};
       } else {
         System.out.println("You don't have enough credits to loan this item.");
         return null;
@@ -248,25 +184,24 @@ public class ConsoleUi implements ViewInterface {
    */
   public void advanceDayCounter(Service service) {
     System.out.println("\nAdvancing the day...");
-    service.dayCounter();
     System.out.println("You are now on day " + service.getTime());
   }
 
   /**
    * Member can view their account details and change them.
    */
-  public int viewMemberDetails(Member loggedInMember, Service service) {
+  public void viewMemberDetails(Service service) {
     System.out.println("\nYour account details: ");
-    System.out.println("Name: " + loggedInMember.getName());
-    System.out.println("Username: " + loggedInMember.getUsername());
-    System.out.println("Member ID: " + loggedInMember.getMemberId());
-    System.out.println("Email: " + loggedInMember.getEmail());
-    System.out.println("Phone number: " + loggedInMember.getMobile());
-    System.out.println("Account is created: Day " + loggedInMember.getCreationDate());
-    System.out.println("Your credit: " + loggedInMember.getCredits());
+    System.out.println("Name: " + service.getLoggedInMember().getName());
+    System.out.println("Username: " + service.getLoggedInMember().getUsername());
+    System.out.println("Member ID: " + service.getLoggedInMember().getMemberId());
+    System.out.println("Email: " + service.getLoggedInMember().getEmail());
+    System.out.println("Phone number: " + service.getLoggedInMember().getMobile());
+    System.out.println("Account is created: Day " + service.getLoggedInMember().getCreationDate());
+    System.out.println("Your credit: " + service.getLoggedInMember().getCredits());
 
     System.out.println("\nCreated Contracts:");
-    List<Contract> contracts = loggedInMember.getContracts();
+    List<Contract> contracts = service.getLoggedInMember().getContracts();
     for (int i = 0; i < contracts.size(); i++) {
       System.out.println((i + 1) + ". " + contracts.get(i).getItem().getName()
           + "\nOwner: " + contracts.get(i).getItem().getOwner().getName()
@@ -275,45 +210,31 @@ public class ConsoleUi implements ViewInterface {
     }
 
     System.out.println("\nPosted Items:");
-    List<Item> items = loggedInMember.getOwnedItems();
+    List<Item> items = service.getLoggedInMember().getOwnedItems();
     for (int i = 0; i < items.size(); i++) {
-      System.out.println((i + 1) + ". " + items.get(i).getCategory() + " / " 
-          + items.get(i).getName() + " / " + items.get(i).getDescription() 
+      System.out.println((i + 1) + ". " + items.get(i).getCategory() + " / "
+          + items.get(i).getName() + " / " + items.get(i).getDescription()
           + "\nCost per day: " + items.get(i).getCostPerDay()
           + "\nCreated: Day " + items.get(i).getCreationDate());
     }
 
-    int setChoice = 0;
-    while (setChoice != 4) {
-      System.out.println("\n---- Settings Menu ----");
-      System.out.println("1. Change member information");
-      System.out.println("2. Change item information");
-      System.out.println("3. Delete an item");
-      System.out.println("4. Exit");
-      System.out.print("Enter your choice: ");
-
-      setChoice = scanner.nextInt();
-      return setChoice;
-    }
-    return 4;
+    System.out.println("\n---- Settings Menu ----");
+    System.out.println("1. Change member information");
+    System.out.println("2. Change item information");
+    System.out.println("3. Delete an item");
+    System.out.println("4. Exit");
+    System.out.print("Enter your choice: ");
   }
 
   /**
    * If the member wants to change their account informations.
    */
-  public int memberSettingMenu() {
-    int memberChoice = 0;
-    while (memberChoice != 3) {
-      System.out.println("\n---- Member Settings Menu ----");
-      System.out.println("1. Change your name");
-      System.out.println("2. Change your password");
-      System.out.println("3. Exit");
-      System.out.print("Enter your choice: ");
-      memberChoice = scanner.nextInt();
-      scanner.nextLine();
-      return memberChoice;
-    }
-    return 3;
+  public void memberSettingMenu() {
+    System.out.println("\n---- Member Settings Menu ----");
+    System.out.println("1. Change your name");
+    System.out.println("2. Change your password");
+    System.out.println("3. Exit");
+    System.out.print("Enter your choice: ");
   }
 
   /**
@@ -337,17 +258,16 @@ public class ConsoleUi implements ViewInterface {
   /**
    * If the member wants to change informations of an owned item.
    */
-  public Item setItem(Service service) {
+  public int setItem() {
     System.out.println("\nEnter the number of the item if you want to update the informations: ");
     int getItemChoice = scanner.nextInt();
-    Item itemToUpdate = service.getAllItems().get(getItemChoice - 1);
-    return itemToUpdate;
+    return getItemChoice;
   }
 
   /**
    * To change item informations.
    */
-  public int itemSettingMenu() {
+  public void itemSettingMenu() {
     System.out.println("\n---- Item Settings Menu ----");
     System.out.println("1. Change items category");
     System.out.println("2. Change items name");
@@ -355,9 +275,6 @@ public class ConsoleUi implements ViewInterface {
     System.out.println("4. Change items cost per day");
     System.out.println("5. Exit");
     System.out.print("Enter your choice: ");
-    int itemChoice = scanner.nextInt();
-    scanner.nextLine();
-    return itemChoice;
   }
 
   /**
@@ -399,14 +316,13 @@ public class ConsoleUi implements ViewInterface {
   /**
    * To delete an item.
    */
-  public Item setItemToDelete(Member loggedInMember) {
+  public String[] setItemToDelete(Service service) {
     System.out.println("\nEnter the number of the item if you want to delete it or 0 to go back: ");
     int choice = scanner.nextInt();
 
-    if (choice > 0 && choice <= loggedInMember.getOwnedItems().size()) {
-      Item itemToDelete = loggedInMember.getOwnedItems().get(choice - 1);
+    if (choice > 0 && choice <= service.getLoggedInMember().getOwnedItems().size()) {
       System.out.println("Item deleted successfully!");
-      return itemToDelete;
+      return new String[] {service.getLoggedInMember().getUsername(), String.valueOf(choice)};
     }
     return null;
   }
@@ -416,32 +332,15 @@ public class ConsoleUi implements ViewInterface {
   }
 
   /**
-   * To print admin menu.
+   * The admin can display all members.
    */
-  public int displayAdminMenu() {
-    int choice = 0;
-    while (choice != 3) {
-      System.out.println("\n---- Admin Panel ----");
-      System.out.println("1. Display all members");
-      System.out.println("2. Display all items");
-      System.out.println("3. Exit");
-      System.out.print("Enter your choice: ");
-      choice = scanner.nextInt();
-      return choice;
-    }
-    return 3;
-  }
-
-  /**
-   * The admin can display all members. 
-   */
-  public Member displayAllMembers(Service service) {
+  public int displayAllMembers(Service service) {
     List<Member> members = service.getAllMembers();
     System.out.println("\nAll Members: ");
     for (int i = 0; i < members.size(); i++) {
-      System.out.println((i + 1) + ". " + members.get(i).getMemberId() + " / " 
-          + members.get(i).getUsername() + "\nName: " + members.get(i).getName() 
-          + "\nEmail: " + members.get(i).getEmail() + "\nPhone number: " 
+      System.out.println((i + 1) + ". " + members.get(i).getMemberId() + " / "
+          + members.get(i).getUsername() + "\nName: " + members.get(i).getName()
+          + "\nEmail: " + members.get(i).getEmail() + "\nPhone number: "
           + members.get(i).getMobile() + "\nCredits: " + members.get(i).getCredits()
           + "\nAccount is created: Day " + members.get(i).getCreationDate());
     }
@@ -450,21 +349,19 @@ public class ConsoleUi implements ViewInterface {
     int choice = scanner.nextInt();
 
     if (choice > 0 && choice <= members.size()) {
-      Member memberToDelete = service.getAllMembers().get(choice - 1);
       System.out.println("Member is banned and all owned items is deleted!");
-      return memberToDelete;
+      return choice;
     }
-    return null;
+    return 0;
   }
 
   /**
    * The admin can display all items.
    */
-  public Item displayAllItemsAdmin(Service service) {
-    List<Item> items = service.getAllItems();
+  public int displayAllItemsAdmin(List<Item> items, Service service) {
     for (int i = 0; i < items.size(); i++) {
-      System.out.println((i + 1) + ". " + items.get(i).getCategory() 
-          + " / " + items.get(i).getName() + " / " + items.get(i).getDescription() 
+      System.out.println((i + 1) + ". " + items.get(i).getCategory()
+          + " / " + items.get(i).getName() + " / " + items.get(i).getDescription()
           + "\nOwner: " + items.get(i).getOwner()
           + "\nCost per day: " + items.get(i).getCostPerDay()
           + "\nCreated: Day " + items.get(i).getCreationDate());
@@ -474,10 +371,9 @@ public class ConsoleUi implements ViewInterface {
     int choice = scanner.nextInt();
 
     if (choice > 0 && choice <= items.size()) {
-      Item itemToDelete = items.get(choice - 1);
       System.out.println("Item deleted successfully!");
-      return itemToDelete;
+      return choice;
     }
-    return null;
+    return 0;
   }
 }
