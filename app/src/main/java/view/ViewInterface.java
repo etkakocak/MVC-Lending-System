@@ -51,6 +51,8 @@ public interface ViewInterface {
 
   int displayAllItemsAdmin(List<Item> items, Service service);
 
+  String [] createMember();
+
   boolean first();
 
   boolean second();
@@ -64,4 +66,6 @@ public interface ViewInterface {
   boolean sixth();
 
   boolean seventh();
+
+  boolean eight();
 }

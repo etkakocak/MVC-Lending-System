@@ -10,6 +10,10 @@ public class Time {
     day = 0;
   }
 
+  Time(Time insTime) {
+    day = insTime.day;
+  }
+
   public int getDate() {
     return day;
   }

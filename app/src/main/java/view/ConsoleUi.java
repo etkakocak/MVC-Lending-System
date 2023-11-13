@@ -38,8 +38,9 @@ public class ConsoleUi implements ViewInterface {
     System.out.println("3. View member details");
     System.out.println("4. Advance the day counter");
     System.out.println("5. Display all members");
-    System.out.println("6. Display all items (to delete)");
-    System.out.println("7. Exit");
+    System.out.println("6. Create a new member");
+    System.out.println("7. Display all items (to delete)");
+    System.out.println("8. Exit");
     System.out.print("Enter your choice: ");
   }
 
@@ -99,6 +100,30 @@ public class ConsoleUi implements ViewInterface {
     return choice == '7';
   }
 
+  @Override
+  public boolean eight() {
+    return choice == '8';
+  }
+
+  /**
+   * To create a new member.
+   */
+  public String [] createMember() {
+    System.out.println("Enter member name: ");
+    String name = scanner.nextLine();
+    name = scanner.nextLine();
+    System.out.println("Enter member email: ");
+    String email = null;
+    email = scanner.nextLine();
+    System.out.println("Enter member mobile: ");
+    String mobile = scanner.nextLine();
+    System.out.println("Enter member username: ");
+    String username = scanner.nextLine();
+    System.out.println("Enter member password: ");
+    String password = scanner.nextLine();
+    return new String[] { name, email, mobile, username, password };
+  }
+
   /**
    * Member can post an item.
    */
@@ -121,8 +146,8 @@ public class ConsoleUi implements ViewInterface {
     scanner.nextLine();
 
     System.out.println("Item posted successfully!");
-    return new String[] { category, name, descContent, String.valueOf(costPerDay), 
-      service.getLoggedInMember().getUsername()};
+    return new String[] { category, name, descContent, String.valueOf(costPerDay),
+        service.getLoggedInMember() };
   }
 
   /**
@@ -144,7 +169,9 @@ public class ConsoleUi implements ViewInterface {
       Item selectedItem = items.get(choice - 1);
 
       // Check if the member is trying to borrow their own item
-      if (service.getLoggedInMember().equals(selectedItem.getOwner())) {
+      String memberName = service.getLoggedInMember();
+      String itemOwner = service.getItemByName(selectedItem.getName()).getOwner();
+      if (memberName.equals(itemOwner)) {
         System.out.println("You cannot borrow your own item.");
         return null;
       }
@@ -154,23 +181,23 @@ public class ConsoleUi implements ViewInterface {
 
       int totalCost = loanDays * selectedItem.getCostPerDay();
 
-      if (service.getLoggedInMember().getCredits() >= totalCost) {
+      if (service.getMemberByUsername(memberName).getCredits() >= totalCost) {
         int startDate = service.getTime().getDate();
         int endDate = startDate + loanDays;
-        service.getTime().setDate(endDate);
 
         System.out.println("Item loaned successfully!");
         System.out.println("\n--------- Loan Receipt ---------");
-        System.out.println("Borrower: " + service.getLoggedInMember().getName());
+        System.out.println("Borrower: " + service.getLoggedInMember());
         System.out.println("Item Loaned: " + selectedItem.getName());
         System.out.println("Start Date: Day " + startDate);
         System.out.println("End Date: Day " + endDate);
         System.out.println("Total Cost: " + totalCost + " credits");
-        System.out.println("Owner of the Item: " + selectedItem.getOwner().getName());
+        System.out.println("Owner of the Item: "
+            + service.getMemberByUsername(selectedItem.getOwner()).getName());
         System.out.println("--------------------------------");
-        return new String[] {String.valueOf(startDate), String.valueOf(endDate), 
-            selectedItem.getName(), service.getLoggedInMember().getUsername(), 
-              String.valueOf(totalCost)};
+        return new String[] { String.valueOf(startDate), String.valueOf(endDate),
+            selectedItem.getName(), service.getLoggedInMember(),
+            String.valueOf(totalCost) };
       } else {
         System.out.println("You don't have enough credits to loan this item.");
         return null;
@@ -191,26 +218,27 @@ public class ConsoleUi implements ViewInterface {
    * Member can view their account details and change them.
    */
   public void viewMemberDetails(Service service) {
+    String memberName = service.getLoggedInMember();
     System.out.println("\nYour account details: ");
-    System.out.println("Name: " + service.getLoggedInMember().getName());
-    System.out.println("Username: " + service.getLoggedInMember().getUsername());
-    System.out.println("Member ID: " + service.getLoggedInMember().getMemberId());
-    System.out.println("Email: " + service.getLoggedInMember().getEmail());
-    System.out.println("Phone number: " + service.getLoggedInMember().getMobile());
-    System.out.println("Account is created: Day " + service.getLoggedInMember().getCreationDate());
-    System.out.println("Your credit: " + service.getLoggedInMember().getCredits());
+    System.out.println("Name: " + service.getMemberByUsername(memberName).getName());
+    System.out.println("Username: " + memberName);
+    System.out.println("Member ID: " + service.getMemberByUsername(memberName).getMemberId());
+    System.out.println("Email: " + service.getMemberByUsername(memberName).getEmail());
+    System.out.println("Phone number: " + service.getMemberByUsername(memberName).getMobile());
+    System.out.println("Account is created: Day " 
+        + service.getMemberByUsername(memberName).getCreationDate());
+    System.out.println("Your credit: " + service.getMemberByUsername(memberName).getCredits());
 
     System.out.println("\nCreated Contracts:");
-    List<Contract> contracts = service.getLoggedInMember().getContracts();
+    List<Contract> contracts = service.getMemberByUsername(memberName).getContracts();
     for (int i = 0; i < contracts.size(); i++) {
-      System.out.println((i + 1) + ". " + contracts.get(i).getItem().getName()
-          + "\nOwner: " + contracts.get(i).getItem().getOwner().getName()
+      System.out.println((i + 1) + ". " + contracts.get(i).getItem()
           + "\nStart Date: Day " + contracts.get(i).getStartDate()
           + "\nEnd Date: Day " + contracts.get(i).getEndDate());
     }
 
     System.out.println("\nPosted Items:");
-    List<Item> items = service.getLoggedInMember().getOwnedItems();
+    List<Item> items = service.getMemberByUsername(memberName).getOwnedItems();
     for (int i = 0; i < items.size(); i++) {
       System.out.println((i + 1) + ". " + items.get(i).getCategory() + " / "
           + items.get(i).getName() + " / " + items.get(i).getDescription()
@@ -243,6 +271,7 @@ public class ConsoleUi implements ViewInterface {
   public String newName() {
     System.out.print("Enter your new name: ");
     String name = scanner.nextLine();
+    name = scanner.nextLine();
     return name;
   }
 
@@ -252,6 +281,7 @@ public class ConsoleUi implements ViewInterface {
   public String newPassword() {
     System.out.print("Enter your new password: ");
     String password = scanner.nextLine();
+    password = scanner.nextLine();
     return password;
   }
 
@@ -261,6 +291,7 @@ public class ConsoleUi implements ViewInterface {
   public int setItem() {
     System.out.println("\nEnter the number of the item if you want to update the informations: ");
     int getItemChoice = scanner.nextInt();
+    scanner.nextLine();
     return getItemChoice;
   }
 
@@ -283,6 +314,7 @@ public class ConsoleUi implements ViewInterface {
   public String setCategory() {
     System.out.print("Enter new category: ");
     String category = scanner.nextLine();
+    category = scanner.nextLine();
     return category;
   }
 
@@ -292,6 +324,7 @@ public class ConsoleUi implements ViewInterface {
   public String setItemName() {
     System.out.print("Enter new name: ");
     String itemName = scanner.nextLine();
+    itemName = scanner.nextLine();
     return itemName;
   }
 
@@ -301,6 +334,7 @@ public class ConsoleUi implements ViewInterface {
   public String setDescription() {
     System.out.print("Enter new description: ");
     String description = scanner.nextLine();
+    description = scanner.nextLine();
     return description;
   }
 
@@ -320,9 +354,10 @@ public class ConsoleUi implements ViewInterface {
     System.out.println("\nEnter the number of the item if you want to delete it or 0 to go back: ");
     int choice = scanner.nextInt();
 
-    if (choice > 0 && choice <= service.getLoggedInMember().getOwnedItems().size()) {
+    String memberName = service.getLoggedInMember();
+    if (choice > 0 && choice <= service.getMemberByUsername(memberName).getOwnedItems().size()) {
       System.out.println("Item deleted successfully!");
-      return new String[] {service.getLoggedInMember().getUsername(), String.valueOf(choice)};
+      return new String[] { service.getLoggedInMember(), String.valueOf(choice) };
     }
     return null;
   }

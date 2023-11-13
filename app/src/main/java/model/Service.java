@@ -10,7 +10,6 @@ import java.util.List;
  */
 public class Service {
   private List<Member> members;
-  private List<Admin> admins;
   private List<Item> items;
   private List<Contract> contracts;
   private Time time;
@@ -21,7 +20,6 @@ public class Service {
    */
   public Service() {
     members = new ArrayList<>();
-    admins = new ArrayList<>();
     items = new ArrayList<>();
     contracts = new ArrayList<>();
     time = new Time();
@@ -45,13 +43,10 @@ public class Service {
     members.add(member2);
     members.add(member3);
 
-    Admin admin1 = new Admin("gadmin", "thegadmin03");
-    admins.add(admin1);
-
     Item item1 = new Item("Electronics", "MacBook Pro",
-        "A clean computer for temporary works", 30, member3, getTime());
+        "A clean computer for temporary works", 30, member3.getUsername(), getTime());
     Item item2 = new Item("Veichle", "BMW M5 2021", "Max 100 miles per loan period.", 300,
-        member1, getTime());
+        member1.getUsername(), getTime());
 
     items.add(item1);
     member3.addOwnedItem(item1);
@@ -80,7 +75,7 @@ public class Service {
       if (loggedInMember != null) {
         memberValidated = true;
         return loggedInMember;
-      } 
+      }
     }
     return null;
   }
@@ -89,8 +84,8 @@ public class Service {
     loggedInMember = memberLoginProcess();
   }
 
-  public Member getLoggedInMember() {
-    return loggedInMember;
+  public String getLoggedInMember() {
+    return loggedInMember.getUsername();
   }
 
   /**
@@ -114,29 +109,6 @@ public class Service {
       if (item.getName().equals(itemname)) {
         return item;
       }
-    }
-    return null;
-  }
-
-  /**
-   * For admin login. To get the admin by username.
-   */
-  public Admin getAdminByUsername(String username) {
-    for (Admin admin : admins) {
-      if (admin.getUsername().equals(username)) {
-        return admin;
-      }
-    }
-    return null;
-  }
-
-  /**
-   * For admin login, (to get right password for the admin).
-   */
-  public Admin validateAdmin(String username, String password) {
-    Admin admin = getAdminByUsername(username);
-    if (admin != null && admin.getPassword().equals(password)) {
-      return admin;
     }
     return null;
   }
@@ -173,16 +145,22 @@ public class Service {
   }
 
   // getters for lists
+  /**
+   * To get list of members.
+   */
   public List<Member> getAllMembers() {
-    return members;
+    // return members;
+    return new ArrayList<>(members);
+
   }
 
   public List<Item> getAllItems() {
-    return items;
+    // return items;
+    return new ArrayList<>(items);
   }
 
   public Time getTime() {
-    return time;
+    return new Time(time);
   }
 
   /**
@@ -202,8 +180,8 @@ public class Service {
    */
   public void deleteItem(int choice) {
     Item itemToDelete = items.get(choice - 1);
-    itemToDelete.getOwner().getOwnedItems().remove(itemToDelete);
-    itemToDelete.getOwner().addCredits(-100);
+    getMemberByUsername(itemToDelete.getOwner()).removeOwnedItem(itemToDelete);
+    getMemberByUsername(itemToDelete.getOwner()).addCredits(-100);
     items.remove(itemToDelete);
   }
 
@@ -211,8 +189,8 @@ public class Service {
    * To delete an item of an member.
    */
   public void deleteMemberItem(Item item) {
-    item.getOwner().getOwnedItems().remove(item);
-    item.getOwner().addCredits(-100);
+    getMemberByUsername(item.getOwner()).getOwnedItems().remove(item);
+    getMemberByUsername(item.getOwner()).addCredits(-100);
     items.remove(item);
   }
 
@@ -223,8 +201,9 @@ public class Service {
     Member itemOwner = getMemberByUsername(owner);
     int itemChoice = Integer.parseInt(choice);
     Item itemToDelete = itemOwner.getOwnedItems().get(itemChoice - 1);
-    itemToDelete.getOwner().getOwnedItems().remove(itemToDelete);
-    itemToDelete.getOwner().addCredits(-100);
+    getMemberByUsername(itemToDelete.getOwner()).getOwnedItems().remove(itemToDelete);
+    getMemberByUsername(itemToDelete.getOwner()).removeOwnedItem(itemToDelete);
+    getMemberByUsername(itemToDelete.getOwner()).addCredits(-100);
     items.remove(itemToDelete);
   }
 
@@ -245,29 +224,35 @@ public class Service {
       String stringCostPerDay, String stringOwner) {
     int costPerDay = Integer.parseInt(stringCostPerDay);
     Member owner = getMemberByUsername(stringOwner);
-    Item item = new Item(category, name, description, costPerDay, owner, time);
+    Item item = new Item(category, name, description, costPerDay, stringOwner, time);
     items.add(item);
     owner.addOwnedItem(item);
   }
-
-  public void addMember(String name, String email, int mobile, String username, String password) {
-    Member member = new Member(name, name, mobile, username, password, time);
+  
+  /**
+   * To add a new member.
+   */
+  public void addMember(String name, String email, String mobile, 
+      String username, String password) {
+    int intMobile = Integer.parseInt(mobile);
+    Member member = new Member(name, name, intMobile, username, password, time);
     members.add(member);
   }
 
   /**
    * To create a new contract.
    */
-  public void addContract(String stringStDate, String stringEnDate, String stringTheItem, 
+  public void addContract(String stringStDate, String stringEnDate, String stringTheItem,
       String stringTheLender, String stringCost) {
     int stDate = Integer.parseInt(stringStDate);
     int enDate = Integer.parseInt(stringEnDate);
     Member theLender = getMemberByUsername(stringTheLender);
-    Item theItem = getItemByName(stringTheItem);
     int cost = Integer.parseInt(stringCost);
-    Contract newContract = new Contract(stDate, enDate, theItem, theLender, cost);
+    Contract newContract = new Contract(stDate, enDate, stringTheItem, stringTheLender, cost);
     contracts.add(newContract);
     theLender.addOwnedContract(newContract);
+    theLender.addCredits(-cost);
+    time.setDate(enDate);
   }
 
   public void dayCounter() {
@@ -277,6 +262,11 @@ public class Service {
 
   public Item setItem(int getItemChoice) {
     Item itemToUpdate = items.get(getItemChoice - 1);
+    return itemToUpdate;
+  }
+
+  public Item setItemMember(int getItemChoice) {
+    Item itemToUpdate = loggedInMember.getOwnedItems().get(getItemChoice - 1);
     return itemToUpdate;
   }
 }

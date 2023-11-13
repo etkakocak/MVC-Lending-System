@@ -9,19 +9,30 @@ public class Item {
   private String description;
   private int creationDate;
   private int costPerDay;
-  private Member owner;
+  private String owner;
 
   /**
    * The Item class.
    */
   public Item(String category, String name, String description, int costPerDay, 
-      Member owner, Time creationDate) {
+      String owner, Time creationDate) {
     this.category = category;
     this.name = name;
     this.description = description;
     this.costPerDay = costPerDay;
     this.owner = owner;
     this.creationDate = creationDate.getDate();
+  }
+
+  /**
+   * To return Item object.
+   */
+  public Item(Item anItem) {
+    this.name = anItem.name;
+    this.category = anItem.category;
+    this.description = anItem.description;
+    this.costPerDay = anItem.costPerDay;
+    this.owner = anItem.owner;
   }
 
   public String getDescription() {
@@ -60,11 +71,7 @@ public class Item {
     this.costPerDay = costPerDay;
   }
 
-  public Member getOwner() {
+  public String getOwner() {
     return owner;
-  }
-
-  public void setOwner(Member owner) {
-    this.owner = owner;
   }
 }

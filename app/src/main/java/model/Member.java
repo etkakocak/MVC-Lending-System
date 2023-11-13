@@ -42,6 +42,22 @@ public class Member {
     this.memberId = generateMemberId(new Random());
   }
 
+  /**
+   * To return a Member object.
+   */
+  public Member(Member theMember) {
+    this.name = theMember.name;
+    this.email = theMember.email;
+    this.mobile = theMember.mobile;
+    this.username = theMember.username;
+    this.password = theMember.password;
+    this.creationDate = theMember.creationDate;
+    this.credits = theMember.credits;
+    ownedItems = theMember.ownedItems;
+    ownedContracts = theMember.ownedContracts;
+    this.memberId = theMember.memberId; 
+  }
+
   public String getUsername() {
     return username;
   }
@@ -122,7 +138,7 @@ public class Member {
   }
 
   public List<Contract> getContracts() {
-    return ownedContracts;
+    return new ArrayList<>(ownedContracts);
   }
 
   public void addOwnedContract(Contract contract) {
@@ -138,7 +154,7 @@ public class Member {
   }
 
   public List<Item> getOwnedItems() {
-    return ownedItems;
+    return new ArrayList<>(ownedItems);
   }
 
   public void addOwnedItem(Item item) {

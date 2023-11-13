@@ -9,8 +9,8 @@ import view.ViewInterface;
  * This class controls the objects in this app.
  */
 public class ObjectController {
-  private Service model;
-  private ViewInterface view;
+  public Service model;
+  public ViewInterface view;
 
   /**
    * ObjectController class.
@@ -28,14 +28,13 @@ public class ObjectController {
     if (model.getLoggedInMember() != null) {
       memberMenu();
     }
-
-    view.welcome();
   }
 
   /**
    * This is for handling of the member menu in ConsoleUI.
    */
   public boolean memberMenu() {
+    view.welcome();
     view.displayMainMenu();
     view.getUserChoice();
 
@@ -47,7 +46,7 @@ public class ObjectController {
       List<Item> items = model.getAllItems();
       String[] contractDetails = view.displayAllItems(items, model);
       if (contractDetails != null) {
-        model.addContract(contractDetails[0], contractDetails[1], contractDetails[2], 
+        model.addContract(contractDetails[0], contractDetails[1], contractDetails[2],
             contractDetails[3], contractDetails[4]);
         memberMenu();
       } else {
@@ -68,6 +67,16 @@ public class ObjectController {
         memberMenu();
       }
     } else if (view.sixth()) {
+      String[] newMemberDetails = view.createMember();
+      if (newMemberDetails != null) {
+        model.addMember(newMemberDetails[0], newMemberDetails[1], newMemberDetails[2], 
+            newMemberDetails[3], newMemberDetails[4]);
+        view.displayGood();
+        memberMenu();
+      } else {
+        memberMenu();
+      }
+    } else if (view.seventh()) {
       List<Item> items = model.getAllItems();
       int itemToDelete = view.displayAllItemsAdmin(items, model);
       if (itemToDelete != 0) {
@@ -77,7 +86,7 @@ public class ObjectController {
         memberMenu();
       }
     }
-    return !(view.seventh());
+    return !(view.eight());
   }
 
   /**
@@ -88,15 +97,15 @@ public class ObjectController {
     view.getUserChoice();
 
     if (view.first()) {
-      model.getLoggedInMember().setName(view.newName());
+      model.getMemberByUsername(model.getLoggedInMember()).setName(view.newName());
       view.displayGood();
       memberSettingMenu();
     } else if (view.second()) {
-      model.getLoggedInMember().setPassword(view.newPassword());
+      model.getMemberByUsername(model.getLoggedInMember()).setPassword(view.newPassword());
       view.displayGood();
       memberSettingMenu();
     } else if (view.third()) {
-      settingMenu();
+      memberMenu();
     } else {
       memberSettingMenu();
     }
@@ -105,35 +114,30 @@ public class ObjectController {
   /**
    * This is for handling of the setting menu for item data.
    */
-  public void itemSettingMenu() {
+  public void itemSettingMenu(Item itemToUpdate) {
     view.itemSettingMenu();
     view.getUserChoice();
-    Item itemToUpdate = model.setItem(view.setItem());
 
     if (view.first()) {
-      String category = view.setCategory();
-      itemToUpdate.setCategory(category);
+      itemToUpdate.setCategory(view.setCategory());
       view.displayGood();
-      itemSettingMenu();
+      itemSettingMenu(itemToUpdate);
     } else if (view.second()) {
-      String itemName = view.setItemName();
-      itemToUpdate.setName(itemName);
+      itemToUpdate.setName(view.setItemName());
       view.displayGood();
-      itemSettingMenu();
+      itemSettingMenu(itemToUpdate);
     } else if (view.third()) {
-      String description = view.setDescription();
-      itemToUpdate.setDescription(description);
+      itemToUpdate.setDescription(view.setDescription());
       view.displayGood();
-      itemSettingMenu();
+      itemSettingMenu(itemToUpdate);
     } else if (view.fourth()) {
-      int cost = view.setItemCost();
-      itemToUpdate.setCostPerDay(cost);
+      itemToUpdate.setCostPerDay(view.setItemCost());
       view.displayGood();
-      itemSettingMenu();
+      itemSettingMenu(itemToUpdate);
     } else if (view.fifth()) {
       settingMenu();
     } else {
-      itemSettingMenu();
+      itemSettingMenu(itemToUpdate);
     }
   }
 
@@ -147,10 +151,12 @@ public class ObjectController {
     if (view.first()) {
       memberSettingMenu();
     } else if (view.second()) {
-      itemSettingMenu();
+      Item itemToUpdate = model.setItemMember(view.setItem());
+      itemSettingMenu(itemToUpdate);
     } else if (view.third()) {
       String[] itemDetails = view.setItemToDelete(model);
       model.deleteOwnedItem(itemDetails[0], itemDetails[1]);
+      settingMenu();
     } else if (view.fourth()) {
       memberMenu();
     } else {
