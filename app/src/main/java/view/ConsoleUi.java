@@ -108,7 +108,7 @@ public class ConsoleUi implements ViewInterface {
   /**
    * To create a new member.
    */
-  public String [] createMember() {
+  public String [] createMember(Service service) {
     System.out.println("Enter member name: ");
     String name = scanner.nextLine();
     name = scanner.nextLine();
@@ -121,7 +121,13 @@ public class ConsoleUi implements ViewInterface {
     String username = scanner.nextLine();
     System.out.println("Enter member password: ");
     String password = scanner.nextLine();
+
     return new String[] { name, email, mobile, username, password };
+  }
+
+  public void cannotAdd() {
+    System.out.println("You can't add a new member with same email " 
+          + "or phone number as another member.");
   }
 
   /**

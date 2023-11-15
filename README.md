@@ -13,17 +13,29 @@ Aiman Daeef (ad223jd)
 ## Usage of the application
 
 ### Login
-There is a login system in our application. You can log in as admin or member or create a new member account.  
+When the application runs, the user Etka logs into the system directly. If you want to log in with another user, you can change this in the ```setCredentials``` method in the Service class:
 
-What you should pay attention to when creating a new member account is that you should not enter the same email account or phone number as another member. The application does not accept this. You can change the information you entered when creating a new account at any time you want from the settings menu in the application.  
+``` Java
+public String[] setCredentials() {
+    String username = "etka"; //here
+    String password = "etka123"; //here
 
-### What can a member do?
+    return new String[] { username, password };
+}
+```
 
-You can create your own member account but you can also log in as a member directly to test the application:
-```  
-Username: etka  
-Password: etka123  
-```  
+You can log in with other existing members:
+```
+username: aiman
+password: aiman123
+
+username: sanaa
+password: sanaa123
+```
+
+For the completion that comes in the new version of the application, we removed the system that required logging in by typing username and password in the past so that it would be easier to test the application. Likewise, we developed the application so that all features can be used in only one account, and therefore we removed the Admin class.
+
+### What can be done in the application?
 
 A member initially has 0 credits. Member can share items at any time and receives 100 credits for each item they shared. Members can use these credits when borrowing an item. However, if the member wants to delete one of their own shared items, these 100 credits will be taken back.  
 
@@ -35,14 +47,6 @@ The application also has a day counter and the logged-in member can simulate the
 
 We paid attention to preventing crashes in the application and error handling. It's easy to fix when you make wrong choices in the menus, it's easy to go back to the right menus in the app, and simply exit the app.  
 
-### What can an admin do? 
+You can view all members and items registered in the system and also can ban any member and remove any item from the system. When a member is banned, members owned items are also deleted.
 
-You can not create a new admin account.  
-
-**Use them to log in as admin:**  
-``` 
-Username: gadmin  
-Password: thegadmin03  
-``` 
-
-Admin can view all members and items registered in the system. Admin can ban any member and remove any item from the system. When a member is banned, members owned items are also deleted.
+You can also create as many new members as you want. What you should pay attention to when creating a new member account is that you should not enter the same email account or phone number as another member. The application does not accept this. 

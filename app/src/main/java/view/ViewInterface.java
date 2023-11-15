@@ -51,7 +51,9 @@ public interface ViewInterface {
 
   int displayAllItemsAdmin(List<Item> items, Service service);
 
-  String [] createMember();
+  String [] createMember(Service service);
+
+  void cannotAdd();
 
   boolean first();
 

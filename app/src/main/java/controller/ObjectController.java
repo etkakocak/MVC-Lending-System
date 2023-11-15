@@ -67,11 +67,15 @@ public class ObjectController {
         memberMenu();
       }
     } else if (view.sixth()) {
-      String[] newMemberDetails = view.createMember();
+      String[] newMemberDetails = view.createMember(model);
       if (newMemberDetails != null) {
-        model.addMember(newMemberDetails[0], newMemberDetails[1], newMemberDetails[2], 
-            newMemberDetails[3], newMemberDetails[4]);
-        view.displayGood();
+        if (model.canAddMember(newMemberDetails[1], newMemberDetails[2]) != false) {
+          model.addMember(newMemberDetails[0], newMemberDetails[1], newMemberDetails[2], 
+              newMemberDetails[3], newMemberDetails[4]);
+          view.displayGood();
+        } else {
+          view.cannotAdd();
+        }
         memberMenu();
       } else {
         memberMenu();

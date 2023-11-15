@@ -135,7 +135,8 @@ public class Service {
    * This controls if the account can be created.
    * Check if the new member has same email or number as another member.
    */
-  public boolean canAddMember(String email, int mobile) {
+  public boolean canAddMember(String email, String stringMobile) {
+    int mobile = Integer.parseInt(stringMobile);
     for (Member member : members) {
       if (member.getEmail().equals(email) || member.getMobile() == mobile) {
         return false;

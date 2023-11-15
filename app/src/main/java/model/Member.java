@@ -17,8 +17,6 @@ public class Member {
   private List<Item> ownedItems;
   private List<Contract> ownedContracts;
   private List<String> existingMemberIds;
-  private List<String> emails;
-  private List<Integer> mobiles;
   private String username;
   private String password;
 
@@ -37,8 +35,6 @@ public class Member {
     ownedItems = new ArrayList<>();
     ownedContracts = new ArrayList<>();
     existingMemberIds = new ArrayList<>();
-    emails = new ArrayList<>();
-    mobiles = new ArrayList<>();
     this.memberId = generateMemberId(new Random());
   }
 
@@ -111,11 +107,7 @@ public class Member {
    * Members cant have same email.
    */
   public void setEmail(String email) {
-    do {
-      this.email = email;
-    } while (emails.contains(email));
-
-    emails.add(email);
+    this.email = email;
   }
 
   public int getMobile() {
@@ -126,11 +118,7 @@ public class Member {
    * Members cant have same phone number.
    */
   public void setMobile(int mobile) {
-    do {
-      this.mobile = mobile;
-    } while (mobiles.contains(mobile));
-
-    mobiles.add(mobile);
+    this.mobile = mobile;
   }
 
   public int getCreationDate() {
