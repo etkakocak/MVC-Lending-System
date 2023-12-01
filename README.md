@@ -1,44 +1,52 @@
-# A2
+# Assignment 2 - 1DV607
 
-Project for Assignment 2
+**Project name:** Stuff Lending System
 
-A project template based on gradle and a gitlab pipeline. You should always build and run the application using gradle regularely.
+**Group Members:**  
+Etka Kocak (ek223zf)  
+Sanaa Abdoulkader (sa225hg)    
+Aiman Daeef (ad223jd)  
 
-[design.md](design.md) contains the prescribed architectural design of the application.
+[Click to see the architectural design of the application.](design.md)  
+[Click to see the test results of the application:](testreport.md)  
 
-## Building
-The build must pass by running console command:  
-`./gradlew build`  
-Note that you should get a report over the quality like:
+## Usage of the application
+
+### Login
+When the application runs, the user Etka logs into the system directly. If you want to log in with another user, you can change this in the ```setCredentials``` method in the Service class:
+
+``` Java
+public String[] setCredentials() {
+    String username = "etka"; //here
+    String password = "etka123"; //here
+
+    return new String[] { username, password };
+}
 ```
-CodeQualityTests > codeQuality() STANDARD_OUT
-    0 CheckStyle Issues in controller/App.java
-    0 CheckStyle Issues in controller/Simple.java
-    0 CheckStyle Issues in model/Simple.java
-    0 CheckStyle Issues in view/Simple.java
-    0 FindBugs Issues in controller/App.java
-    0 FindBugs Issues in model/Simple.java
-    0 FindBugs Issues in view/Simple.java
-    0 FindBugs Issues in controller/Simple.java
+
+You can log in with other existing members:
+```
+username: aiman
+password: aiman123
+
+username: sanaa
+password: sanaa123
 ```
 
-Removing or manipulating the code quality checks results in an immediate assignment **Fail**. 
+For the completion that comes in the new version of the application, we removed the system that required logging in by typing username and password in the past so that it would be easier to test the application. Likewise, we developed the application so that all features can be used in only one account, and therefore we removed the Admin class.
 
-## Running
-The application should start by running console command:  
-`./gradlew run -q --console=plain`
+### What can be done in the application?
 
-## Adding Your Own Code
-The `Simple` classes project should likely be removed do not forget to also remove the test case associated to `model.Simple`.  
+A member initially has 0 credits. Member can share items at any time and receives 100 credits for each item they shared. Members can use these credits when borrowing an item. However, if the member wants to delete one of their own shared items, these 100 credits will be taken back.  
 
-Add your own code to the packages respectively and feel free to add automatic test cases for your own code. A good process is to design a little - code a little - test a little one feature at a time and then iterate.
+A member can view all the available items and create a contract with other members by borrowing those items. Items have prices in credits per day. Members pays as many credits for how many days they want to borrow the item. These credits are deleted from the borrower member account and sent to the account of the lender member, the owner of the item.  
 
-## Versioning
+A member can view the information of their account, the items they shared, and the contracts they created. Members can update their own account information or the information of their items. Member can also completely delete their own items.  
 
-Adhere to the git versioning instructions according to the assignment.
+The application also has a day counter and the logged-in member can simulate the application to the next day. The registration and creation dates of all created items, contracts, and members are always recorded and members can view them.  
 
-## System test
-Adhere to the instructions according to the assigment.
+We paid attention to preventing crashes in the application and error handling. It's easy to fix when you make wrong choices in the menus, it's easy to go back to the right menus in the app, and simply exit the app.  
 
-## Handing In
-Adhere to the instructions according to the assigment.
+You can view all members and items registered in the system and also can ban any member and remove any item from the system. When a member is banned, members owned items are also deleted.
+
+You can also create as many new members as you want. What you should pay attention to when creating a new member account is that you should not enter the same email account or phone number as another member. The application does not accept this. 

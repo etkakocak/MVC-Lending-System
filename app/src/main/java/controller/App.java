@@ -1,5 +1,9 @@
 package controller;
 
+import model.Service;
+import view.ConsoleUi;
+import view.ViewInterface;
+
 /**
  * Responsible for staring the application.
  */
@@ -11,10 +15,9 @@ public class App {
    */
   public static void main(String[] args) {
     // adapt to start the application in your way
-    model.Simple m = new model.Simple();
-    Simple c = new Simple();
-    view.Simple v = new view.Simple();
-
-    c.doSomethingSimple(m, v);
+    Service m = new Service();
+    ViewInterface v = new ConsoleUi();
+    ObjectController ctrl = new ObjectController(m, v);
+    ctrl.start();
   }
-}
+} 
