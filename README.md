@@ -12,27 +12,6 @@ Aiman Daeef (ad223jd)
 
 ## Usage of the application
 
-### Login
-When the application runs, the user Etka logs into the system directly. If you want to log in with another user, you can change this in the ```setCredentials``` method in the Service class:
-
-``` Java
-public String[] setCredentials() {
-    String username = "etka"; //here
-    String password = "etka123"; //here
-
-    return new String[] { username, password };
-}
-```
-
-You can log in with other existing members:
-```
-username: aiman
-password: aiman123
-
-username: sanaa
-password: sanaa123
-```
-
 For the completion that comes in the new version of the application, we removed the system that required logging in by typing username and password in the past so that it would be easier to test the application. Likewise, we developed the application so that all features can be used in only one account, and therefore we removed the Admin class.
 
 ### What can be done in the application?

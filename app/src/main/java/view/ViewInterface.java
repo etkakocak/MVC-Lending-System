@@ -1,8 +1,9 @@
 package view;
 
 import java.util.List;
+import model.Contract;
 import model.Item;
-import model.Service;
+import model.Member;
 
 /**
  * This interface is for ConsoleUI class.
@@ -17,43 +18,7 @@ public interface ViewInterface {
 
   void displayBadChoice();
 
-  void advanceDayCounter(Service service);
-
-  void viewMemberDetails(Service service);
-
-  void memberSettingMenu();
-
-  String newName();
-
-  String newPassword();
-
-  void displayGood();
-
-  String[] displayAllItems(List<Item> items, Service service);
-
-  String[] postAnItem(Service service);
-
-  int setItem();
-
-  void itemSettingMenu();
-
-  String setCategory();
-
-  String setItemName();
-
-  String setDescription();
-
-  int setItemCost();
-
-  String[] setItemToDelete(Service service);
-
-  int displayAllMembers(Service service);
-
-  int displayAllItemsAdmin(List<Item> items, Service service);
-
-  String [] createMember(Service service);
-
-  void cannotAdd();
+  void viewMemberDetails(Member member);
 
   boolean first();
 
@@ -67,7 +32,19 @@ public interface ViewInterface {
 
   boolean sixth();
 
-  boolean seventh();
+  void sendOutput(String output);
 
-  boolean eight();
+  String getString();
+
+  int getInt();
+
+  void displayMemberMenu();
+
+  void displayItemMenu();
+
+  void listMembers(List<Member> members);
+
+  void listItems(List<Item> items);
+
+  void listContracts(List<Contract> contracts);
 }

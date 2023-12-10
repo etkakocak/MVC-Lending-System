@@ -6,12 +6,8 @@ package model;
 public class Time {
   private int day;
 
-  Time() {
+  public Time() {
     day = 0;
-  }
-
-  Time(Time insTime) {
-    day = insTime.day;
   }
 
   public int getDate() {
@@ -20,6 +16,10 @@ public class Time {
 
   public void setDate(int newDay) {
     day = newDay;
+  }
+
+  public void nextDay() {
+    day++;
   }
 
   public String toString() {

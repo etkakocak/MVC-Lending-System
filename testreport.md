@@ -6,6 +6,7 @@ CodeQualityTests > codeQuality() STANDARD_OUT
     0 CheckStyle Issues in C:/Users/etkae/Desktop/Ny mapp/a2/app/src/main/java/controller/App.java
     0 CheckStyle Issues in C:/Users/etkae/Desktop/Ny mapp/a2/app/src/main/java/controller/ObjectController.java
     0 CheckStyle Issues in C:/Users/etkae/Desktop/Ny mapp/a2/app/src/main/java/model/Contract.java
+    0 CheckStyle Issues in C:/Users/etkae/Desktop/Ny mapp/a2/app/src/main/java/model/GenerateId.java
     0 CheckStyle Issues in C:/Users/etkae/Desktop/Ny mapp/a2/app/src/main/java/model/Item.java
     0 CheckStyle Issues in C:/Users/etkae/Desktop/Ny mapp/a2/app/src/main/java/model/Member.java
     0 CheckStyle Issues in C:/Users/etkae/Desktop/Ny mapp/a2/app/src/main/java/model/Service.java
@@ -15,6 +16,7 @@ CodeQualityTests > codeQuality() STANDARD_OUT
     0 FindBugs Issues in model/Time.java
     0 FindBugs Issues in view/ViewInterface.java
     0 FindBugs Issues in model/Contract.java
+    0 FindBugs Issues in model/GenerateId.java
     0 FindBugs Issues in controller/App.java
     0 FindBugs Issues in view/ConsoleUi.java
     0 FindBugs Issues in model/Service.java

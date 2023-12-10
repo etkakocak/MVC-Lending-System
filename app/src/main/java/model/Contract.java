@@ -6,38 +6,22 @@ package model;
 public class Contract {
   private int startDate;
   private int endDate;
-  private String item;
-  private String lender;
+  private final Item item;
+  private final Member lender;
   private int cost;
 
   /**
    * The Contract class.
    */
-  public Contract(int startDate, int endDate, String item, String lender, int cost) {
+  protected Contract(int startDate, int endDate, Item item, Member lender, int cost) {
     this.startDate = startDate;
     this.endDate = endDate;
     this.item = item;
     this.lender = lender;
-    this.cost = cost;
-  }
-
-  /**
-   * To return Contract object.
-   */
-  public Contract(Contract theContract) {
-    this.startDate = theContract.startDate;
-    this.endDate = theContract.endDate;
-    this.item = theContract.item;
-    this.lender = theContract.lender;
-    this.cost = theContract.cost;
   }
 
   public int getCost() {
     return cost;
-  }
-
-  public void setCost(int cost) {
-    this.cost = cost;
   }
 
   public int getStartDate() {
@@ -57,10 +41,10 @@ public class Contract {
   }
 
   public String getItem() {
-    return item;
+    return item.getName();
   }
 
   public String getLender() {
-    return lender;
+    return lender.getName();
   }
 }

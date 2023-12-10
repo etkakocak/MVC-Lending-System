@@ -1,6 +1,7 @@
 package controller;
 
 import model.Service;
+import model.Time;
 import view.ConsoleUi;
 import view.ViewInterface;
 
@@ -15,9 +16,10 @@ public class App {
    */
   public static void main(String[] args) {
     // adapt to start the application in your way
-    Service m = new Service();
+    Time time = new Time();
+    Service m = new Service(time);
     ViewInterface v = new ConsoleUi();
-    ObjectController ctrl = new ObjectController(m, v);
+    ObjectController ctrl = new ObjectController(m, v, time);
     ctrl.start();
   }
 } 
