@@ -66,10 +66,10 @@ public class ObjectController {
       view.sendOutput("Enter the ID of the member you want to delete: ");
       String member = view.getString();
       Member memberToDelete = model.findMember(member);
-      if (memberToDelete != null) {
+      try {
         model.deleteMember(memberToDelete);
         view.sendOutput("Member deleted successfully");
-      } else {
+      } catch (IllegalArgumentException e) {
         view.sendOutput("Member do not exist");
       }
       memberMenu();
@@ -94,9 +94,9 @@ public class ObjectController {
       view.sendOutput("Enter the ID of the member you want to view info: ");
       String member = view.getString();
       Member memberToView = model.findMember(member);
-      if (memberToView != null) {
+      try {
         view.viewMemberDetails(memberToView);
-      } else {
+      } catch (IllegalArgumentException e) {
         view.sendOutput("Member do not exist");
       }
       memberMenu();
@@ -104,20 +104,16 @@ public class ObjectController {
       view.sendOutput("Enter the ID of the member you want to change info: ");
       String member = view.getString();
       Member memberToChange = model.findMember(member);
-      if (memberToChange != null) {
-        view.sendOutput("Enter new member name: ");
-        String name = view.getString();
-        view.sendOutput("Enter new member email: ");
-        String email = view.getString();
-        view.sendOutput("Enter new member mobile: ");
-        int mobile = view.getInt();
-        try {
-          model.updateMemberAccount(memberToChange, name, email, mobile);
-          view.sendOutput("Member updated successfully!");
-        } catch (IllegalArgumentException e) {
-          view.sendOutput(e.getMessage());
-        }
-      } else {
+      view.sendOutput("Enter new member name: ");
+      String name = view.getString();
+      view.sendOutput("Enter new member email: ");
+      String email = view.getString();
+      view.sendOutput("Enter new member mobile: ");
+      int mobile = view.getInt();
+      try {
+        model.updateMemberAccount(memberToChange, name, email, mobile);
+        view.sendOutput("Member updated successfully!");
+      } catch (IllegalArgumentException e) {
         view.sendOutput("Member do not exist");
       }
       memberMenu();
@@ -147,7 +143,7 @@ public class ObjectController {
       }
       itemMenu();
     } else if (view.second()) {
-      view.sendOutput("\nEnter item category (Tool, Vehicle, Game, Toy, Sport, Other): ");
+      view.sendOutput("Enter item category (Tool, Vehicle, Game, Toy, Sport, Other): ");
       String category = view.getString();
       view.sendOutput("Enter item name: ");
       String name = view.getString();
@@ -157,8 +153,9 @@ public class ObjectController {
       int costPerDay = view.getInt();
       view.sendOutput("Enter the ID of the owner of the item: ");
       String ownerid = view.getString();
-      Member owner = model.findMember(ownerid);
+
       try {
+        Member owner = model.findMember(ownerid);
         model.addItem(category, name, descContent, costPerDay, time, owner);
         view.sendOutput("Item posted successfully!");
       } catch (IllegalArgumentException e) {
