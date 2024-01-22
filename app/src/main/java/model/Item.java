@@ -16,7 +16,7 @@ public class Item {
   /**
    * The Item class.
    */
-  protected Item(String category, String name, String description, 
+  protected Item(String category, String name, String description,
       int costPerDay, Time currentDate, String itemId, Member owner) {
     this.category = category;
     this.name = name;
@@ -70,5 +70,27 @@ public class Item {
 
   public void setCostPerDay(int costPerDay) {
     this.costPerDay = costPerDay;
+  }
+
+  /**
+   * If owner has already same item.
+   */
+  public boolean equals(Object obj) {
+    if (this == obj) {
+      return true;
+    }
+    if (obj == null || getClass() != obj.getClass()) {
+      return false;
+    }
+    Item item = (Item) obj;
+    return itemId == item.itemId && name.equals(item.name);
+  }
+
+  @Override
+  public int hashCode() {
+    int result = 17; 
+    result = 31 * result + (itemId == null ? 0 : itemId.hashCode());
+    result = 31 * result + (name == null ? 0 : name.hashCode());
+    return result;
   }
 }

@@ -19,7 +19,7 @@ public class Service {
    * The Service class.
    */
   public Service(Time time) {
-    this.time = time;
+    this.time = time.getTime();
   }
 
   /**
@@ -89,8 +89,8 @@ public class Service {
   /**
    * To uptade an item.
    */
-  public boolean updateItem(Item item, String name, String category, 
-        String description, int price) {
+  public boolean updateItem(Item item, String name, String category,
+      String description, int price) {
     try {
       item.setName(name);
       item.setCategory(category);
@@ -166,6 +166,7 @@ public class Service {
   public void addItem(String name, String category, String description, int cost,
       Time currentDay, Member owner) {
     Item newItem = new Item(category, name, description, cost, currentDay, generateId(), owner);
+    owner.addOwnedItem(newItem);
     items.add(newItem);
   }
 
@@ -173,12 +174,13 @@ public class Service {
    * Find a member by its name.
    */
   public Member findMember(String memberId) {
-    for (Member member : members) {
-      if (member.getMemberId().equals(memberId)) {
-        return member;
-      }
+    Member foundmember = members.stream().filter(member -> 
+        member.getMemberId().equals(memberId)).findFirst().orElse(null);
+    if (foundmember != null) {
+      return foundmember;
+    } else {
+      return null;
     }
-    return null;
   }
 
   /**
@@ -191,5 +193,10 @@ public class Service {
       }
     }
     return null;
+  }
+
+
+  public Service getModel() {
+    return this;
   }
 }

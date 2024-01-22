@@ -14,6 +14,10 @@ public class Time {
     return day;
   }
 
+  public Time getTime() {
+    return this;
+  }
+
   public void setDate(int newDay) {
     day = newDay;
   }

@@ -20,9 +20,9 @@ public class SwedishController {
    * ObjectController class in Swedish.
    */
   public SwedishController(Service model, ViewInterface view, Time time) {
-    this.model = model;
+    this.model = model.getModel();
     this.view = view;
-    this.time = time;
+    this.time = time.getTime();
   }
 
   /**
