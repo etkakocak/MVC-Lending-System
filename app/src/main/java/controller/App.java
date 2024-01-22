@@ -19,7 +19,9 @@ public class App {
     Time time = new Time();
     Service m = new Service(time);
     ViewInterface v = new ConsoleUi();
+    // = new SwedishConsoleUi(); (för svenska verison)
     ObjectController ctrl = new ObjectController(m, v, time);
+    // = new SwedishController(m, v, time); (för svenska verison)
     ctrl.start();
   }
 } 
