@@ -1,50 +1,66 @@
 package model;
 
 /**
- * This is encaptulation class for contracts.
+ * Represents a lending contract in the Stuff Lending System.
  */
 public class Contract {
-  private int startDate;
-  private int endDate;
-  private final Item item;
-  private final Member lender;
-  private int cost;
+  private Member lender; // The member who is borrowing the item
+  private Item item; // The item being lent
+  private int startDay; // The day the contract starts
+  private int endDay; // The day the contract ends
+  private int totalCost; // The total cost of the lending contract
 
   /**
-   * The Contract class.
+   * Constructor for Contract.
    */
-  protected Contract(int startDate, int endDate, Item item, Member lender, int cost) {
-    this.startDate = startDate;
-    this.endDate = endDate;
-    this.item = item;
+  public Contract(Member lender, Item item, int startDay, int endDay) {
     this.lender = lender;
+    this.item = item;
+    this.startDay = startDay;
+    this.endDay = endDay;
+    this.totalCost = calculateTotalCost();
   }
 
-  public int getCost() {
-    return cost;
+  // Getters
+
+  public Member getLender() {
+    return lender;
   }
 
-  public int getStartDate() {
-    return startDate;
+  public Item getItem() {
+    return item;
   }
 
-  public void setStartDate(int startDate) {
-    this.startDate = startDate;
+  public int getStartDay() {
+    return startDay;
   }
 
-  public int getEndDate() {
-    return endDate;
+  public int getEndDay() {
+    return endDay;
   }
 
-  public void setEndDate(int endDate) {
-    this.endDate = endDate;
+  public int getTotalCost() {
+    return totalCost;
   }
 
-  public String getItem() {
-    return item.getName();
+  /**
+   * Calculates the total cost of the contract based on the duration and
+   * cost per day of the item.
+   */
+  private int calculateTotalCost() {
+    int duration = (endDay - startDay) + 1; 
+    return duration * item.getCostPerDay();
   }
 
-  public String getLender() {
-    return lender.getName();
+  /**
+   * Returns the contract data as string.
+   */
+  @Override
+  public String toString() {
+    return "Item: " + item.getName() 
+        + ", Lender: " + lender.getName() 
+        + ", Start Day: " + startDay 
+        + ", End Day: " + endDay 
+        + ", Total Cost: " + totalCost;
   }
 }
