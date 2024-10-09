@@ -3,26 +3,23 @@ package model;
 import java.util.Random;
 
 /**
- * Generates random id.
+ * Generates random ID.
  */
 public class GenerateId {
-  private Random random = new Random(); 
+  private Random random = new Random();
 
   /**
-   * Generate a new id.
+   * Generates a new 6-character alphanumeric ID.
    */
   public String generateNewId() {
     String alphaNumericString = "ABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789";
-    StringBuilder sb;
-    String generatedId;
+    StringBuilder sb = new StringBuilder(6);
 
-    sb = new StringBuilder(6);
     for (int i = 0; i < 6; i++) {
       int index = random.nextInt(alphaNumericString.length());
       sb.append(alphaNumericString.charAt(index));
     }
-    generatedId = sb.toString();
 
-    return generatedId;
+    return sb.toString();
   }
 }
