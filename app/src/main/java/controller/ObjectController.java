@@ -220,3 +220,161 @@ public class ObjectController {
       view.showMessage(item.toSimpleString());
     }
   }
+
+  private void deleteItem() {
+    view.showMessage("Enter the ID of the owner of the item to delete:");
+    String memberId = view.getUserInput();
+    Member owner = service.viewMember(memberId);
+    if (owner == null) {
+      view.showMessage("Member not found.");
+      return;
+    }
+    view.showMessage("Enter the name of the item to delete:");
+    String itemName = view.getUserInput();
+
+    boolean success = service.deleteItem(itemName, owner);
+    if (success) {
+      view.showMessage("Item deleted successfully.");
+    } else {
+      view.showMessage("Item not found.");
+    }
+  }
+
+  private void updateItem() {
+    view.showMessage("Enter the ID of the owner of the item to update:");
+    String memberId = view.getUserInput();
+    Member owner = service.viewMember(memberId);
+    if (owner == null) {
+      view.showMessage("Member not found.");
+      return;
+    }
+    view.showMessage("Enter the name of the item to update:");
+    String itemName = view.getUserInput();
+    Item item = service.viewItem(itemName, owner);
+    if (item == null) {
+      view.showMessage("Item not found.");
+      return;
+    }
+    // Collect new category
+    view.showMessage("New category (" + item.getCategory() + "): ");
+    String categoryStr = view.getUserInput();
+    Category newCategory;
+    try {
+      newCategory = Category.valueOf(categoryStr.toUpperCase());
+    } catch (IllegalArgumentException e) {
+      view.showMessage("Invalid category.");
+      return;
+    }
+    // Collect new cost per day
+    view.showMessage("New cost per day (" + item.getCostPerDay() + "): ");
+    int newCostPerDay;
+    try {
+      newCostPerDay = Integer.parseInt(view.getUserInput());
+    } catch (NumberFormatException e) {
+      view.showMessage("Invalid cost.");
+      return;
+    }
+    // Collect new name
+    view.showMessage("New name (" + item.getName() + "): ");
+    String newName = view.getUserInput();
+    // Collect new description
+    view.showMessage("New description (" + item.getDescription() + "): ");
+    String newDescription = view.getUserInput();
+
+    boolean success = service.updateItem(item, newName, newDescription, newCategory, newCostPerDay);
+    if (success) {
+      view.showMessage("Item updated successfully.");
+    } else {
+      view.showMessage("Failed to update item.");
+    }
+  }
+
+  private void viewItemDetails() {
+    view.showMessage("Enter the ID of the owner of the item to view details:");
+    String memberId = view.getUserInput();
+    Member owner = service.viewMember(memberId);
+    if (owner == null) {
+      view.showMessage("Member not found.");
+      return;
+    }
+    view.showMessage("Enter the name of the item:");
+    String itemName = view.getUserInput();
+    Item item = service.viewItem(itemName, owner);
+    if (item != null) {
+      view.showMessage(item.toVerboseString());
+    } else {
+      view.showMessage("Item not found.");
+    }
+  }
+
+  // Contract Management Methods
+
+  private void establishContract() {
+    view.showMessage("Establish Contract:");
+    view.showMessage("Enter the ID of the borrower:");
+    String borrowerId = view.getUserInput();
+    Member borrower = service.viewMember(borrowerId);
+    if (borrower == null) {
+      view.showMessage("Borrower not found.");
+      return;
+    }
+    view.showMessage("Enter the ID of the owner of the item:");
+    String ownerId = view.getUserInput();
+    Member owner = service.viewMember(ownerId);
+    if (owner == null) {
+      view.showMessage("Owner not found.");
+      return;
+    }
+    view.showMessage("Enter the name of the item:");
+    String itemName = view.getUserInput();
+    Item item = service.viewItem(itemName, owner);
+    if (item == null) {
+      view.showMessage("Item not found.");
+      return;
+    }
+
+    // Check if borrower is the same as owner
+    if (borrower.equals(owner)) {
+      view.showMessage("Cannot borrow your own item.");
+      return;
+    }
+
+    view.showMessage("Start day (current day is " + time.getCurrentDay() + "): ");
+    int startDay;
+    try {
+      startDay = Integer.parseInt(view.getUserInput());
+    } catch (NumberFormatException e) {
+      view.showMessage("Invalid day.");
+      return;
+    }
+    view.showMessage("End day: ");
+    int endDay;
+    try {
+      endDay = Integer.parseInt(view.getUserInput());
+    } catch (NumberFormatException e) {
+      view.showMessage("Invalid day.");
+      return;
+    }
+
+    boolean success = service.addContract(borrower, item, startDay, endDay);
+    if (success) {
+      view.showMessage("Contract established successfully.");
+    } else {
+      view.showMessage("Failed to establish contract. Please check the details.");
+    }
+  }
+
+  private void listContracts() {
+    List<Contract> contracts = service.listContracts();
+    for (Contract contract : contracts) {
+      view.showMessage(contract.toString());
+    }
+  }
+
+  // Time Management
+
+  private void advanceDay() {
+    service.advanceDay();
+    view.showMessage("Day advanced. Current day is now: " + time.getCurrentDay());
+  }
+}
