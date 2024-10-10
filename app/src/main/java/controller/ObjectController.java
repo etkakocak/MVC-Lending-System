@@ -3,225 +3,220 @@ package controller;
 import java.util.List;
 import model.Contract;
 import model.Item;
+import model.Item.Category;
 import model.Member;
 import model.Service;
 import model.Time;
 import view.ViewInterface;
 
 /**
- * This class controls the objects in this app.
+ * ObjectController class.
+ * Handles user input, interacts with the model (Service), and updates the view.
  */
 public class ObjectController {
-  private Service model;
+  private Service service;
   private ViewInterface view;
   private Time time;
 
   /**
-   * ObjectController class.
+   * Constructor for ObjectController.
    */
-  public ObjectController(Service model, ViewInterface view, Time time) {
-    this.model = model.getModel();
+  public ObjectController(Service service, ViewInterface view, Time time) {
+    this.service = service;
     this.view = view;
-    this.time = time.getTime();
+    this.time = time;
   }
 
   /**
-   * Application starts.
+   * Starts the main menu loop of the application.
    */
   public void start() {
-    view.welcome();
-    model.initializeStartObjects();
-    mainMenu();
-  }
+    boolean exit = false;
+    while (!exit) {
+      view.displayMenu();
+      String choice = view.getUserInput();
 
-  /**
-   * This is for handling of the main menu in ConsoleUI.
-   */
-  public boolean mainMenu() {
-    view.displayMainMenu();
-    view.getUserChoice();
-
-    if (view.first()) {
-      memberMenu();
-    } else if (view.second()) {
-      itemMenu();
-    } else if (view.third()) {
-      createContract();
-    } else if (view.fourth()) {
-      time.nextDay();
-      view.sendOutput("Current day: " + time.getDate());
-      mainMenu();
+      switch (choice) {
+        case "1":
+          addMember();
+          break;
+        case "2":
+          listMembersSimple();
+          break;
+        case "3":
+          listMembersVerbose();
+          break;
+        case "4":
+          deleteMember();
+          break;
+        case "5":
+          updateMember();
+          break;
+        case "6":
+          viewMemberDetails();
+          break;
+        case "7":
+          addItem();
+          break;
+        case "8":
+          listItems();
+          break;
+        case "9":
+          deleteItem();
+          break;
+        case "10":
+          updateItem();
+          break;
+        case "11":
+          viewItemDetails();
+          break;
+        case "12":
+          establishContract();
+          break;
+        case "13":
+          listContracts();
+          break;
+        case "14":
+          advanceDay();
+          break;
+        case "15":
+          exit = true;
+          view.showMessage("Exiting the application...");
+          break;
+        default:
+          view.showMessage("Invalid choice. Please try again.");
+      }
     }
-    return !(view.fifth());
   }
 
-  /**
-   * This is for handling of the member menu in ConsoleUI.
-   */
-  public void memberMenu() {
-    view.displayMemberMenu();
-    view.getUserChoice();
+  // Member Management Methods
 
-    if (view.first()) {
-      view.sendOutput("Enter the ID of the member you want to delete: ");
-      String member = view.getString();
-      Member memberToDelete = model.findMember(member);
-      try {
-        model.deleteMember(memberToDelete);
-        view.sendOutput("Member deleted successfully");
-      } catch (IllegalArgumentException e) {
-        view.sendOutput("Member do not exist");
-      }
-      memberMenu();
-    } else if (view.second()) {
-      view.sendOutput("Enter member name: ");
-      String name = view.getString();
-      view.sendOutput("Enter member email: ");
-      String email = view.getString();
-      view.sendOutput("Enter member mobile: ");
-      int mobile = view.getInt();
-      if (model.createMemberAccount(name, email, mobile, time)) {
-        view.sendOutput("Member created successfully!");
-      } else {
-        view.sendOutput("Member with same email or mobile exist!");
-      }
-      memberMenu();
-    } else if (view.third()) {
-      List<Member> members = model.getAllMembers();
-      view.listMembers(members);
-      memberMenu();
-    } else if (view.fourth()) {
-      view.sendOutput("Enter the ID of the member you want to view info: ");
-      String member = view.getString();
-      Member memberToView = model.findMember(member);
-      try {
-        view.viewMemberDetails(memberToView);
-      } catch (IllegalArgumentException e) {
-        view.sendOutput("Member do not exist");
-      }
-      memberMenu();
-    } else if (view.fifth()) {
-      view.sendOutput("Enter the ID of the member you want to change info: ");
-      String member = view.getString();
-      Member memberToChange = model.findMember(member);
-      view.sendOutput("Enter new member name: ");
-      String name = view.getString();
-      view.sendOutput("Enter new member email: ");
-      String email = view.getString();
-      view.sendOutput("Enter new member mobile: ");
-      int mobile = view.getInt();
-      try {
-        model.updateMemberAccount(memberToChange, name, email, mobile);
-        view.sendOutput("Member updated successfully!");
-      } catch (IllegalArgumentException e) {
-        view.sendOutput("Member do not exist");
-      }
-      memberMenu();
-    } else if (view.sixth()) {
-      mainMenu();
+  private void addMember() {
+    view.showMessage("Add Member:");
+    view.showMessage("Name: ");
+    String name = view.getUserInput();
+    view.showMessage("Email: ");
+    String email = view.getUserInput();
+    view.showMessage("Phone Number: ");
+    String phoneNumber = view.getUserInput();
+
+    boolean success = service.addMember(name, email, phoneNumber);
+    if (success) {
+      view.showMessage("Member added successfully.");
     } else {
-      memberMenu();
+      view.showMessage("Email or phone number already exists.");
     }
   }
 
-  /**
-   * This is for handling of the item menu in ConsoleUI.
-   */
-  public void itemMenu() {
-    view.displayItemMenu();
-    view.getUserChoice();
+  private void listMembersSimple() {
+    List<Member> members = service.listMembers();
+    for (Member member : members) {
+      view.showMessage(member.toSimpleString());
+    }
+  }
 
-    if (view.first()) {
-      view.sendOutput("Enter the ID of the item you want to delete: ");
-      String item = view.getString();
-      Item itemToDelete = model.findItem(item);
-      if (itemToDelete != null) {
-        model.deleteItem(itemToDelete);
-        view.sendOutput("Item deleted successfully");
-      } else {
-        view.sendOutput("Item do not exist");
-      }
-      itemMenu();
-    } else if (view.second()) {
-      view.sendOutput("Enter item category (Tool, Vehicle, Game, Toy, Sport, Other): ");
-      String category = view.getString();
-      view.sendOutput("Enter item name: ");
-      String name = view.getString();
-      view.sendOutput("Enter item description: ");
-      String descContent = view.getString();
-      view.sendOutput("Enter cost per day to lend the item: ");
-      int costPerDay = view.getInt();
-      view.sendOutput("Enter the ID of the owner of the item: ");
-      String ownerid = view.getString();
+  private void listMembersVerbose() {
+    String verboseInfo = service.listMembersVerbose();
+    view.showMessage(verboseInfo);
+  }
 
-      try {
-        Member owner = model.findMember(ownerid);
-        model.addItem(category, name, descContent, costPerDay, time, owner);
-        view.sendOutput("Item posted successfully!");
-      } catch (IllegalArgumentException e) {
-        view.sendOutput(e.getMessage());
-      }
-      itemMenu();
-    } else if (view.third()) {
-      List<Item> items = model.getAllItems();
-      view.listItems(items);
-      itemMenu();
-    } else if (view.fourth()) {
-      view.sendOutput("Enter the ID of the item you want to change info: ");
-      String item = view.getString();
-      Item itemToChange = model.findItem(item);
-      if (itemToChange != null) {
-        view.sendOutput("Enter new item name: ");
-        String name = view.getString();
-        view.sendOutput("Enter new item category: ");
-        String category = view.getString();
-        view.sendOutput("Enter new item description: ");
-        String description = view.getString();
-        view.sendOutput("Enter new item price: ");
-        int price = view.getInt();
-        try {
-          model.updateItem(itemToChange, name, category, description, price);
-          view.sendOutput("Item updated successfully!");
-        } catch (IllegalArgumentException e) {
-          view.sendOutput(e.getMessage());
-        }
-      } else {
-        view.sendOutput("Item do not exist");
-      }
-      itemMenu();
-    } else if (view.fifth()) {
-      mainMenu();
+  private void deleteMember() {
+    view.showMessage("Enter the ID of the member to delete:");
+    String memberId = view.getUserInput();
+    boolean success = service.deleteMember(memberId);
+    if (success) {
+      view.showMessage("Member deleted successfully.");
     } else {
-      itemMenu();
+      view.showMessage("Member not found.");
     }
   }
 
-  /**
-   * This is for creation a new Contract.
-   */
-  public void createContract() {
-    view.sendOutput("Enter the ID of the item to loan: ");
-    String itemid = view.getString();
-    Item item = model.findItem(itemid);
-    view.sendOutput("Enter the ID of the member that wants to loan: ");
-    String memberid = view.getString();
-    Member member = model.findMember(memberid);
-    view.sendOutput("How many days do you want to loan the item? ");
-    int date = view.getInt();
-    int startDate = time.getDate();
-    int endDate = startDate + date;
-    int loanDays = endDate - startDate;
-    int totalCost = loanDays * item.getCostPerDay();
+  private void updateMember() {
+    view.showMessage("Enter the ID of the member to update:");
+    String memberId = view.getUserInput();
+    Member member = service.viewMember(memberId);
+    if (member == null) {
+      view.showMessage("Member not found.");
+      return;
+    }
+    view.showMessage("New name (" + member.getName() + "): ");
+    String newName = view.getUserInput();
+    view.showMessage("New email (" + member.getEmail() + "): ");
+    String newEmail = view.getUserInput();
+    view.showMessage("New phone number (" + member.getPhoneNumber() + "): ");
+    String newPhone = view.getUserInput();
 
-    if (member.getCredits() >= totalCost) {
-      view.sendOutput("Member don't have enough credits to loan this item.");
-      mainMenu();
+    boolean success = service.updateMember(memberId, newName, newEmail, newPhone);
+    if (success) {
+      view.showMessage("Member updated successfully.");
     } else {
-      model.addContract(item, member, startDate, endDate, totalCost);
-      view.sendOutput("Contract created successfully!");
+      view.showMessage("Update failed. Email or phone number already exists.");
     }
-    List<Contract> contracts = model.getAllContracts();
-    view.listContracts(contracts);
-    mainMenu();
   }
-}
+
+  private void viewMemberDetails() {
+    view.showMessage("Enter the ID of the member to view details:");
+    String memberId = view.getUserInput();
+    Member member = service.viewMember(memberId);
+    if (member != null) {
+      view.showMessage(member.toVerboseString());
+    } else {
+      view.showMessage("Member not found.");
+    }
+  }
+
+  // Item Management Methods
+
+  private void addItem() {
+    view.showMessage("Add Item:");
+    view.showMessage("Enter the ID of the owner:");
+    String memberId = view.getUserInput();
+    Member owner = service.viewMember(memberId);
+    if (owner == null) {
+      view.showMessage("Member not found.");
+      return;
+    }
+    view.showMessage("Item Name: ");
+    String name = view.getUserInput();
+    // Check if owner already has an item with the same name
+    if (service.ownerHasItemWithName(owner, name)) {
+      view.showMessage("You already own an item with that name.");
+      return;
+    }
+    // Collect category
+    view.showMessage("Category (TOOL, VEHICLE, GAME, TOY, SPORT, OTHER): ");
+    String categoryStr = view.getUserInput();
+    Category category;
+    try {
+      category = Category.valueOf(categoryStr.toUpperCase());
+    } catch (IllegalArgumentException e) {
+      view.showMessage("Invalid category.");
+      return;
+    }
+    // Collect cost per day
+    view.showMessage("Cost Per Day: ");
+    int costPerDay;
+    try {
+      costPerDay = Integer.parseInt(view.getUserInput());
+    } catch (NumberFormatException e) {
+      view.showMessage("Invalid cost.");
+      return;
+    }
+    // Collect description
+    view.showMessage("Description: ");
+    String description = view.getUserInput();
+
+    boolean success = service.addItem(owner, name, description, category, costPerDay);
+    if (success) {
+      view.showMessage("Item added successfully.");
+    } else {
+      view.showMessage("Failed to add item. You may already own an item with that name.");
+    }
+  }
+
+  private void listItems() {
+    List<Item> items = service.listItems();
+    for (Item item : items) {
+      view.showMessage(item.toSimpleString());
+    }
+  }
