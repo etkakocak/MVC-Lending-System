@@ -35,9 +35,19 @@ public class Service {
     addItem(alice, "Hammer", "A sturdy hammer", Item.Category.TOOL, 5);
 
     // Member 2
-    addMember("Bob", "bob@example.com", "0987654321");
-    Member bob = getMemberByEmail("bob@example.com");
-    addItem(bob, "Bicycle", "Mountain bike", Item.Category.VEHICLE, 10);
+    addMember("Martin", "martin@hotmail.com", "0129954637");
+    Member m1 = getMemberByEmail("martin@hotmail.com");
+    addItem(m1, "VW Golf 2019", "Manual", Item.Category.VEHICLE, 50);
+    addItem(m1, "Xbox Series S", "Two controllers", Item.Category.GAME, 10);
+    m1.addCredits(270);
+
+    // Member 3
+    addMember("Manu", "manu@example.com", "0987654321");
+    Member m2 = getMemberByEmail("manu@example.com");
+    m2.addCredits(100);
+    
+    Item l2 = getItemByNameAndOwner("Xbox Series S", m1);
+    addContract(alice, l2, 5, 7);
   }
 
 
