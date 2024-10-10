@@ -39,17 +39,16 @@ public class Service {
     Member m1 = getMemberByEmail("martin@hotmail.com");
     addItem(m1, "VW Golf 2019", "Manual", Item.Category.VEHICLE, 50);
     addItem(m1, "Xbox Series S", "Two controllers", Item.Category.GAME, 10);
-    m1.addCredits(270);
+    m1.addCredits(300);
 
     // Member 3
     addMember("Manu", "manu@example.com", "0987654321");
     Member m2 = getMemberByEmail("manu@example.com");
     m2.addCredits(100);
-    
+
     Item l2 = getItemByNameAndOwner("Xbox Series S", m1);
     addContract(alice, l2, 5, 7);
   }
-
 
   // Member Management Methods
 
@@ -137,7 +136,7 @@ public class Service {
   /**
    * Adds a new item to the system.
    */
-  public boolean addItem(Member owner, String name, String description, 
+  public boolean addItem(Member owner, String name, String description,
       Item.Category category, int costPerDay) {
     if (owner == null) {
       return false;
@@ -153,29 +152,37 @@ public class Service {
     return true;
   }
 
-  /**
-   * Deletes an item from the system.
-   */
   public boolean deleteItem(String itemName, Member owner) {
     Item itemToRemove = getItemByNameAndOwner(itemName, owner);
     if (itemToRemove != null) {
+      // Remove item from owner's owned items
       owner.removeItem(itemToRemove);
+      // Remove item from global items list
       items.remove(itemToRemove);
+      // Remove contracts associated with this item
+      removeContractsByItem(itemToRemove);
       return true;
     }
     return false;
   }
 
   /**
+   * Removes all contracts associated with a specific item.
+   */
+  private void removeContractsByItem(Item item) {
+    contracts.removeIf(contract -> contract.getItem().equals(item));
+  }
+
+  /**
    * Updates an item's information.
    */
-  public boolean updateItem(Item item, String newName, 
-        String newDescription, Item.Category newCategory, int newCostPerDay) {
+  public boolean updateItem(Item item, String newName,
+      String newDescription, Item.Category newCategory, int newCostPerDay) {
     if (item == null) {
       return false;
     }
     // Check if owner already has an item with the new name
-    if (!item.getName().equalsIgnoreCase(newName) 
+    if (!item.getName().equalsIgnoreCase(newName)
         && ownerHasItemWithName(item.getOwner(), newName)) {
       return false; // Item with same name already exists
     }
@@ -233,10 +240,6 @@ public class Service {
     contracts.add(contract);
     item.addContract(contract);
 
-    // Transfer credits
-    borrower.deductCredits(totalCost);
-    item.getOwner().addCredits(totalCost);
-
     return true;
   }
 
@@ -254,6 +257,19 @@ public class Service {
    */
   public void advanceDay() {
     time.advanceDay();
+    int currentDay = time.getCurrentDay();
+
+    // Transfer credits if a contract starts
+    for (Contract contract : contracts) {
+      if (contract.getStartDay() == currentDay && !contract.getIsPaid()) {
+        int totalCost = contract.getTotalCost();
+        Member borrower = contract.getLender();
+        Member owner = contract.getItem().getOwner();
+        borrower.deductCredits(totalCost);
+        owner.addCredits(totalCost);
+        contract.setPaid(true); 
+      }
+    }
   }
 
   /**
@@ -272,7 +288,7 @@ public class Service {
    */
   private boolean isEmailOrPhoneExists(String email, String phoneNumber) {
     for (Member member : members) {
-      if (member.getEmail().equalsIgnoreCase(email) 
+      if (member.getEmail().equalsIgnoreCase(email)
           || member.getPhoneNumber().equals(phoneNumber)) {
         return true;
       }

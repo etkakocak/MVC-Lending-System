@@ -1,31 +1,21 @@
 # Stuff Lending System Test Report
-**Test results after** ``./gradlew build`` **command:**
 
-```
-CodeQualityTests > codeQuality() STANDARD_OUT
-    0 CheckStyle Issues in C:/Users/etkae/Desktop/Programmering/a2/app/src/main/java/controller/App.java
-    0 CheckStyle Issues in C:/Users/etkae/Desktop/Programmering/a2/app/src/main/java/controller/ObjectController.java
-    0 CheckStyle Issues in C:/Users/etkae/Desktop/Programmering/a2/app/src/main/java/controller/SwedishController.java
-    0 CheckStyle Issues in C:/Users/etkae/Desktop/Programmering/a2/app/src/main/java/model/Contract.java
-    0 CheckStyle Issues in C:/Users/etkae/Desktop/Programmering/a2/app/src/main/java/model/GenerateId.java
-    0 CheckStyle Issues in C:/Users/etkae/Desktop/Programmering/a2/app/src/main/java/model/Item.java
-    0 CheckStyle Issues in C:/Users/etkae/Desktop/Programmering/a2/app/src/main/java/model/Member.java
-    0 CheckStyle Issues in C:/Users/etkae/Desktop/Programmering/a2/app/src/main/java/model/Service.java
-    0 CheckStyle Issues in C:/Users/etkae/Desktop/Programmering/a2/app/src/main/java/model/Time.java
-    0 CheckStyle Issues in C:/Users/etkae/Desktop/Programmering/a2/app/src/main/java/view/ConsoleUi.java
-    0 CheckStyle Issues in C:/Users/etkae/Desktop/Programmering/a2/app/src/main/java/view/SwedishConsoleUi.java
-    0 CheckStyle Issues in C:/Users/etkae/Desktop/Programmering/a2/app/src/main/java/view/ViewInterface.java
-    0 FindBugs Issues in controller/SwedishController.java
-    0 FindBugs Issues in model/Time.java
-    0 FindBugs Issues in view/ViewInterface.java
-    0 FindBugs Issues in model/Contract.java
-    0 FindBugs Issues in view/SwedishConsoleUi.java
-    0 FindBugs Issues in controller/App.java
-    0 FindBugs Issues in view/ConsoleUi.java
-    0 FindBugs Issues in model/GenerateId.java
-    0 FindBugs Issues in model/Service.java
-    0 FindBugs Issues in model/Item.java
-    0 FindBugs Issues in controller/ObjectController.java
-    0 FindBugs Issues in model/Member.java
-```
-
+**Version:**  
+**Date:** 2024.10.10  
+**Environment:** Windows , Java version 17.0.5 , Performed by: ek223zf, sa225hg, ad223jd 
+| Case   | Result | Note |
+|:------------- |:---------------:|:---------------:|
+| 5.1    | ok     |  |
+| 1.1    | ok     |  |
+| 1.2    | ok     |  |
+| 1.3    | ok     |  |
+| 2.1    | ok     |  |
+| 2.2    | ok     |  |
+| 2.3    | ok     |  |
+| 3.1    | ok     |  |
+| 3.2    | ok     |  |
+| 3.3    | ok     |  |
+| 3.4    | ok     |  |
+| 3.5    | ok     |  |
+| 3.6    | ok     |  |
+| 4.1    | ok     |  |

@@ -9,6 +9,7 @@ public class Contract {
   private int startDay; // The day the contract starts
   private int endDay; // The day the contract ends
   private int totalCost; // The total cost of the lending contract
+  private boolean isPaid;
 
   /**
    * Constructor for Contract.
@@ -19,6 +20,7 @@ public class Contract {
     this.startDay = startDay;
     this.endDay = endDay;
     this.totalCost = calculateTotalCost();
+    this.isPaid = false;
   }
 
   // Getters
@@ -41,6 +43,14 @@ public class Contract {
 
   public int getTotalCost() {
     return totalCost;
+  }
+
+  public boolean getIsPaid() {
+    return isPaid;
+  }
+
+  public void setPaid(boolean paid) {
+    this.isPaid = paid;
   }
 
   /**
