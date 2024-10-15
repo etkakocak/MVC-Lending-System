@@ -8,13 +8,9 @@ Sanaa Abdoulkader (sa225hg)
 Aiman Daeef (ad223jd)  
 
 [Click to see the architectural design of the application.](design.md)  
-[Click to see the test results of the application:](testreport.md)  
+[Click to see the test report of the application.](testreport.md)  
 
 ## Usage of the application
-
-For the completion that comes in the new version of the application, we removed the system that required logging in by typing username and password in the past so that it would be easier to test the application. Likewise, we developed the application so that all features can be used in only one account, and therefore we removed the Admin class.
-
-### What can be done in the application?
 
 A member initially has 0 credits. Member can share items at any time and receives 100 credits for each item they shared. Members can use these credits when borrowing an item. However, if the member wants to delete one of their own shared items, these 100 credits will be taken back.  
 

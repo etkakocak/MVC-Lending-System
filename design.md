@@ -5,7 +5,7 @@ The application uses the model-view-controller (MVC) architectural pattern. The 
 
 ## Detailed Design
 ### Class Diagram
-![Class diagram](/img/class_diagram.png)  
+![Class diagram](/img/class_diagram2.png)
 
 ### Object Diagram
 ![Object diagram](/img/object_diagram.png)  
@@ -13,7 +13,4 @@ This object diagram corresponds to the sequence diagram scenario below. Two memb
 
 ### Sequence Diagram
 ![Sequence diagram](/img/sequence_diagram.png)  
-This sequence diagram corresponds to a scenario where a new third member is added to the system where there two other members already exist. It also shows the whole flow of messages and methods. 
-
-![Sequence diagram 2](/img/sequence_diagram2.png)  
-The second sequence diagram for retake shows the process of adding a new item to a member. 
+This sequence diagram corresponds to the object diagram scenario where a new third member is added to the system where there two other members. It also shows the whole flow of messages and methods. 
