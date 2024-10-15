@@ -39,6 +39,6 @@ public class Time {
    */
   @Override
   public String toString() {
-    return "Geçerli Gün: " + currentDay;
+    return "Current day: " + currentDay;
   }
 }

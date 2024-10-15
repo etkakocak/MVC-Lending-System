@@ -152,6 +152,9 @@ public class Service {
     return true;
   }
 
+  /**
+   * Deletes item.
+   */
   public boolean deleteItem(String itemName, Member owner) {
     Item itemToRemove = getItemByNameAndOwner(itemName, owner);
     if (itemToRemove != null) {
