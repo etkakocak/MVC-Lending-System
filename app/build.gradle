@@ -16,7 +16,7 @@ plugins {
 spotbugsMain {
     ignoreFailures = true   // failures are handled via automatic testing
     showStackTraces = false
-    
+    excludeFilter = file('spotbugs-exclude.xml') // Include the exclude filter to avoid FindBugs issues about getters. 
     reports {
         html {
             enabled = false

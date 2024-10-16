@@ -1,6 +1,7 @@
 package model;
 
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
 
 /**
@@ -79,7 +80,7 @@ public class Item {
   }
 
   public List<Contract> getContracts() {
-    return contracts;
+    return Collections.unmodifiableList(contracts);
   }
 
   /**

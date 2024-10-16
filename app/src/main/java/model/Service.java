@@ -1,6 +1,7 @@
 package model;
 
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
 
 /**
@@ -117,7 +118,7 @@ public class Service {
    * Lists all members with basic information.
    */
   public List<Member> listMembers() {
-    return members;
+    return Collections.unmodifiableList(members);
   }
 
   /**
@@ -207,7 +208,7 @@ public class Service {
    * Lists all items.
    */
   public List<Item> listItems() {
-    return items;
+    return Collections.unmodifiableList(items);
   }
 
   // Contract Management Methods
@@ -250,7 +251,7 @@ public class Service {
    * Lists all contracts.
    */
   public List<Contract> listContracts() {
-    return contracts;
+    return Collections.unmodifiableList(contracts);
   }
 
   // Time Management

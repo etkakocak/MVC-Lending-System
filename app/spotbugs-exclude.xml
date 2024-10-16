@@ -1,0 +1,51 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<FindBugsFilter>
+
+    <!-- Suppress warnings in model.Contract -->
+    <!-- getItem() and getLender() methods -->
+    <Match>
+        <Class name="model.Contract"/>
+        <Method name="getItem"/>
+        <Bug pattern="EI_EXPOSE_REP"/>
+    </Match>
+    <Match>
+        <Class name="model.Contract"/>
+        <Method name="getLender"/>
+        <Bug pattern="EI_EXPOSE_REP"/>
+    </Match>
+    <!-- Constructor storing externally mutable objects -->
+    <Match>
+        <Class name="model.Contract"/>
+        <Method name="&lt;init&gt;"/>
+        <Bug pattern="EI_EXPOSE_REP2"/>
+    </Match>
+
+    <!-- Suppress warning in model.Service constructor -->
+    <Match>
+        <Class name="model.Service"/>
+        <Method name="&lt;init&gt;"/>
+        <Bug pattern="EI_EXPOSE_REP2"/>
+    </Match>
+
+    <!-- Suppress warning in model.Item constructor -->
+    <Match>
+        <Class name="model.Item"/>
+        <Method name="&lt;init&gt;"/>
+        <Bug pattern="EI_EXPOSE_REP2"/>
+    </Match>
+
+    <!-- Suppress warnings in controller.ObjectController constructor -->
+    <Match>
+        <Class name="controller.ObjectController"/>
+        <Method name="&lt;init&gt;"/>
+        <Bug pattern="EI_EXPOSE_REP2"/>
+    </Match>
+
+    <!-- Suppress warning in model.Item.getOwner() -->
+    <Match>
+        <Class name="model.Item"/>
+        <Method name="getOwner"/>
+        <Bug pattern="EI_EXPOSE_REP"/>
+    </Match>
+
+</FindBugsFilter>

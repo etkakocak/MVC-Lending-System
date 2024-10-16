@@ -1,8 +1,9 @@
 package view;
 
+import java.nio.charset.StandardCharsets;
 import java.util.Scanner;
 
-/**.
+/**
  * Handles user interaction via the console.
  */
 public class ConsoleUi implements ViewInterface {
@@ -13,7 +14,7 @@ public class ConsoleUi implements ViewInterface {
    * Initializes the scanner for user input.
    */
   public ConsoleUi() {
-    scanner = new Scanner(System.in);
+    scanner = new Scanner(System.in, StandardCharsets.UTF_8);
   }
 
   /**
@@ -42,6 +43,8 @@ public class ConsoleUi implements ViewInterface {
 
   /**
    * Displays a message to the user.
+   *
+   * @param message The message to display.
    */
   @Override
   public void showMessage(String message) {
@@ -50,6 +53,8 @@ public class ConsoleUi implements ViewInterface {
 
   /**
    * Gets input from the user.
+   *
+   * @return The user's input as a String.
    */
   @Override
   public String getUserInput() {

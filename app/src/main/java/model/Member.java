@@ -1,6 +1,7 @@
 package model;
 
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
 
 /**
@@ -75,7 +76,7 @@ public class Member {
   }
 
   public List<Item> getOwnedItems() {
-    return ownedItems;
+    return Collections.unmodifiableList(ownedItems);
   }
 
   public int getNumberOfOwnedItems() {
