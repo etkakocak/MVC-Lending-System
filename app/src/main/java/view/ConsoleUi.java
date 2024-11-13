@@ -52,6 +52,55 @@ public class ConsoleUi implements ViewInterface {
   }
 
   /**
+   * Gets the user's menu choice.
+   *
+   * @return The user's choice as a MenuOption.
+   */
+  @Override
+  public MenuOption getUserChoice() {
+    String input = scanner.nextLine();
+    try {
+      int choiceNumber = Integer.parseInt(input);
+      switch (choiceNumber) {
+        case 1:
+          return MenuOption.ADD_MEMBER;
+        case 2:
+          return MenuOption.LIST_MEMBERS_SIMPLE;
+        case 3:
+          return MenuOption.LIST_MEMBERS_VERBOSE;
+        case 4:
+          return MenuOption.DELETE_MEMBER;
+        case 5:
+          return MenuOption.UPDATE_MEMBER;
+        case 6:
+          return MenuOption.VIEW_MEMBER_DETAILS;
+        case 7:
+          return MenuOption.ADD_ITEM;
+        case 8:
+          return MenuOption.LIST_ITEMS;
+        case 9:
+          return MenuOption.DELETE_ITEM;
+        case 10:
+          return MenuOption.UPDATE_ITEM;
+        case 11:
+          return MenuOption.VIEW_ITEM_DETAILS;
+        case 12:
+          return MenuOption.ESTABLISH_CONTRACT;
+        case 13:
+          return MenuOption.LIST_CONTRACTS;
+        case 14:
+          return MenuOption.ADVANCE_DAY;
+        case 15:
+          return MenuOption.EXIT;
+        default:
+          return MenuOption.INVALID_OPTION;
+      }
+    } catch (NumberFormatException e) {
+      return MenuOption.INVALID_OPTION;
+    }
+  }
+
+  /**
    * Gets input from the user.
    *
    * @return The user's input as a String.

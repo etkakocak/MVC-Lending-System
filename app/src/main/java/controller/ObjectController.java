@@ -7,6 +7,7 @@ import model.Item.Category;
 import model.Member;
 import model.Service;
 import model.Time;
+import view.MenuOption;
 import view.ViewInterface;
 
 /**
@@ -34,55 +35,56 @@ public class ObjectController {
     boolean exit = false;
     while (!exit) {
       view.displayMenu();
-      String choice = view.getUserInput();
+      MenuOption choice = view.getUserChoice();
 
       switch (choice) {
-        case "1":
+        case ADD_MEMBER:
           addMember();
           break;
-        case "2":
+        case LIST_MEMBERS_SIMPLE:
           listMembersSimple();
           break;
-        case "3":
+        case LIST_MEMBERS_VERBOSE:
           listMembersVerbose();
           break;
-        case "4":
+        case DELETE_MEMBER:
           deleteMember();
           break;
-        case "5":
+        case UPDATE_MEMBER:
           updateMember();
           break;
-        case "6":
+        case VIEW_MEMBER_DETAILS:
           viewMemberDetails();
           break;
-        case "7":
+        case ADD_ITEM:
           addItem();
           break;
-        case "8":
+        case LIST_ITEMS:
           listItems();
           break;
-        case "9":
+        case DELETE_ITEM:
           deleteItem();
           break;
-        case "10":
+        case UPDATE_ITEM:
           updateItem();
           break;
-        case "11":
+        case VIEW_ITEM_DETAILS:
           viewItemDetails();
           break;
-        case "12":
+        case ESTABLISH_CONTRACT:
           establishContract();
           break;
-        case "13":
+        case LIST_CONTRACTS:
           listContracts();
           break;
-        case "14":
+        case ADVANCE_DAY:
           advanceDay();
           break;
-        case "15":
+        case EXIT:
           exit = true;
           view.showMessage("Exiting the application...");
           break;
+        case INVALID_OPTION:
         default:
           view.showMessage("Invalid choice. Please try again.");
       }
@@ -206,7 +208,7 @@ public class ObjectController {
     view.showMessage("Description: ");
     String description = view.getUserInput();
 
-    boolean success = service.addItem(owner, name, description, category, costPerDay);
+    boolean success = service.addItem(memberId, name, description, category, costPerDay);
     if (success) {
       view.showMessage("Item added successfully.");
     } else {
@@ -232,7 +234,7 @@ public class ObjectController {
     view.showMessage("Enter the name of the item to delete:");
     String itemName = view.getUserInput();
 
-    boolean success = service.deleteItem(itemName, owner);
+    boolean success = service.deleteItem(itemName, memberId);
     if (success) {
       view.showMessage("Item deleted successfully.");
     } else {
@@ -250,7 +252,7 @@ public class ObjectController {
     }
     view.showMessage("Enter the name of the item to update:");
     String itemName = view.getUserInput();
-    Item item = service.viewItem(itemName, owner);
+    Item item = service.viewItem(itemName, memberId);
     if (item == null) {
       view.showMessage("Item not found.");
       return;
@@ -299,7 +301,7 @@ public class ObjectController {
     }
     view.showMessage("Enter the name of the item:");
     String itemName = view.getUserInput();
-    Item item = service.viewItem(itemName, owner);
+    Item item = service.viewItem(itemName, memberId);
     if (item != null) {
       view.showMessage(item.toVerboseString());
     } else {
@@ -327,7 +329,7 @@ public class ObjectController {
     }
     view.showMessage("Enter the name of the item:");
     String itemName = view.getUserInput();
-    Item item = service.viewItem(itemName, owner);
+    Item item = service.viewItem(itemName, ownerId);
     if (item == null) {
       view.showMessage("Item not found.");
       return;
@@ -356,7 +358,7 @@ public class ObjectController {
       return;
     }
 
-    boolean success = service.addContract(borrower, item, startDay, endDay);
+    boolean success = service.addContract(borrowerId, item, startDay, endDay);
     if (success) {
       view.showMessage("Contract established successfully.");
     } else {

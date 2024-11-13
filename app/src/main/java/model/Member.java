@@ -84,6 +84,13 @@ public class Member {
   }
 
   /**
+   * Sets item list.
+   */
+  public void setItemList(List<Item> ownedItems) {
+    this.ownedItems = ownedItems; 
+  }
+
+  /**
    * Adds an item.
    */
   public void addItem(Item item) {

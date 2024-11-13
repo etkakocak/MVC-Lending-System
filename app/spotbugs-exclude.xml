@@ -48,4 +48,11 @@
         <Bug pattern="EI_EXPOSE_REP"/>
     </Match>
 
+    <!-- Suppress warning in model.Member -->
+    <Match>
+        <Class name="model.Member"/>
+        <Method name="setItemList"/>
+        <Bug pattern="EI_EXPOSE_REP2"/>
+    </Match>
+
 </FindBugsFilter>

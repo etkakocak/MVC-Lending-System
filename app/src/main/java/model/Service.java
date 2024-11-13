@@ -33,13 +33,13 @@ public class Service {
     // Member 1
     addMember("Alice", "alice@example.com", "1234567890");
     Member alice = getMemberByEmail("alice@example.com");
-    addItem(alice, "Hammer", "A sturdy hammer", Item.Category.TOOL, 5);
+    addHardcodedItem(alice, "Hammer", "A sturdy hammer", Item.Category.TOOL, 5);
 
     // Member 2
     addMember("Martin", "martin@hotmail.com", "0129954637");
     Member m1 = getMemberByEmail("martin@hotmail.com");
-    addItem(m1, "VW Golf 2019", "Manual", Item.Category.VEHICLE, 50);
-    addItem(m1, "Xbox Series S", "Two controllers", Item.Category.GAME, 10);
+    addHardcodedItem(m1, "VW Golf 2019", "Manual", Item.Category.VEHICLE, 50);
+    addHardcodedItem(m1, "Xbox Series S", "Two controllers", Item.Category.GAME, 10);
     m1.addCredits(300);
 
     // Member 3
@@ -48,7 +48,7 @@ public class Service {
     m2.addCredits(100);
 
     Item l2 = getItemByNameAndOwner("Xbox Series S", m1);
-    addContract(alice, l2, 5, 7);
+    addHardcodedContract(alice, l2, 5, 7);
   }
 
   // Member Management Methods
@@ -111,7 +111,21 @@ public class Service {
    * Retrieves a member's detailed information.
    */
   public Member viewMember(String memberId) {
-    return getMemberById(memberId);
+    for (Member member : members) {
+      if (member.getMemberId().equals(memberId)) {
+        // Create a new Member copy object with the same data
+        Member copy = new Member(
+            memberId,
+            member.getName(),
+            member.getEmail(),
+            member.getPhoneNumber(),
+            member.getCreationDay());
+        copy.addCredits(member.getCredits());
+        copy.setItemList(member.getOwnedItems());
+        return copy;
+      }
+    }
+    return null;
   }
 
   /**
@@ -137,7 +151,27 @@ public class Service {
   /**
    * Adds a new item to the system.
    */
-  public boolean addItem(Member owner, String name, String description,
+  public boolean addItem(String ownerid, String name, String description,
+      Item.Category category, int costPerDay) {
+    Member owner = getMemberById(ownerid);
+    if (owner == null) {
+      return false;
+    }
+    // Check if owner already has an item with the same name
+    if (ownerHasItemWithName(owner, name)) {
+      return false; // Item with same name already exists
+    }
+    Item newItem = new Item(name, description, category, owner, time.getCurrentDay(), costPerDay);
+    items.add(newItem);
+    owner.addItem(newItem);
+    owner.addCredits(100); // Owner gets 100 credits
+    return true;
+  }
+
+  /**
+   * Adds a hardcoded new item to the system.
+   */
+  public boolean addHardcodedItem(Member owner, String name, String description,
       Item.Category category, int costPerDay) {
     if (owner == null) {
       return false;
@@ -156,7 +190,8 @@ public class Service {
   /**
    * Deletes item.
    */
-  public boolean deleteItem(String itemName, Member owner) {
+  public boolean deleteItem(String itemName, String ownerid) {
+    Member owner = getMemberById(ownerid);
     Item itemToRemove = getItemByNameAndOwner(itemName, owner);
     if (itemToRemove != null) {
       // Remove item from owner's owned items
@@ -200,7 +235,8 @@ public class Service {
   /**
    * Retrieves an item's detailed information.
    */
-  public Item viewItem(String itemName, Member owner) {
+  public Item viewItem(String itemName, String ownerid) {
+    Member owner = getMemberById(ownerid);
     return getItemByNameAndOwner(itemName, owner);
   }
 
@@ -216,7 +252,42 @@ public class Service {
   /**
    * Establishes a new lending contract.
    */
-  public boolean addContract(Member borrower, Item item, int startDay, int endDay) {
+  public boolean addContract(String borrowerid, Item item, int startDay, int endDay) {
+    Member borrower = getMemberById(borrowerid);
+    if (borrower == null || item == null) {
+      return false;
+    }
+    if (startDay < time.getCurrentDay() || endDay < startDay) {
+      return false; // Invalid date range
+    }
+    // Check if borrower is not the owner
+    if (borrower.equals(item.getOwner())) {
+      return false; // Cannot borrow own item
+    }
+    // Check if item is available
+    if (!item.isAvailable(startDay, endDay)) {
+      return false;
+    }
+    // Calculate total cost
+    int duration = (endDay - startDay) + 1;
+    int totalCost = duration * item.getCostPerDay();
+
+    // Check if borrower has enough credits
+    if (borrower.getCredits() < totalCost) {
+      return false;
+    }
+    // Create contract
+    Contract contract = new Contract(borrower, item, startDay, endDay);
+    contracts.add(contract);
+    item.addContract(contract);
+
+    return true;
+  }
+
+  /**
+   * Establishes a new hardcoded lending contract.
+   */
+  public boolean addHardcodedContract(Member borrower, Item item, int startDay, int endDay) {
     if (borrower == null || item == null) {
       return false;
     }
@@ -271,7 +342,7 @@ public class Service {
         Member owner = contract.getItem().getOwner();
         borrower.deductCredits(totalCost);
         owner.addCredits(totalCost);
-        contract.setPaid(true); 
+        contract.setPaid(true);
       }
     }
   }

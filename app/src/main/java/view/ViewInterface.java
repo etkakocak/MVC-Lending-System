@@ -18,4 +18,9 @@ public interface ViewInterface {
    * Gets input from the user.
    */
   String getUserInput();
+
+  /**
+   * Gets menu choice from the user.
+   */
+  MenuOption getUserChoice();
 }
