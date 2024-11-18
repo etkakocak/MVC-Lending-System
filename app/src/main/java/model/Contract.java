@@ -1,66 +1,76 @@
 package model;
 
 /**
- * This is encaptulation class for contracts.
+ * Represents a lending contract in the Stuff Lending System.
  */
 public class Contract {
-  private int startDate;
-  private int endDate;
-  private String item;
-  private String lender;
-  private int cost;
+  private Member lender; // The member who is borrowing the item
+  private Item item; // The item being lent
+  private int startDay; // The day the contract starts
+  private int endDay; // The day the contract ends
+  private int totalCost; // The total cost of the lending contract
+  private boolean isPaid;
 
   /**
-   * The Contract class.
+   * Constructor for Contract.
    */
-  public Contract(int startDate, int endDate, String item, String lender, int cost) {
-    this.startDate = startDate;
-    this.endDate = endDate;
-    this.item = item;
+  public Contract(Member lender, Item item, int startDay, int endDay) {
     this.lender = lender;
-    this.cost = cost;
+    this.item = item;
+    this.startDay = startDay;
+    this.endDay = endDay;
+    this.totalCost = calculateTotalCost();
+    this.isPaid = false;
   }
 
-  /**
-   * To return Contract object.
-   */
-  public Contract(Contract theContract) {
-    this.startDate = theContract.startDate;
-    this.endDate = theContract.endDate;
-    this.item = theContract.item;
-    this.lender = theContract.lender;
-    this.cost = theContract.cost;
+  // Getters
+
+  public Member getLender() {
+    return lender;
   }
 
-  public int getCost() {
-    return cost;
-  }
-
-  public void setCost(int cost) {
-    this.cost = cost;
-  }
-
-  public int getStartDate() {
-    return startDate;
-  }
-
-  public void setStartDate(int startDate) {
-    this.startDate = startDate;
-  }
-
-  public int getEndDate() {
-    return endDate;
-  }
-
-  public void setEndDate(int endDate) {
-    this.endDate = endDate;
-  }
-
-  public String getItem() {
+  public Item getItem() {
     return item;
   }
 
-  public String getLender() {
-    return lender;
+  public int getStartDay() {
+    return startDay;
+  }
+
+  public int getEndDay() {
+    return endDay;
+  }
+
+  public int getTotalCost() {
+    return totalCost;
+  }
+
+  public boolean getIsPaid() {
+    return isPaid;
+  }
+
+  public void setPaid(boolean paid) {
+    this.isPaid = paid;
+  }
+
+  /**
+   * Calculates the total cost of the contract based on the duration and
+   * cost per day of the item.
+   */
+  private int calculateTotalCost() {
+    int duration = (endDay - startDay) + 1; 
+    return duration * item.getCostPerDay();
+  }
+
+  /**
+   * Returns the contract data as string.
+   */
+  @Override
+  public String toString() {
+    return "Item: " + item.getName() 
+        + ", Lender: " + lender.getName() 
+        + ", Start Day: " + startDay 
+        + ", End Day: " + endDay 
+        + ", Total Cost: " + totalCost;
   }
 }

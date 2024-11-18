@@ -1,91 +1,35 @@
 package model;
 
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
-import java.util.Random;
 
 /**
- * This is encaptulation class for members.
+ * Represents a member in the Stuff Lending System.
  */
 public class Member {
-  private String memberId;
+  private String memberId; 
   private String name;
   private String email;
-  private int mobile;
-  private int creationDate;
+  private String phoneNumber;
   private int credits;
-  private List<Item> ownedItems;
-  private List<Contract> ownedContracts;
-  private List<String> existingMemberIds;
-  private String username;
-  private String password;
+  private int creationDay;
+  private List<Item> ownedItems; 
 
   /**
-   * The Member class.
+   * Constructor for Member.
    */
-  public Member(String name, String email, int mobile, String username,
-      String password, Time creationDate) {
+  public Member(String memberId, String name, String email, String phoneNumber, int creationDay) {
+    this.memberId = memberId;
     this.name = name;
     this.email = email;
-    this.mobile = mobile;
-    this.username = username;
-    this.password = password;
-    this.creationDate = creationDate.getDate();
-    this.credits = 0;
-    ownedItems = new ArrayList<>();
-    ownedContracts = new ArrayList<>();
-    existingMemberIds = new ArrayList<>();
-    this.memberId = generateMemberId(new Random());
+    this.phoneNumber = phoneNumber;
+    this.credits = 0; // Initial credits
+    this.creationDay = creationDay;
+    this.ownedItems = new ArrayList<>();
   }
 
-  /**
-   * To return a Member object.
-   */
-  public Member(Member theMember) {
-    this.name = theMember.name;
-    this.email = theMember.email;
-    this.mobile = theMember.mobile;
-    this.username = theMember.username;
-    this.password = theMember.password;
-    this.creationDate = theMember.creationDate;
-    this.credits = theMember.credits;
-    ownedItems = theMember.ownedItems;
-    ownedContracts = theMember.ownedContracts;
-    this.memberId = theMember.memberId; 
-  }
-
-  public String getUsername() {
-    return username;
-  }
-
-  public void setUsername(String username) {
-    this.username = username;
-  }
-
-  public String getPassword() {
-    return password;
-  }
-
-  public void setPassword(String password) {
-    this.password = password;
-  }
-
-  private String generateMemberId(Random random) {
-    String alphaNumericString = "ABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789";
-    StringBuilder sb;
-    String generatedId;
-    do {
-      sb = new StringBuilder(6);
-      for (int i = 0; i < 6; i++) {
-        int index = random.nextInt(alphaNumericString.length());
-        sb.append(alphaNumericString.charAt(index));
-      }
-      generatedId = sb.toString();
-    } while (existingMemberIds.contains(generatedId));
-
-    existingMemberIds.add(generatedId);
-    return generatedId;
-  }
+  // Getters and Setters
 
   public String getMemberId() {
     return memberId;
@@ -96,66 +40,100 @@ public class Member {
   }
 
   public void setName(String name) {
-    this.name = name;
+    this.name = name; 
   }
 
   public String getEmail() {
     return email;
   }
 
-  /**
-   * Members cant have same email.
-   */
   public void setEmail(String email) {
-    this.email = email;
+    this.email = email; 
   }
 
-  public int getMobile() {
-    return mobile;
+  public String getPhoneNumber() {
+    return phoneNumber;
   }
 
-  /**
-   * Members cant have same phone number.
-   */
-  public void setMobile(int mobile) {
-    this.mobile = mobile;
-  }
-
-  public int getCreationDate() {
-    return creationDate;
-  }
-
-  public List<Contract> getContracts() {
-    return new ArrayList<>(ownedContracts);
-  }
-
-  public void addOwnedContract(Contract contract) {
-    this.ownedContracts.add(contract);
+  public void setPhoneNumber(String phoneNumber) {
+    this.phoneNumber = phoneNumber; 
   }
 
   public int getCredits() {
     return credits;
   }
 
-  public void addCredits(int credits) {
-    this.credits += credits;
+  public void addCredits(int amount) {
+    this.credits += amount;
+  }
+
+  public void deductCredits(int amount) {
+    this.credits -= amount;
+  }
+
+  public int getCreationDay() {
+    return creationDay;
   }
 
   public List<Item> getOwnedItems() {
-    return new ArrayList<>(ownedItems);
+    return Collections.unmodifiableList(ownedItems);
   }
 
-  public void addOwnedItem(Item item) {
-    this.ownedItems.add(item);
-    addCredits(100);
+  public int getNumberOfOwnedItems() {
+    return ownedItems.size();
   }
 
-  public void removeOwnedItem(Item item) {
-    this.ownedItems.remove(item);
+  /**
+   * Sets item list.
+   */
+  public void setItemList(List<Item> ownedItems) {
+    this.ownedItems = ownedItems; 
   }
 
-  @Override
-  public String toString() {
-    return "" + name;
+  /**
+   * Adds an item.
+   */
+  public void addItem(Item item) {
+    ownedItems.add(item);
+  }
+
+  /**
+   * Removes an item.
+   */
+  public void removeItem(Item item) {
+    ownedItems.remove(item);
+  }
+
+  /**
+   * Returns the member data as string.
+   */
+  public String toSimpleString() {
+    return "ID: " + memberId 
+        + ", Name: " + name 
+        + ", Email: " + email 
+        + ", Credits: " + credits 
+        + ", Owned Items: " + getNumberOfOwnedItems();
+  }
+
+  /**
+   * Returns a detailed string representation of the member.
+   * Includes all owned items and their details.
+   */
+  public String toVerboseString() {
+    StringBuilder sb = new StringBuilder();
+    sb.append("ID: ").append(memberId)
+        .append("\nName: ").append(name)
+        .append("\nEmail: ").append(email)
+        .append("\nCredits: ").append(credits)
+        .append("\nOwned Items:\n");
+
+    if (ownedItems.isEmpty()) {
+      sb.append("No items owned.\n");
+    } else {
+      for (Item item : ownedItems) {
+        sb.append(item.toVerboseString()).append("\n");
+      }
+    }
+    return sb.toString();
   }
 }

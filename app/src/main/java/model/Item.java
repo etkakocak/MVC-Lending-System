@@ -1,38 +1,50 @@
 package model;
 
+import java.util.ArrayList;
+import java.util.Collections;
+import java.util.List;
+
 /**
- * This is encaptulation class for items.
+ * Represents an item in the Stuff Lending System.
  */
 public class Item {
-  private String category;
-  private String name;
-  private String description;
-  private int creationDate;
-  private int costPerDay;
-  private String owner;
-
   /**
-   * The Item class.
+   * Category of the item.
    */
-  public Item(String category, String name, String description, int costPerDay, 
-      String owner, Time creationDate) {
-    this.category = category;
-    this.name = name;
-    this.description = description;
-    this.costPerDay = costPerDay;
-    this.owner = owner;
-    this.creationDate = creationDate.getDate();
+  public enum Category {
+    TOOL, VEHICLE, GAME, TOY, SPORT, OTHER
   }
 
+  private String name;
+  private String description;
+  private Category category;
+  private Member owner;
+  private int creationDay;
+  private int costPerDay;
+  private List<Contract> contracts;
+
   /**
-   * To return Item object.
+   * Constructor for Item.
    */
-  public Item(Item anItem) {
-    this.name = anItem.name;
-    this.category = anItem.category;
-    this.description = anItem.description;
-    this.costPerDay = anItem.costPerDay;
-    this.owner = anItem.owner;
+  public Item(String name, String description, Category category, 
+      Member owner, int creationDay, int costPerDay) {
+    this.name = name;
+    this.description = description;
+    this.category = category;
+    this.owner = owner;
+    this.creationDay = creationDay;
+    this.costPerDay = costPerDay;
+    this.contracts = new ArrayList<>();
+  }
+
+  // Getters and Setters
+
+  public String getName() {
+    return name;
+  }
+
+  public void setName(String name) {
+    this.name = name; 
   }
 
   public String getDescription() {
@@ -40,27 +52,23 @@ public class Item {
   }
 
   public void setDescription(String description) {
-    this.description = description;
+    this.description = description; 
   }
 
-  public String getCategory() {
+  public Category getCategory() {
     return category;
   }
 
-  public void setCategory(String category) {
-    this.category = category;
+  public void setCategory(Category category) {
+    this.category = category; 
   }
 
-  public String getName() {
-    return name;
+  public Member getOwner() {
+    return owner;
   }
 
-  public void setName(String name) {
-    this.name = name;
-  }
-
-  public int getCreationDate() {
-    return creationDate;
+  public int getCreationDay() {
+    return creationDay;
   }
 
   public int getCostPerDay() {
@@ -68,10 +76,72 @@ public class Item {
   }
 
   public void setCostPerDay(int costPerDay) {
-    this.costPerDay = costPerDay;
+    this.costPerDay = costPerDay; 
   }
 
-  public String getOwner() {
-    return owner;
+  public List<Contract> getContracts() {
+    return Collections.unmodifiableList(contracts);
+  }
+
+  /**
+   * Adds a contract.
+   */
+  public void addContract(Contract contract) {
+    contracts.add(contract);
+  }
+
+  /**
+   * Removes a contract.
+   */
+  public void removeContract(Contract contract) {
+    contracts.remove(contract);
+  }
+
+  /**
+   * Checks if the item is available for lending during a specified time period.
+   */
+  public boolean isAvailable(int startDay, int endDay) {
+    for (Contract contract : contracts) {
+      if (!(endDay < contract.getStartDay() || startDay > contract.getEndDay())) {
+        return false; // Overlaps with an existing contract
+      }
+    }
+    return true;
+  }
+
+  /**
+   * Returns the item data as string.
+   */
+  public String toSimpleString() {
+    return "Name: " + name 
+        + ", Category: " + category 
+        + ", Owner: " + owner.getName() 
+        + ", Cost/Day: " + costPerDay;
+  }
+
+  /**
+   * Returns a detailed string representation of the item.
+   * Includes all contracts (historical and future).
+   */
+  public String toVerboseString() {
+    StringBuilder sb = new StringBuilder();
+    sb.append("Item Name: ").append(name)
+        .append("\nDescription: ").append(description)
+        .append("\nCategory: ").append(category)
+        .append("\nOwner: ").append(owner.getName())
+        .append("\nCreation Day: ").append(creationDay)
+        .append("\nCost Per Day: ").append(costPerDay)
+        .append("\nContracts:\n");
+
+    if (contracts.isEmpty()) {
+      sb.append("No contracts for this item.\n");
+    } else {
+      for (Contract contract : contracts) {
+        sb.append("Lent to: ").append(contract.getLender().getName())
+            .append(", From Day ").append(contract.getStartDay())
+            .append(" to Day ").append(contract.getEndDay()).append("\n");
+      }
+    }
+    return sb.toString();
   }
 }

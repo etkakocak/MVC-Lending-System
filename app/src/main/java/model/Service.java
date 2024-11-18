@@ -1,100 +1,418 @@
 package model;
 
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
 
 /**
- * This class holds the all data from model classes to send them to the
- * Controller.
- * This is information expert och greater class.
+ * Handles the business logic and data management for the Stuff Lending System.
  */
 public class Service {
   private List<Member> members;
   private List<Item> items;
   private List<Contract> contracts;
   private Time time;
-  private Member loggedInMember;
 
   /**
-   * The Service class.
+   * Constructor for Service.
    */
-  public Service() {
-    members = new ArrayList<>();
-    items = new ArrayList<>();
-    contracts = new ArrayList<>();
-    time = new Time();
-    initializeStartObjects();
+  public Service(Time time) {
+    this.members = new ArrayList<>();
+    this.items = new ArrayList<>();
+    this.contracts = new ArrayList<>();
+    this.time = time;
+
+    // Hard-coded data for initial members and items (as per requirements)
+    loadInitialData();
   }
 
   /**
-   * Create start objects for application.
+   * Loads some hard-coded members and items into the system.
    */
-  public void initializeStartObjects() {
-    Member member1 = new Member("Etka", "etka@lending.com", 0031,
-        "etka", "etka123", getTime());
+  private void loadInitialData() {
+    // Member 1
+    addMember("Alice", "alice@example.com", "1234567890");
+    Member alice = getMemberByEmail("alice@example.com");
+    addHardcodedItem(alice, "Hammer", "A sturdy hammer", Item.Category.TOOL, 5);
 
-    Member member2 = new Member("Sanaa", "sanaa@lending.com", 0022,
-        "sanaa", "sanaa123", getTime());
+    // Member 2
+    addMember("Martin", "martin@hotmail.com", "0129954637");
+    Member m1 = getMemberByEmail("martin@hotmail.com");
+    addHardcodedItem(m1, "VW Golf 2019", "Manual", Item.Category.VEHICLE, 50);
+    addHardcodedItem(m1, "Xbox Series S", "Two controllers", Item.Category.GAME, 10);
+    m1.addCredits(300);
 
-    Member member3 = new Member("Aiman", "aiman@lending.com", 0062,
-        "aiman", "aiman123", getTime());
+    // Member 3
+    addMember("Manu", "manu@example.com", "0987654321");
+    Member m2 = getMemberByEmail("manu@example.com");
+    m2.addCredits(100);
 
-    members.add(member1);
-    members.add(member2);
-    members.add(member3);
+    Item l2 = getItemByNameAndOwner("Xbox Series S", m1);
+    addHardcodedContract(alice, l2, 5, 7);
+  }
 
-    Item item1 = new Item("Electronics", "MacBook Pro",
-        "A clean computer for temporary works", 30, member3.getUsername(), getTime());
-    Item item2 = new Item("Veichle", "BMW M5 2021", "Max 100 miles per loan period.", 300,
-        member1.getUsername(), getTime());
+  // Member Management Methods
 
-    items.add(item1);
-    member3.addOwnedItem(item1);
-    items.add(item2);
-    member1.addOwnedItem(item2);
+  /**
+   * Adds a new member to the system.
+   */
+  public boolean addMember(String name, String email, String phoneNumber) {
+    if (isEmailOrPhoneExists(email, phoneNumber)) {
+      return false;
+    }
+    String memberId;
+    do {
+      memberId = new GenerateId().generateNewId();
+    } while (isMemberIdExists(memberId));
+
+    Member newMember = new Member(memberId, name, email, phoneNumber, time.getCurrentDay());
+    members.add(newMember);
+    return true;
   }
 
   /**
-   * To get username and password from user as input.
+   * Deletes a member from the system.
    */
-  public String[] setCredentials() {
-    String username = "etka";
-    String password = "etka123";
-
-    return new String[] { username, password };
+  public boolean deleteMember(String memberId) {
+    Member memberToRemove = getMemberById(memberId);
+    if (memberToRemove != null) {
+      // Remove member's items
+      for (Item item : memberToRemove.getOwnedItems()) {
+        items.remove(item);
+      }
+      members.remove(memberToRemove);
+      return true;
+    }
+    return false;
   }
 
   /**
-   * To login as member.
+   * Updates a member's information.
    */
-  public Member memberLoginProcess() {
-    boolean memberValidated = false;
-    while (!memberValidated) {
-      String[] memberCredentials = setCredentials();
-      Member loggedInMember = validateMember(memberCredentials[0], memberCredentials[1]);
-      if (loggedInMember != null) {
-        memberValidated = true;
-        return loggedInMember;
+  public boolean updateMember(String memberId, String newName, String newEmail, String newPhone) {
+    Member member = getMemberById(memberId);
+    if (member == null) {
+      return false;
+    }
+    // Check for email and phone uniqueness
+    if (!member.getEmail().equals(newEmail) && isEmailExists(newEmail)) {
+      return false;
+    }
+    if (!member.getPhoneNumber().equals(newPhone) && isPhoneExists(newPhone)) {
+      return false;
+    }
+    member.setName(newName);
+    member.setEmail(newEmail);
+    member.setPhoneNumber(newPhone);
+    return true;
+  }
+
+  /**
+   * Retrieves a member's detailed information.
+   */
+  public Member viewMember(String memberId) {
+    for (Member member : members) {
+      if (member.getMemberId().equals(memberId)) {
+        // Create a new Member copy object with the same data
+        Member copy = new Member(
+            memberId,
+            member.getName(),
+            member.getEmail(),
+            member.getPhoneNumber(),
+            member.getCreationDay());
+        copy.addCredits(member.getCredits());
+        copy.setItemList(member.getOwnedItems());
+        return copy;
       }
     }
     return null;
   }
 
-  public void setLoggedInMember() {
-    loggedInMember = memberLoginProcess();
-  }
-
-  public String getLoggedInMember() {
-    return loggedInMember.getUsername();
+  /**
+   * Lists all members with basic information.
+   */
+  public List<Member> listMembers() {
+    return Collections.unmodifiableList(members);
   }
 
   /**
-   * Login methods starts here.
-   * For member login. To get the member by username.
+   * Lists all members with detailed information.
    */
-  public Member getMemberByUsername(String username) {
+  public String listMembersVerbose() {
+    StringBuilder sb = new StringBuilder();
     for (Member member : members) {
-      if (member.getUsername().equals(username)) {
+      sb.append(member.toVerboseString()).append("\n");
+    }
+    return sb.toString();
+  }
+
+  // Item Management Methods
+
+  /**
+   * Adds a new item to the system.
+   */
+  public boolean addItem(String ownerid, String name, String description,
+      Item.Category category, int costPerDay) {
+    Member owner = getMemberById(ownerid);
+    if (owner == null) {
+      return false;
+    }
+    // Check if owner already has an item with the same name
+    if (ownerHasItemWithName(owner, name)) {
+      return false; // Item with same name already exists
+    }
+    Item newItem = new Item(name, description, category, owner, time.getCurrentDay(), costPerDay);
+    items.add(newItem);
+    owner.addItem(newItem);
+    owner.addCredits(100); // Owner gets 100 credits
+    return true;
+  }
+
+  /**
+   * Adds a hardcoded new item to the system.
+   */
+  public boolean addHardcodedItem(Member owner, String name, String description,
+      Item.Category category, int costPerDay) {
+    if (owner == null) {
+      return false;
+    }
+    // Check if owner already has an item with the same name
+    if (ownerHasItemWithName(owner, name)) {
+      return false; // Item with same name already exists
+    }
+    Item newItem = new Item(name, description, category, owner, time.getCurrentDay(), costPerDay);
+    items.add(newItem);
+    owner.addItem(newItem);
+    owner.addCredits(100); // Owner gets 100 credits
+    return true;
+  }
+
+  /**
+   * Deletes item.
+   */
+  public boolean deleteItem(String itemName, String ownerid) {
+    Member owner = getMemberById(ownerid);
+    Item itemToRemove = getItemByNameAndOwner(itemName, owner);
+    if (itemToRemove != null) {
+      // Remove item from owner's owned items
+      owner.removeItem(itemToRemove);
+      // Remove item from global items list
+      items.remove(itemToRemove);
+      // Remove contracts associated with this item
+      removeContractsByItem(itemToRemove);
+      return true;
+    }
+    return false;
+  }
+
+  /**
+   * Removes all contracts associated with a specific item.
+   */
+  private void removeContractsByItem(Item item) {
+    contracts.removeIf(contract -> contract.getItem().equals(item));
+  }
+
+  /**
+   * Updates an item's information.
+   */
+  public boolean updateItem(Item item, String newName,
+      String newDescription, Item.Category newCategory, int newCostPerDay) {
+    if (item == null) {
+      return false;
+    }
+    // Check if owner already has an item with the new name
+    if (!item.getName().equalsIgnoreCase(newName)
+        && ownerHasItemWithName(item.getOwner(), newName)) {
+      return false; // Item with same name already exists
+    }
+    item.setName(newName);
+    item.setDescription(newDescription);
+    item.setCategory(newCategory);
+    item.setCostPerDay(newCostPerDay);
+    return true;
+  }
+
+  /**
+   * Retrieves an item's detailed information.
+   */
+  public Item viewItem(String itemName, String ownerid) {
+    Member owner = getMemberById(ownerid);
+    return getItemByNameAndOwner(itemName, owner);
+  }
+
+  /**
+   * Lists all items.
+   */
+  public List<Item> listItems() {
+    return Collections.unmodifiableList(items);
+  }
+
+  // Contract Management Methods
+
+  /**
+   * Establishes a new lending contract.
+   */
+  public boolean addContract(String borrowerid, Item item, int startDay, int endDay) {
+    Member borrower = getMemberById(borrowerid);
+    if (borrower == null || item == null) {
+      return false;
+    }
+    if (startDay < time.getCurrentDay() || endDay < startDay) {
+      return false; // Invalid date range
+    }
+    // Check if borrower is not the owner
+    if (borrower.equals(item.getOwner())) {
+      return false; // Cannot borrow own item
+    }
+    // Check if item is available
+    if (!item.isAvailable(startDay, endDay)) {
+      return false;
+    }
+    // Calculate total cost
+    int duration = (endDay - startDay) + 1;
+    int totalCost = duration * item.getCostPerDay();
+
+    // Check if borrower has enough credits
+    if (borrower.getCredits() < totalCost) {
+      return false;
+    }
+    // Create contract
+    Contract contract = new Contract(borrower, item, startDay, endDay);
+    contracts.add(contract);
+    item.addContract(contract);
+
+    return true;
+  }
+
+  /**
+   * Establishes a new hardcoded lending contract.
+   */
+  public boolean addHardcodedContract(Member borrower, Item item, int startDay, int endDay) {
+    if (borrower == null || item == null) {
+      return false;
+    }
+    if (startDay < time.getCurrentDay() || endDay < startDay) {
+      return false; // Invalid date range
+    }
+    // Check if borrower is not the owner
+    if (borrower.equals(item.getOwner())) {
+      return false; // Cannot borrow own item
+    }
+    // Check if item is available
+    if (!item.isAvailable(startDay, endDay)) {
+      return false;
+    }
+    // Calculate total cost
+    int duration = (endDay - startDay) + 1;
+    int totalCost = duration * item.getCostPerDay();
+
+    // Check if borrower has enough credits
+    if (borrower.getCredits() < totalCost) {
+      return false;
+    }
+    // Create contract
+    Contract contract = new Contract(borrower, item, startDay, endDay);
+    contracts.add(contract);
+    item.addContract(contract);
+
+    return true;
+  }
+
+  /**
+   * Lists all contracts.
+   */
+  public List<Contract> listContracts() {
+    return Collections.unmodifiableList(contracts);
+  }
+
+  // Time Management
+
+  /**
+   * Advances the current day by one.
+   */
+  public void advanceDay() {
+    time.advanceDay();
+    int currentDay = time.getCurrentDay();
+
+    // Transfer credits if a contract starts
+    for (Contract contract : contracts) {
+      if (contract.getStartDay() == currentDay && !contract.getIsPaid()) {
+        int totalCost = contract.getTotalCost();
+        Member borrower = contract.getLender();
+        Member owner = contract.getItem().getOwner();
+        borrower.deductCredits(totalCost);
+        owner.addCredits(totalCost);
+        contract.setPaid(true);
+      }
+    }
+  }
+
+  /**
+   * Gets the current day.
+   *
+   * @return The current day.
+   */
+  public int getCurrentDay() {
+    return time.getCurrentDay();
+  }
+
+  // Helper Methods (Private)
+
+  /**
+   * Checks if an email or phone number already exists in the system.
+   */
+  private boolean isEmailOrPhoneExists(String email, String phoneNumber) {
+    for (Member member : members) {
+      if (member.getEmail().equalsIgnoreCase(email)
+          || member.getPhoneNumber().equals(phoneNumber)) {
+        return true;
+      }
+    }
+    return false;
+  }
+
+  /**
+   * Checks if an email already exists in the system.
+   */
+  private boolean isEmailExists(String email) {
+    for (Member member : members) {
+      if (member.getEmail().equalsIgnoreCase(email)) {
+        return true;
+      }
+    }
+    return false;
+  }
+
+  /**
+   * Checks if a phone number already exists in the system.
+   */
+  private boolean isPhoneExists(String phoneNumber) {
+    for (Member member : members) {
+      if (member.getPhoneNumber().equals(phoneNumber)) {
+        return true;
+      }
+    }
+    return false;
+  }
+
+  /**
+   * Checks if a member ID already exists in the system.
+   */
+  private boolean isMemberIdExists(String memberId) {
+    for (Member member : members) {
+      if (member.getMemberId().equals(memberId)) {
+        return true;
+      }
+    }
+    return false;
+  }
+
+  /**
+   * Retrieves a member by their ID.
+   */
+  private Member getMemberById(String memberId) {
+    for (Member member : members) {
+      if (member.getMemberId().equals(memberId)) {
         return member;
       }
     }
@@ -102,11 +420,23 @@ public class Service {
   }
 
   /**
-   * To find an item by its name.
+   * Retrieves a member by their email.
    */
-  public Item getItemByName(String itemname) {
-    for (Item item : items) {
-      if (item.getName().equals(itemname)) {
+  private Member getMemberByEmail(String email) {
+    for (Member member : members) {
+      if (member.getEmail().equalsIgnoreCase(email)) {
+        return member;
+      }
+    }
+    return null;
+  }
+
+  /**
+   * Retrieves an item by its name and owner.
+   */
+  private Item getItemByNameAndOwner(String itemName, Member owner) {
+    for (Item item : owner.getOwnedItems()) {
+      if (item.getName().equalsIgnoreCase(itemName)) {
         return item;
       }
     }
@@ -114,160 +444,14 @@ public class Service {
   }
 
   /**
-   * For member login, (to get right password for the member).
+   * Checks if the owner already has an item with the same name.
    */
-  public Member validateMember(String username, String password) {
-    for (Member member : members) {
-      if (member.getUsername().equals(username) && member.getPassword().equals(password)) {
-        return member;
+  public boolean ownerHasItemWithName(Member owner, String itemName) {
+    for (Item item : owner.getOwnedItems()) {
+      if (item.getName().equalsIgnoreCase(itemName)) {
+        return true;
       }
     }
-    return null;
-  }
-
-  public void createMemberAccount(String name, String email, int mobile,
-      String username, String password) {
-    Member newMember = new Member(name, email, mobile, username, password, time);
-    members.add(newMember);
-  }
-
-  /**
-   * This controls if the account can be created.
-   * Check if the new member has same email or number as another member.
-   */
-  public boolean canAddMember(String email, String stringMobile) {
-    int mobile = Integer.parseInt(stringMobile);
-    for (Member member : members) {
-      if (member.getEmail().equals(email) || member.getMobile() == mobile) {
-        return false;
-      }
-    }
-    return true;
-  }
-
-  // getters for lists
-  /**
-   * To get list of members.
-   */
-  public List<Member> getAllMembers() {
-    // return members;
-    return new ArrayList<>(members);
-
-  }
-
-  public List<Item> getAllItems() {
-    // return items;
-    return new ArrayList<>(items);
-  }
-
-  public Time getTime() {
-    return new Time(time);
-  }
-
-  /**
-   * To find the logged in member.
-   */
-  public Member getMember(int index) {
-    if (index >= 0 && index < members.size()) {
-      return members.get(index);
-    } else {
-      return null;
-    }
-  }
-
-  /**
-   * Delete or add methods starts here.
-   * To delete an item.
-   */
-  public void deleteItem(int choice) {
-    Item itemToDelete = items.get(choice - 1);
-    getMemberByUsername(itemToDelete.getOwner()).removeOwnedItem(itemToDelete);
-    getMemberByUsername(itemToDelete.getOwner()).addCredits(-100);
-    items.remove(itemToDelete);
-  }
-
-  /**
-   * To delete an item of an member.
-   */
-  public void deleteMemberItem(Item item) {
-    getMemberByUsername(item.getOwner()).getOwnedItems().remove(item);
-    getMemberByUsername(item.getOwner()).addCredits(-100);
-    items.remove(item);
-  }
-
-  /**
-   * To delete a member owned item.
-   */
-  public void deleteOwnedItem(String owner, String choice) {
-    Member itemOwner = getMemberByUsername(owner);
-    int itemChoice = Integer.parseInt(choice);
-    Item itemToDelete = itemOwner.getOwnedItems().get(itemChoice - 1);
-    getMemberByUsername(itemToDelete.getOwner()).getOwnedItems().remove(itemToDelete);
-    getMemberByUsername(itemToDelete.getOwner()).removeOwnedItem(itemToDelete);
-    getMemberByUsername(itemToDelete.getOwner()).addCredits(-100);
-    items.remove(itemToDelete);
-  }
-
-  /**
-   * To delete a member.
-   */
-  public void deleteMember(int choice) {
-    Member memberToDelete = members.get(choice - 1);
-    List<Item> itemsToDelete = memberToDelete.getOwnedItems();
-    items.removeAll(itemsToDelete);
-    members.remove(memberToDelete);
-  }
-
-  /**
-   * To add new item.
-   */
-  public void addItem(String category, String name, String description,
-      String stringCostPerDay, String stringOwner) {
-    int costPerDay = Integer.parseInt(stringCostPerDay);
-    Member owner = getMemberByUsername(stringOwner);
-    Item item = new Item(category, name, description, costPerDay, stringOwner, time);
-    items.add(item);
-    owner.addOwnedItem(item);
-  }
-  
-  /**
-   * To add a new member.
-   */
-  public void addMember(String name, String email, String mobile, 
-      String username, String password) {
-    int intMobile = Integer.parseInt(mobile);
-    Member member = new Member(name, name, intMobile, username, password, time);
-    members.add(member);
-  }
-
-  /**
-   * To create a new contract.
-   */
-  public void addContract(String stringStDate, String stringEnDate, String stringTheItem,
-      String stringTheLender, String stringCost) {
-    int stDate = Integer.parseInt(stringStDate);
-    int enDate = Integer.parseInt(stringEnDate);
-    Member theLender = getMemberByUsername(stringTheLender);
-    int cost = Integer.parseInt(stringCost);
-    Contract newContract = new Contract(stDate, enDate, stringTheItem, stringTheLender, cost);
-    contracts.add(newContract);
-    theLender.addOwnedContract(newContract);
-    theLender.addCredits(-cost);
-    time.setDate(enDate);
-  }
-
-  public void dayCounter() {
-    int nextDay = time.getDate() + 1;
-    time.setDate(nextDay);
-  }
-
-  public Item setItem(int getItemChoice) {
-    Item itemToUpdate = items.get(getItemChoice - 1);
-    return itemToUpdate;
-  }
-
-  public Item setItemMember(int getItemChoice) {
-    Item itemToUpdate = loggedInMember.getOwnedItems().get(getItemChoice - 1);
-    return itemToUpdate;
+    return false;
   }
 }

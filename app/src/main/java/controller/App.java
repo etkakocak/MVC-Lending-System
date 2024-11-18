@@ -1,23 +1,24 @@
 package controller;
 
 import model.Service;
+import model.Time;
 import view.ConsoleUi;
 import view.ViewInterface;
 
 /**
- * Responsible for staring the application.
+ * Responsible for starting the application.
  */
 public class App {
   /**
    * Application starting point.
-
+   *
    * @param args command line arguments.
    */
   public static void main(String[] args) {
-    // adapt to start the application in your way
-    Service m = new Service();
-    ViewInterface v = new ConsoleUi();
-    ObjectController ctrl = new ObjectController(m, v);
-    ctrl.start();
+    Time time = new Time();
+    Service model = new Service(time);
+    ViewInterface view = new ConsoleUi();
+    ObjectController controller = new ObjectController(model, view, time);
+    controller.start();
   }
-} 
+}

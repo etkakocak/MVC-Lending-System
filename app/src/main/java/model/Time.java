@@ -1,28 +1,44 @@
 package model;
 
 /**
- * This is encaptulation class for the registration times in the app.
+ * Time management within the Stuff Lending System.
  */
 public class Time {
-  private int day;
+  private int currentDay;
 
-  Time() {
-    day = 0;
+  /**
+   * Constructor for Time.
+   */
+  public Time() {
+    this.currentDay = 0;
   }
 
-  Time(Time insTime) {
-    day = insTime.day;
+  /**
+   * Increases the current day.
+   */
+  public void advanceDay() {
+    currentDay++;
   }
 
-  public int getDate() {
-    return day;
+  /**
+   * Returns the current day.
+   */
+  public int getCurrentDay() {
+    return currentDay;
   }
 
-  public void setDate(int newDay) {
-    day = newDay;
+  /**
+   * Sets the current day to the specified value.
+   */
+  public void setCurrentDay(int day) {
+    this.currentDay = day;
   }
 
+  /**
+   * Returns the current day as string.
+   */
+  @Override
   public String toString() {
-    return "" + day;
+    return "Current day: " + currentDay;
   }
 }
