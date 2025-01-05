@@ -2,7 +2,7 @@
 
 **Version:**  
 **Date:** 2024.10.10  
-**Environment:** Windows , Java version 17.0.5 , Performed by: ek223zf, sa225hg, ad223jd 
+**Environment:** Windows , Java version 17.0.5
 | Case   | Result | Note |
 |:------------- |:---------------:|:---------------:|
 | 5.1    | ok     |  |

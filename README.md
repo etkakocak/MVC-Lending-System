@@ -1,11 +1,9 @@
-# Assignment 2 - 1DV607
-
-**Project name:** Stuff Lending System
+# Stuff Lending System Java MVC
 
 **Group Members:**  
-Etka Kocak (ek223zf)  
-Sanaa Abdoulkader (sa225hg)    
-Aiman Daeef (ad223jd)  
+Etka Kocak  
+Sanaa Abdoulkader   
+Aiman Daeef  
 
 [Click to see the architectural design of the application.](design.md)  
 [Click to see the test report of the application.](testreport.md)  
